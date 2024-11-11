@@ -32,6 +32,13 @@
 $ yarn install
 ```
 
+Clonar archivo ```.env.template``` y renombrarlo a ```.env```
+
+Levantar base de datos
+```
+docker-compose up -d
+```
+
 ## Compile and run the project
 
 ```bash
@@ -57,6 +64,7 @@ $ yarn run test:e2e
 # test coverage
 $ yarn run test:cov
 ```
+
 
 ## Resources
 
