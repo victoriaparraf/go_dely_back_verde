@@ -32,6 +32,21 @@
 $ yarn install
 ```
 
+## Database configuration
+
+Clone file:
+```bash
+.env.template
+``` 
+And rename to:
+```bash
+.env
+``` 
+```bash
+# docker
+docker-compose up -d
+```
+
 ## Compile and run the project
 
 ```bash
@@ -57,6 +72,7 @@ $ yarn run test:e2e
 # test coverage
 $ yarn run test:cov
 ```
+
 
 ## Resources
 
