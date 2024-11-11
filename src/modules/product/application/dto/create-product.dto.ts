@@ -25,4 +25,8 @@ export class CreateProductDto {
     @IsPositive()
     product_stock?: number;
 
+    @IsString({ each:true })
+    @IsArray()
+    images: string[];
+
 }

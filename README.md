@@ -32,10 +32,18 @@
 $ yarn install
 ```
 
-Clonar archivo ```.env.template``` y renombrarlo a ```.env```
+## Database configuration
 
-Levantar base de datos
-```
+Clone file:
+```bash
+.env.template
+``` 
+And rename to:
+```bash
+.env
+``` 
+```bash
+# docker
 docker-compose up -d
 ```
 
