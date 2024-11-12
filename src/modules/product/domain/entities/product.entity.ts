@@ -35,4 +35,7 @@ export class Product {
     )
     images: Image[];
 
+    @Column('text')
+    product_category: string;
+
 }

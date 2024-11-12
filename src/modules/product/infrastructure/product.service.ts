@@ -72,27 +72,52 @@ export class ProductService {
     let product: Product;
 
     if ( isUUID(term) ) {
-      product = await this.productRepository.findOneBy({ product_id: term });
+      product = await this.productRepository.findOne({
+        where: { product_id: term },
+        relations: ['images']
+      });
     } else {
-      const queryBuilder = this.productRepository.createQueryBuilder();
+      const queryBuilder = this.productRepository.createQueryBuilder('product');
       product = await queryBuilder
-        .where('product_name =:product_name', {
+        .leftJoinAndSelect('product.images', 'image')
+        .where('product.product_name = :product_name', {
           product_name: term
         })
         .getOne();
     }
 
     if ( !product )
-      throw new NotFoundException(`Product with ${term} not found`)
+      throw new NotFoundException(`Product with ${term} not found`);
+    
     return product;
   }
 
-  update(product_id: string, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${product_id} product`;
+  async update(product_id: string, updateProductDto: UpdateProductDto) {
+    
+    const { images, ...toUpdate } = updateProductDto;
+
+    const product = await this.productRepository.findOne({
+        where: { product_id },
+        relations: ['images']
+    });
+
+    if (!product) throw new NotFoundException(`Product with id: ${product_id} not found`);
+
+    Object.assign(product, toUpdate);
+
+    if (images) {
+
+        await this.imageRepository.delete({ product: { product_id } });
+
+        product.images = images.map(image => this.imageRepository.create({ image_url: image, product }));
+    }
+
+    return this.productRepository.save(product);
   }
 
   async remove(product_id: string) {
     const product = await this.findOne( product_id );
+    await this.imageRepository.delete({ product: { product_id } });
     await this.productRepository.remove( product );
   }
 

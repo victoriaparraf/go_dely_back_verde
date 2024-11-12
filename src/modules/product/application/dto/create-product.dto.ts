@@ -29,4 +29,7 @@ export class CreateProductDto {
     @IsArray()
     images: string[];
 
+    @IsString()
+    product_category: string;
+
 }
