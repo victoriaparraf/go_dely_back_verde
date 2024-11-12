@@ -5,7 +5,9 @@ import { ProductService } from './product.service';
 import { CreateProductDto } from '../application/dto/create-product.dto';
 import { UpdateProductDto } from '../application/dto/update-product.dto';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Product')
 @Controller('products')
 export class ProductController {
 
