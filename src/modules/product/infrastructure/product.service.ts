@@ -7,6 +7,7 @@ import { Product } from '../domain/entities/product.entity';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { Image } from '../domain/entities/image.entity';
 import { validate as isUUID } from 'uuid';
+import { CloudinaryService } from './cloudinary/cloudinary.service';
 
 @Injectable()
 export class ProductService {
@@ -19,25 +20,32 @@ export class ProductService {
     private readonly productRepository: Repository<Product>,
 
     @InjectRepository(Image)
-    private readonly imageRepository: Repository<Image>
+    private readonly imageRepository: Repository<Image>,
+    private readonly cloudinaryService: CloudinaryService
 
   ){}
 
-  async create(createProductDto: CreateProductDto) {
+  async create(createProductDto: CreateProductDto, imageUrls: string[]) {
     try {
-      const { images, ...productDetails } = createProductDto;
+      const { images, ...productDetails } = createProductDto
+      
+      const imageUrls = await Promise.all(
+        images.map(async (imagePath) => {
+          const imageUrl = await this.cloudinaryService.uploadImage(imagePath);
+          return this.imageRepository.create({ image_url: imageUrl });
+        }),
+      );
   
       const product = this.productRepository.create({
         ...productDetails,
-        images: images.map(image => this.imageRepository.create({ image_url: image }))
-    
+        images: imageUrls,
       });
   
       await this.productRepository.save(product);
   
       return {
         ...product,
-        images: images
+        images: product.images.map((img) => img.image_url),
       };
   
     } catch (error) {

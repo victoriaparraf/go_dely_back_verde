@@ -1,17 +1,38 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { ProductService } from './product.service';
 import { CreateProductDto } from '../application/dto/create-product.dto';
 import { UpdateProductDto } from '../application/dto/update-product.dto';
-import { PaginationDto } from 'src/common/dtos/pagination.dto';
+import { CloudinaryService } from './cloudinary/cloudinary.service';
 
 @Controller('products')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+
+  constructor(private readonly productService: ProductService,
+    private readonly cloudinaryService: CloudinaryService
+  ) {}
 
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productService.create(createProductDto);
+  @UseInterceptors(FilesInterceptor('files'))
+  async create(
+    @Body() createProductDto: CreateProductDto,
+    @UploadedFiles() files: Express.Multer.File[]
+  ) {
+    const imageUrls = [];
+
+    // Cargar cada archivo en Cloudinary y guardar las URLs
+    if (files && files.length) {
+      for (const file of files) {
+        const imageUrl = await this.cloudinaryService.uploadImage(file.path);
+        imageUrls.push(imageUrl);
+      }
+    }
+
+    // Llamar al servicio de productos con las URLs de las imágenes
+    return this.productService.create(createProductDto, imageUrls);
   }
+
 
   @Get()
   findAll(@Query() paginationDto: PaginationDto) {
@@ -19,15 +40,18 @@ export class ProductController {
     return this.productService.findAll( paginationDto );
   }
 
+
   @Get(':term')
   findOne(@Param('term') term: string) {
     return this.productService.findOne(term);
   }
 
+
   @Patch(':id')
   update(@Param('product_id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productService.update(id, updateProductDto);
   }
+
 
   @Delete(':product_id')
   remove(@Param('product_id', ParseUUIDPipe) product_id: string) {
