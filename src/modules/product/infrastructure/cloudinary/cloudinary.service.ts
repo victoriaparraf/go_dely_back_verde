@@ -29,4 +29,13 @@ export class CloudinaryService {
         }
         
     }
+
+    async deleteImage(publicId: string): Promise<void> {
+        try {
+            await cloudinary.uploader.destroy(publicId);
+        } catch (error) {
+            throw new HttpException(`Failed to delete image: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
 }

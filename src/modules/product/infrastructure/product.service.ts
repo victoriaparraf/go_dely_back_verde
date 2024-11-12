@@ -108,16 +108,19 @@ export class ProductService {
         where: { product_id },
         relations: ['images']
     });
-
     if (!product) throw new NotFoundException(`Product with id: ${product_id} not found`);
 
     Object.assign(product, toUpdate);
 
     if (images) {
-
-        await this.imageRepository.delete({ product: { product_id } });
-
-        product.images = images.map(image => this.imageRepository.create({ image_url: image, product }));
+      await this.imageRepository.delete({ product: { product_id } });
+      // Subimos las nuevas imágenes a Cloudinary y las guardamos en la base de datos
+      product.images = await Promise.all(
+        images.map(async (imagePath) => {
+          const imageUrl = await this.cloudinaryService.uploadImage(imagePath);
+          return this.imageRepository.create({ image_url: imageUrl, product });
+        })
+      );
     }
 
     return this.productRepository.save(product);
@@ -125,6 +128,25 @@ export class ProductService {
 
   async remove(product_id: string) {
     const product = await this.findOne( product_id );
+
+    // Eliminar las imágenes de Cloudinary antes de borrar los registros
+    for (const image of product.images) {
+      // Extraer el public_id
+      const publicId = image.image_url.split('/').slice(-2).join('/').split('.')[0];
+      console.log('Public ID:', publicId);
+
+
+      if (publicId) {
+        try {
+          await this.cloudinaryService.deleteImage(publicId);
+
+        } catch (error) {
+          this.logger.error(`Failed to delete image from Cloudinary: ${error.message}`);
+
+        }
+      }
+    }
+
     await this.imageRepository.delete({ product: { product_id } });
     await this.productRepository.remove( product );
   }
