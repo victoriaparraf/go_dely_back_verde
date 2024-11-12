@@ -46,10 +46,9 @@ export class ProductController {
     return this.productService.findOne(term);
   }
 
-
-  @Patch(':id')
-  update(@Param('product_id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productService.update(id, updateProductDto);
+  @Patch(':product_id')
+  update(@Param('product_id', ParseUUIDPipe ) product_id: string, @Body() updateProductDto: UpdateProductDto) {
+    return this.productService.update(product_id, updateProductDto);
   }
 
 
