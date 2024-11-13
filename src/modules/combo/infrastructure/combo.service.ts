@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Combo } from '../domain/combo.entity';
 import { CreateComboDto } from '../application/dto/create-combo.dto';
 import { UpdateComboDto } from '../application/dto/update-combo.dto';
 import { Product } from 'src/modules/product/domain/entities/product.entity';
+import { Combo } from '../domain/entities/combo.entity';
 
 @Injectable()
 export class ComboService {

@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, ManyToMany, JoinTable } from "typeorm";
 import { Image } from "./image.entity";
-import { Combo } from "../../../combo/domain/combo.entity";
+import { Combo } from "src/modules/combo/domain/entities/combo.entity";
 
 @Entity()
 export class Product {

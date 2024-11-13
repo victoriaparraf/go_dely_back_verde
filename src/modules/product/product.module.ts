@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './domain/entities/product.entity';
 import { Image } from './domain/entities/image.entity';
 import { CloudinaryModule } from './infrastructure/cloudinary/cloudinary.module';
-import { Combo } from '../combo/domain/combo.entity';
+import { Combo } from '../combo/domain/entities/combo.entity';
 
 @Module({
   controllers: [ProductController],

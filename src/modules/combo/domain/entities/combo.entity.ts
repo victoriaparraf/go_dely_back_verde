@@ -1,5 +1,5 @@
+import { Product } from "src/modules/product/domain/entities/product.entity";
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from "typeorm";
-import { Product } from "../../product/domain/entities/product.entity";
 
 @Entity()
 export class Combo {

@@ -1,4 +1,4 @@
-import { IsString, IsDecimal, IsArray, ArrayNotEmpty, IsOptional, MinLength, IsPositive, IsNumber } from 'class-validator';
+import { IsString, IsArray, ArrayNotEmpty, IsOptional, MinLength, IsPositive, IsNumber } from 'class-validator';
 
 export class CreateComboDto {
 
