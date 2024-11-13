@@ -6,12 +6,13 @@ import { Product } from './domain/entities/product.entity';
 import { Image } from './domain/entities/image.entity';
 import { CloudinaryModule } from './infrastructure/cloudinary/cloudinary.module';
 import { RabbitmqModule } from './infrastructure/rabbitmq/rabbitmq.module';
+import { Combo } from '../combo/domain/entities/combo.entity';
 
 @Module({
   controllers: [ProductController],
   providers: [ProductService],
   imports:[
-    TypeOrmModule.forFeature([ Product, Image ]),
+    TypeOrmModule.forFeature([ Product, Image, Combo ]),
     CloudinaryModule,
     RabbitmqModule
   ]

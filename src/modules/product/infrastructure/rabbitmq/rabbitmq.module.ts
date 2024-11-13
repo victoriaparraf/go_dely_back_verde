@@ -4,8 +4,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
     imports: [
-        ClientsModule.register([
-            {
+        ClientsModule.register([{
             name: 'RABBITMQ_SERVICE',
                 transport: Transport.RMQ,
                 options: {
@@ -15,7 +14,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
                         durable: false
                     },
                 },
-            },
+        },
         ]),
     ],
     exports: [ClientsModule],

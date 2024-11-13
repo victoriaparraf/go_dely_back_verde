@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, ManyToMany, JoinTable } from "typeorm";
 import { Image } from "./image.entity";
+import { Combo } from "src/modules/combo/domain/entities/combo.entity";
 
 @Entity()
 export class Product {
@@ -37,5 +38,17 @@ export class Product {
 
     @Column('text')
     product_category: string;
+
+    @ManyToMany(() => Combo, (combo) => combo.products)
+    @JoinTable({
+        name: 'product_combo',
+        joinColumn: {
+            name: 'product_id'
+        },
+        inverseJoinColumn: {
+            name: 'combo_id'
+        }
+    })
+    combos: Combo[];
 
 }
