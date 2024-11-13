@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query, UseInterceptors, UploadedFiles, Inject } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { ProductService } from './product.service';
@@ -6,13 +6,16 @@ import { CreateProductDto } from '../application/dto/create-product.dto';
 import { UpdateProductDto } from '../application/dto/update-product.dto';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { ApiTags } from '@nestjs/swagger';
+import { ClientProxy } from '@nestjs/microservices';
 
 @ApiTags('Product')
 @Controller('products')
 export class ProductController {
 
-  constructor(private readonly productService: ProductService,
-    private readonly cloudinaryService: CloudinaryService
+  constructor(
+    private readonly productService: ProductService,
+    private readonly cloudinaryService: CloudinaryService,
+    @Inject('RABBITMQ_SERVICE') private readonly rabbitMQClient: ClientProxy
   ) {}
 
   @Post()
@@ -21,8 +24,8 @@ export class ProductController {
     @Body() createProductDto: CreateProductDto,
     @UploadedFiles() files: Express.Multer.File[]
   ) {
-    const imageUrls = [];
 
+    const imageUrls = [];
     // Cargar cada archivo en Cloudinary y guardar las URLs
     if (files && files.length) {
       for (const file of files) {
@@ -31,8 +34,15 @@ export class ProductController {
       }
     }
 
+    const product = this.productService.create(createProductDto, imageUrls);
+    // Publicar el mensaje en la cola de RabbitMQ
+    this.rabbitMQClient.emit('product_created', {
+      productName: (await product).product_name,
+      productCategory: (await product).product_category,
+      message: 'Hey, revisa los nuevos productos que tenemos para ti',
+    });
     // Llamar al servicio de productos con las URLs de las imágenes
-    return this.productService.create(createProductDto, imageUrls);
+    return product;
   }
 
 
