@@ -23,7 +23,7 @@ import { CommonModule } from './common/common.module';
 
     ProductModule,
 
-    CommonModule,
+    CommonModule
   ],
 })
 export class AppModule {}
