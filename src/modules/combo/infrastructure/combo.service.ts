@@ -33,13 +33,15 @@ export class ComboService {
   }
 
   async findAll() {
-    return this.comboRepository.find({ relations: ['products'] });
+    return this.comboRepository.find({
+      relations: ['products', 'products.images'],
+    });
   }
 
   async findOne(id: number) {
     const combo = await this.comboRepository.findOne({
       where: { combo_id: id },
-      relations: ['products'],
+      relations: ['products', 'products.images'],
     });
 
     if (!combo) {
