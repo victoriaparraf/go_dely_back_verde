@@ -6,7 +6,6 @@ import { ComboModule } from './modules/combo/combo.module';
 import { CommonModule } from './common/common.module';
 import { RabbitmqModule } from './modules/product/infrastructure/rabbitmq/rabbitmq.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { MailService } from './common/mail/mail.service';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -46,6 +45,5 @@ import { MailService } from './common/mail/mail.service';
     ]),
     RabbitmqModule,
   ],
-  providers: [MailService],
 })
 export class AppModule {}

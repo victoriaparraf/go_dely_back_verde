@@ -1,6 +1,5 @@
 // mail.module.ts
 import { Module } from '@nestjs/common';
-import { MailService } from './mail.service';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MailController } from './mail.controller';
@@ -15,7 +14,7 @@ import { MailController } from './mail.controller';
         transport: {
           host: configService.get<string>('EMAIL_HOST'),
           port: configService.get<number>('EMAIL_PORT'),
-          secure: false,
+          secure: true,
           auth: {
             user: configService.get<string>('EMAIL_USER'),
             pass: configService.get<string>('EMAIL_PASS'),
@@ -27,8 +26,6 @@ import { MailController } from './mail.controller';
       }),
     }),
   ],
-  providers: [MailService],
-  exports: [MailService],
   controllers: [MailController]
 })
 export class MailModule {}

@@ -18,7 +18,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
                     queueOptions: {
                         durable: true,
                     },
-            },
+                },
             }),
         },
         ]),
