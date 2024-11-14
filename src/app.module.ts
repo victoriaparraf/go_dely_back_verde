@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductModule } from './modules/product/product.module';
 import { ComboModule } from './modules/combo/combo.module';
 import { CommonModule } from './common/common.module';
+import { MailModule } from './modules/product/infrastructure/mail/mail.module';
+import { RabbitmqModule } from './modules/product/infrastructure/rabbitmq/rabbitmq.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -26,7 +28,11 @@ import { CommonModule } from './common/common.module';
 
     CommonModule,
 
-    ComboModule
+    ComboModule,
+    
+    MailModule,
+
+    RabbitmqModule,
   ],
 })
 export class AppModule {}

@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MailService } from '../mail/mail.service';
 
 @Module({
     imports: [
@@ -24,7 +23,6 @@ import { MailService } from '../mail/mail.service';
         },
         ]),
     ],
-    providers: [MailService],
     exports: [ClientsModule],
 })
 export class RabbitmqModule {}
