@@ -49,7 +49,9 @@ export class ProductService {
         productImages: createProductDto.images,
         productName: createProductDto.product_name,
         productCategory: createProductDto.product_category,
-        message: '¡Revisa nuestros nuevos productos y sus ofertas!',
+        productWeight: createProductDto.product_weight,
+        productDescription: createProductDto.product_description,
+        message: 'Check out our new products and their offers!',
     }).toPromise();
   
       return {
