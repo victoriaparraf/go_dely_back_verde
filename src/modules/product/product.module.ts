@@ -7,7 +7,7 @@ import { Image } from './domain/entities/image.entity';
 import { CloudinaryModule } from './infrastructure/cloudinary/cloudinary.module';
 import { RabbitmqModule } from './infrastructure/rabbitmq/rabbitmq.module';
 import { Combo } from '../combo/domain/entities/combo.entity';
-import { MailModule } from './infrastructure/mail/mail.module';
+import { MailModule } from '../../common/mail/mail.module';
 
 @Module({
   controllers: [ProductController],

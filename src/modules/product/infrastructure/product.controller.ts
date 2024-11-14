@@ -15,7 +15,7 @@ export class ProductController {
   constructor(
     private readonly productService: ProductService,
     private readonly cloudinaryService: CloudinaryService,
-    @Inject('RABBITMQ_SERVICE') private readonly rabbitMQClient: ClientProxy
+    // @Inject('RABBITMQ_SERVICE') private readonly rabbitMQClient: ClientProxy
   ) {}
 
   @Post()
@@ -36,12 +36,11 @@ export class ProductController {
 
     const product = this.productService.create(createProductDto, imageUrls);
     // Publicar el mensaje en la cola de RabbitMQ
-    this.rabbitMQClient.emit('product_notification', {
-      productName: (await product).product_name,
-      productCategory: (await product).product_category,
-      message: 'Hey, revisa los nuevos productos que tenemos para ti',
-    });
-    // Llamar al servicio de productos con las URLs de las imágenes
+    // this.rabbitMQClient.emit('product_notification', {
+    //   productName: (await product).product_name,
+    //   productCategory: (await product).product_category,
+    //   message: 'Hey, revisa los nuevos productos que tenemos para ti',
+    // });
     return product;
   }
 

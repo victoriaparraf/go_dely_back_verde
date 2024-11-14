@@ -4,8 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductModule } from './modules/product/product.module';
 import { ComboModule } from './modules/combo/combo.module';
 import { CommonModule } from './common/common.module';
-import { MailModule } from './modules/product/infrastructure/mail/mail.module';
 import { RabbitmqModule } from './modules/product/infrastructure/rabbitmq/rabbitmq.module';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { MailService } from './common/mail/mail.service';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -30,9 +31,21 @@ import { RabbitmqModule } from './modules/product/infrastructure/rabbitmq/rabbit
 
     ComboModule,
     
-    MailModule,
-
+    ClientsModule.register([
+      {
+        name: 'RABBITMQ_SERVICE',
+        transport: Transport.RMQ,
+        options: {
+          urls: [process.env.RABBITMQ_URL],
+          queue: process.env.RABBITMQ_QUEUE,
+          queueOptions: {
+            durable: true,
+          },
+        },
+      },
+    ]),
     RabbitmqModule,
   ],
+  providers: [MailService],
 })
 export class AppModule {}
