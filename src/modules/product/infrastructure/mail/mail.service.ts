@@ -7,11 +7,12 @@ import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
 export class MailService {
     constructor(private readonly mailerService: MailerService) {}
 
-    @EventPattern('product_created')
+    @EventPattern('product_notification')
     async handleProductCreated(
         @Payload() data: { productName: string; productCategory: string; message: string },
         @Ctx() context: RmqContext,
     ) {
+        console.log('Received product notification:', data);
         const channel = context.getChannelRef();
         const originalMsg = context.getMessage();
 

@@ -1,22 +1,30 @@
-// rabbitmq.module.ts
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MailService } from '../mail/mail.service';
 
 @Module({
     imports: [
-        ClientsModule.register([{
+        ConfigModule.forRoot(),
+        ClientsModule.registerAsync([
+        {
             name: 'RABBITMQ_SERVICE',
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (configService: ConfigService) => ({
                 transport: Transport.RMQ,
                 options: {
-                    urls: ['amqp://localhost:5672'],
-                    queue: 'product_notifications_queue',
+                    urls: [configService.get<string>('RABBITMQ_URL')],
+                    queue: configService.get<string>('RABBITMQ_QUEUE'),
                     queueOptions: {
-                        durable: false
+                        durable: false,
                     },
-                },
+            },
+            }),
         },
         ]),
     ],
+    providers: [MailService],
     exports: [ClientsModule],
 })
 export class RabbitmqModule {}
