@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from '../application/dto/create-product.dto';
 import { UpdateProductDto } from '../application/dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,6 +8,7 @@ import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { Image } from '../domain/entities/image.entity';
 import { validate as isUUID } from 'uuid';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class ProductService {
@@ -21,8 +22,9 @@ export class ProductService {
 
     @InjectRepository(Image)
     private readonly imageRepository: Repository<Image>,
-    private readonly cloudinaryService: CloudinaryService
+    private readonly cloudinaryService: CloudinaryService,
 
+    @Inject('RABBITMQ_SERVICE') private readonly client: ClientProxy,
   ){}
 
   async create(createProductDto: CreateProductDto, imageUrls: string[]) {
@@ -42,6 +44,13 @@ export class ProductService {
       });
   
       await this.productRepository.save(product);
+
+      // Emite el evento a RabbitMQ
+      await this.client.send('product_notification', {
+        productName: createProductDto.product_name,
+        productCategory: createProductDto.product_category,
+        message: '¡Revisa nuestros nuevos productos y sus ofertas!',
+    }).toPromise();
   
       return {
         ...product,
