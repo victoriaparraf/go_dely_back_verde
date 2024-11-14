@@ -16,7 +16,6 @@ export class ProductService {
   private readonly logger = new Logger('ProductService');
 
   constructor (
-
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
 
@@ -47,6 +46,7 @@ export class ProductService {
 
       // Emite el evento a RabbitMQ
       await this.client.send('product_notification', {
+        productImages: createProductDto.images,
         productName: createProductDto.product_name,
         productCategory: createProductDto.product_category,
         message: '¡Revisa nuestros nuevos productos y sus ofertas!',

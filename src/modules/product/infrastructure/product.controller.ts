@@ -6,7 +6,6 @@ import { CreateProductDto } from '../application/dto/create-product.dto';
 import { UpdateProductDto } from '../application/dto/update-product.dto';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { ApiTags } from '@nestjs/swagger';
-import { ClientProxy } from '@nestjs/microservices';
 
 @ApiTags('Product')
 @Controller('products')
@@ -15,7 +14,6 @@ export class ProductController {
   constructor(
     private readonly productService: ProductService,
     private readonly cloudinaryService: CloudinaryService,
-    // @Inject('RABBITMQ_SERVICE') private readonly rabbitMQClient: ClientProxy
   ) {}
 
   @Post()

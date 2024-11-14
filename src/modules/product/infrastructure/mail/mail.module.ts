@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MailController } from './mail.controller';
-import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 
 @Module({
   imports: [
@@ -20,19 +19,12 @@ import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
             pass: configService.get<string>('EMAIL_PASS'),
           },
         },
-        template: {
-          dir: __dirname + './template/notification',
-          adapter: new PugAdapter({  inlineCssEnabled: true,}),
-          options: {
-            strict: true,
-          },
-        },
         defaults: {
           from: configService.get<string>('EMAIL_FROM'),
         },
       }),
     }),
   ],
-  controllers: [MailController]
+  controllers: [MailController],
 })
 export class MailModule {}
