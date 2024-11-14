@@ -33,20 +33,36 @@ export class ComboService {
   }
 
   async findAll() {
-    return this.comboRepository.find({ relations: ['products'] });
+    const combos = await this.comboRepository.find({
+      relations: ['products', 'products.images'],
+    });
+
+    return combos.map(combo => ({
+      ...combo,
+      products: combo.products.map(product => ({
+        ...product,
+        images: product.images.map(img => img.image_url),
+      })),
+    }));
   }
 
   async findOne(id: number) {
     const combo = await this.comboRepository.findOne({
       where: { combo_id: id },
-      relations: ['products'],
+      relations: ['products', 'products.images'],
     });
 
     if (!combo) {
       throw new NotFoundException(`Combo with id ${id} not found`);
     }
 
-    return combo;
+    return {
+      ...combo,
+      products: combo.products.map(product => ({
+        ...product,
+        images: product.images.map(img => img.image_url),
+      })),
+    };
   }
 
   async update(id: number, updateComboDto: UpdateComboDto) {
@@ -71,7 +87,10 @@ export class ComboService {
   }
 
   async remove(id: number) {
-    const combo = await this.findOne(id);
+    const combo = await this.comboRepository.findOne({ where: { combo_id: id } });
+    if (!combo) {
+      throw new NotFoundException(`Combo with id ${id} not found`);
+    }
     await this.comboRepository.remove(combo);
   }
 }
