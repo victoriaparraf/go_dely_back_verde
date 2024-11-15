@@ -1,9 +1,9 @@
-// src/infrastructure/repositories/product.repository.ts
+import { Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { IProductRepository } from '../../domain/repositories/product-repository.interface';
 import { Product } from '../../domain/entities/product.entity';
-import { Repository } from 'typeorm';
 import { ProductEntity } from '../database/typeorm/product.entity';
-import { Injectable } from '@nestjs/common';
 import { ProductName } from 'src/product/domain/value-objects/product-name.vo';
 import { ProductCategory } from 'src/product/domain/value-objects/product-category.vo';
 import { ProductCurrency } from 'src/product/domain/value-objects/product-currency.vo';
@@ -15,25 +15,71 @@ import { ProductWeight } from 'src/product/domain/value-objects/product-weight.v
 @Injectable()
 export class ProductRepository implements IProductRepository {
   constructor(
+    @InjectRepository(ProductEntity)
     private readonly productRepository: Repository<ProductEntity>,
   ) {}
-  find(arg0: { skip: number; take: number; relations: string[]; }): unknown {
+  save(productEntity: ProductEntity): unknown {
     throw new Error('Method not implemented.');
   }
-    findAll(): Promise<Product[]> {
-        throw new Error('Method not implemented.');
-    }
+  findOne(arg0: { where: { product_id: string; }; }): unknown {
+    throw new Error('Method not implemented.');
+  }
+  delete(productId: string): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+
+  async find(params: { skip: number; take: number; relations: string[] }): Promise<Product[]> {
+    const productEntities = await this.productRepository.find({
+      skip: params.skip,
+      take: params.take,
+      relations: params.relations,
+    });
+
+    return productEntities.map(
+      (productEntity) =>
+        new Product(
+          productEntity.product_id,
+          new ProductName(productEntity.product_name),
+          new ProductDescription(productEntity.product_description),
+          new ProductPrice(productEntity.product_price),
+          new ProductCurrency(productEntity.product_currency),
+          new ProductWeight(productEntity.product_weight),
+          new ProductStock(productEntity.product_stock),
+          [],
+          new ProductCategory(productEntity.product_category),
+        ),
+    );
+  }
+
+  async findAll(): Promise<Product[]> {
+    const productEntities = await this.productRepository.find();
+    return productEntities.map(
+      (productEntity) =>
+        new Product(
+          productEntity.product_id,
+          new ProductName(productEntity.product_name),
+          new ProductDescription(productEntity.product_description),
+          new ProductPrice(productEntity.product_price),
+          new ProductCurrency(productEntity.product_currency),
+          new ProductWeight(productEntity.product_weight),
+          new ProductStock(productEntity.product_stock),
+          [],
+          new ProductCategory(productEntity.product_category),
+        ),
+    );
+  }
 
   async create(product: Product): Promise<Product> {
-    const productEntity = new ProductEntity();
-    productEntity.product_id = product.id;
-    productEntity.product_name = product.product_name.value;
-    productEntity.product_description = product.product_description.value;
-    productEntity.product_price = product.product_price.value;
-    productEntity.product_currency = product.product_currency.value;
-    productEntity.product_weight = product.product_weight.value;
-    productEntity.product_stock = product.product_stock.value;
-    productEntity.product_category = product.product_category.value;
+    const productEntity = this.productRepository.create({
+      product_id: product.product_id,
+      product_name: product.product_name.value,
+      product_description: product.product_description.value,
+      product_price: product.product_price.value,
+      product_currency: product.product_currency.value,
+      product_weight: product.product_weight.value,
+      product_stock: product.product_stock.value,
+      product_category: product.product_category.value,
+    });
 
     await this.productRepository.save(productEntity);
 
@@ -55,7 +101,7 @@ export class ProductRepository implements IProductRepository {
       new ProductCurrency(productEntity.product_currency),
       new ProductWeight(productEntity.product_weight),
       new ProductStock(productEntity.product_stock),
-      [], // Para simplificar, no estamos incluyendo las imágenes aquí
+      [],
       new ProductCategory(productEntity.product_category),
     );
   }
@@ -67,13 +113,13 @@ export class ProductRepository implements IProductRepository {
 
     if (!productEntity) throw new Error('Producto no encontrado');
 
-    productEntity.product_name = product.name.value;
-    productEntity.product_description = product.description.value;
-    productEntity.product_price = product.price.value;
-    productEntity.product_currency = product.currency.value;
-    productEntity.product_weight = product.weight.value;
-    productEntity.product_stock = product.stock.value;
-    productEntity.product_category = product.category.value;
+    productEntity.product_name = product.product_name.value;
+    productEntity.product_description = product.product_description.value;
+    productEntity.product_price = product.product_price.value;
+    productEntity.product_currency = product.product_currency.value;
+    productEntity.product_weight = product.product_weight.value;
+    productEntity.product_stock = product.product_stock.value;
+    productEntity.product_category = product.product_category.value;
 
     await this.productRepository.save(productEntity);
 

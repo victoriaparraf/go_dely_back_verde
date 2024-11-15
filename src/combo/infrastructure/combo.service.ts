@@ -41,14 +41,14 @@ export class ComboService {
       ...combo,
       products: combo.products.map(product => ({
         ...product,
-        images: product.images.map(img => img.image_url),
+        images: product.images,
       })),
     }));
   }
 
   async findOne(id: number) {
     const combo = await this.comboRepository.findOne({
-      where: { combo_id: id },
+      where: { id: id.toString() },
       relations: ['products', 'products.images'],
     });
 
@@ -60,7 +60,7 @@ export class ComboService {
       ...combo,
       products: combo.products.map(product => ({
         ...product,
-        images: product.images.map(img => img.image_url),
+        images: product.images,
       })),
     };
   }
@@ -68,7 +68,7 @@ export class ComboService {
   async update(id: number, updateComboDto: UpdateComboDto) {
     const { products, ...comboDetails } = updateComboDto;
 
-    const combo = await this.comboRepository.findOne({ where: { combo_id: id } });
+    const combo = await this.comboRepository.findOne({ where: { id: id.toString() } });
     if (!combo) {
       throw new NotFoundException(`Combo with id ${id} not found`);
     }
@@ -87,7 +87,7 @@ export class ComboService {
   }
 
   async remove(id: number) {
-    const combo = await this.comboRepository.findOne({ where: { combo_id: id } });
+    const combo = await this.comboRepository.findOne({ where: { id: id.toString() } });
     if (!combo) {
       throw new NotFoundException(`Combo with id ${id} not found`);
     }

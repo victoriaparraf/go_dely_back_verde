@@ -1,4 +1,3 @@
-// src/infrastructure/database/typeorm/product.entity.ts
 import { Entity, PrimaryColumn, Column, OneToMany, ManyToOne, JoinTable, ManyToMany } from 'typeorm';
 import { ImageEntity } from './image.entity';
 import { Combo } from 'src/combo/domain/entities/combo.entity';

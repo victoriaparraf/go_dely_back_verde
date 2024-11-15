@@ -1,5 +1,3 @@
-// src/application/services/product.service.ts
-import { IProductRepository } from '../../domain/repositories/product-repository.interface';
 import { Product } from '../../domain/entities/product.entity';
 import { ProductName } from '../../domain/value-objects/product-name.vo';
 import { ProductDescription } from '../../domain/value-objects/product-description.vo';
@@ -10,21 +8,23 @@ import { ProductStock } from '../../domain/value-objects/product-stock.vo';
 import { ProductCategory } from '../../domain/value-objects/product-category.vo';
 import { ProductDTO } from '../dtos/product.dto';
 import { PaginationDto } from 'src/common/infrastructure/dtos/pagination.dto';
+import { IProductRepository } from 'src/product/domain/repositories/product-repository.interface';
+import { ProductRepository } from 'src/product/infrastructure/repositories/product.repository';
 
 export class ProductService {
-  constructor(private readonly productRepository: IProductRepository) {}
+  constructor(private readonly productRepository: ProductRepository) {}
 
   async findAll(paginationDto: PaginationDto) {
-    const { limit, offset } = paginationDto;  // Supongo que la paginación lleva limit y page
-    const skip = (offset - 1) * limit;  // Desplazamiento para la paginación
+    const { limit, offset } = paginationDto;
+    const skip = (offset - 1) * limit;
 
     const products = await this.productRepository.find({
-      skip, 
-      take: limit,  // Paginación
-      relations: ['images'],  // Esto carga las imágenes asociadas al producto, si estás utilizando relaciones en TypeORM
+      skip : offset,
+      take: limit, 
+      relations: ['images', 'combos'], 
     });
 
-    return products;  // Devuelve los productos con imágenes asociadas
+    return products;
   }
 
   async createProduct(productDTO: ProductDTO, imageUrls: any[]): Promise<Product> {
@@ -80,6 +80,7 @@ export class ProductService {
   }
 
   async removeProduct(productId: string): Promise<void> {
-    return this.productRepository.remove(productId);
+    return this.productRepository.delete(productId);
+
   }
 }

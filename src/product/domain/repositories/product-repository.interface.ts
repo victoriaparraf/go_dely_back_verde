@@ -1,10 +1,19 @@
+import { ProductEntity } from 'src/product/infrastructure/database/typeorm/product.entity';
 import { Product } from '../entities/product.entity';
 
 export interface IProductRepository {
-  find(arg0: { skip: number; take: number; relations: string[]; }): unknown;
+  save(productEntity: ProductEntity): unknown;
+  findOne(arg0: { where: { product_id: string; }; }): unknown;
+  
+  find(params: { skip: number; take: number; relations: string[] }): Promise<Product[]>;
+
   create(product: Product): Promise<Product>;
-  findById(productId: string): Promise<Product | null>;
+
   findAll(): Promise<Product[]>;
+
+  findById(productId: string): Promise<Product | null>;
+
   update(productId: string, product: Product): Promise<Product>;
-  remove(productId: string): Promise<void>;
+
+  delete(productId: string): Promise<void>;
 }
