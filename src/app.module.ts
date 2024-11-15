@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProductModule } from './modules/product/product.module';
-import { ComboModule } from './modules/combo/combo.module';
+import { ProductModule } from './product/product.module';
+import { ComboModule } from './combo/combo.module';
 import { CommonModule } from './common/common.module';
-import { RabbitmqModule } from './modules/product/infrastructure/rabbitmq/rabbitmq.module';
+import { RabbitmqModule } from './product/infrastructure/rabbitmq/rabbitmq.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { AuthModule } from './modules/auth/auth.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [

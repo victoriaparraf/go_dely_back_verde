@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ComboService } from './infrastructure/combo.service';
-import { Product } from '../product/domain/entities/product.entity';
-import { Combo } from './domain/entities/combo.entity';
+import { Combo } from './infrastructure/typeorm/combo-entity';
 import { ComboController } from './infrastructure/combo.controller';
+import { Product } from 'src/product/infrastructure/typeorm/product-entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Combo, Product])],

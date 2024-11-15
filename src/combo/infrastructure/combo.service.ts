@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateComboDto } from '../application/dto/create-combo.dto';
 import { UpdateComboDto } from '../application/dto/update-combo.dto';
-import { Product } from 'src/modules/product/domain/entities/product.entity';
-import { Combo } from '../domain/entities/combo.entity';
+import { Combo } from './typeorm/combo-entity';
+import { Product } from 'src/product/infrastructure/typeorm/product-entity';
 
 @Injectable()
 export class ComboService {
@@ -25,12 +25,13 @@ export class ComboService {
 
     const combo = this.comboRepository.create({
       ...comboDetails,
-      products: productEntities,
     });
 
-    await this.comboRepository.save(combo);
-    return combo;
+    combo.products = productEntities;
+
+    return await this.comboRepository.save(combo);
   }
+
 
   async findAll() {
     const combos = await this.comboRepository.find({
@@ -48,7 +49,7 @@ export class ComboService {
 
   async findOne(id: number) {
     const combo = await this.comboRepository.findOne({
-      where: { combo_id: id },
+      where: { combo_id: id.toString() },
       relations: ['products', 'products.images'],
     });
 
@@ -68,7 +69,7 @@ export class ComboService {
   async update(id: number, updateComboDto: UpdateComboDto) {
     const { products, ...comboDetails } = updateComboDto;
 
-    const combo = await this.comboRepository.findOne({ where: { combo_id: id } });
+    const combo = await this.comboRepository.findOne({ where: { combo_id: id.toString() } });
     if (!combo) {
       throw new NotFoundException(`Combo with id ${id} not found`);
     }
@@ -87,7 +88,7 @@ export class ComboService {
   }
 
   async remove(id: number) {
-    const combo = await this.comboRepository.findOne({ where: { combo_id: id } });
+    const combo = await this.comboRepository.findOne({ where: { combo_id: id.toString() } });
     if (!combo) {
       throw new NotFoundException(`Combo with id ${id} not found`);
     }

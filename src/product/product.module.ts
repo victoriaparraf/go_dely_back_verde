@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { ProductService } from './infrastructure/product.service';
 import { ProductController } from './infrastructure/product.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Product } from './domain/entities/product.entity';
-import { Image } from './domain/entities/image.entity';
+import { Product } from './infrastructure/typeorm/product-entity'; 
+import { Image } from './infrastructure/typeorm/image-entity'; 
 import { CloudinaryModule } from './infrastructure/cloudinary/cloudinary.module';
 import { RabbitmqModule } from './infrastructure/rabbitmq/rabbitmq.module';
-import { Combo } from '../combo/domain/entities/combo.entity';
 import { MailModule } from './infrastructure/mail/mail.module';
+import { Combo } from 'src/combo/infrastructure/typeorm/combo-entity';
 
 @Module({
   controllers: [ProductController],

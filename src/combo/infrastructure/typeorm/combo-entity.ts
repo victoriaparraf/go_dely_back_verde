@@ -1,16 +1,16 @@
-import { Product } from "src/modules/product/domain/entities/product.entity";
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from "typeorm";
+import { Product } from "src/product/infrastructure/typeorm/product-entity";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from "typeorm";
 
 @Entity()
 export class Combo {
 
     @PrimaryGeneratedColumn('uuid')
-    combo_id: number;
+    combo_id: string;
 
     @Column('text')
     combo_name: string;
 
-    @Column('decimal', {default: 0.00})
+    @Column('decimal', { default: 0.00 })
     combo_price: number;
 
     @Column('text')
@@ -27,5 +27,4 @@ export class Combo {
 
     @ManyToMany(() => Product, (product) => product.combos)
     products: Product[];
-
 }
