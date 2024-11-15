@@ -1,10 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, ManyToMany, JoinTable } from "typeorm";
-import { Image } from "./image.entity";
-import { Combo } from "src/modules/combo/domain/entities/combo.entity";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable } from "typeorm";
+import { Image } from "./image-entity";
+import { Combo } from "src/combo/infrastructure/typeorm/combo-entity";
 
 @Entity()
 export class Product {
-
     @PrimaryGeneratedColumn('uuid')
     product_id: string;
 
@@ -17,7 +16,7 @@ export class Product {
     })
     product_description: string;
 
-    @Column('decimal', {default: 0.00})
+    @Column('decimal', { default: 0.00 })
     product_price: number;
 
     @Column()
@@ -26,14 +25,10 @@ export class Product {
     @Column()
     product_weight: string;
 
-    @Column('int', {default: 0})
+    @Column('int', { default: 0 })
     product_stock: number;
 
-    @OneToMany(
-        () => Image,
-        (image) => image.product,
-        { cascade: true }
-    )
+    @OneToMany(() => Image, (image) => image.product, { cascade: true })
     images: Image[];
 
     @Column('text')
@@ -50,5 +45,4 @@ export class Product {
         }
     })
     combos: Combo[];
-
 }
