@@ -19,9 +19,9 @@ export class ComboController {
     return this.comboService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.comboService.findOne(id);
+  @Get(':term')
+  findOne(@Param('term') term: string) {
+    return this.comboService.findOne(term);
   }
 
   @Patch(':id')

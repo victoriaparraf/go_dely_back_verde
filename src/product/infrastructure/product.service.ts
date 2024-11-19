@@ -90,61 +90,28 @@ export class ProductService {
 
   async findOne(term: string) {
     let product: Product;
-
+  
     if (isUUID(term)) {
-      const productEntity = await this.productRepository.findOne({
+      product = await this.productRepository.findOne({
         where: { product_id: term },
         relations: ['images'],
       });
-      if (productEntity) {
-        product = new Product();
-        product.product_id = productEntity.product_id;
-        product.product_name = productEntity.product_name;
-        product.product_description = productEntity.product_description;
-        product.product_price = productEntity.product_price;
-        product.product_currency = productEntity.product_currency;
-        product.product_weight = productEntity.product_weight;
-        product.product_stock = productEntity.product_stock;
-        product.product_category = productEntity.product_category;
-        product.images = productEntity.images.map(img => {
-          const image = new Image();
-          image.image_id = img.image_id;
-          image.image_url = img.image_url;
-          return image;
-        });
-      }
     } else {
-      const queryBuilder = this.productRepository.createQueryBuilder('product');
-      const productEntity = await queryBuilder
+      product = await this.productRepository
+        .createQueryBuilder('product')
         .leftJoinAndSelect('product.images', 'image')
-        .where('product.product_name = :product_name', {
-          product_name: term,
-        })
+        .where('product.product_name = :product_name', { product_name: term })
         .getOne();
-      if (productEntity) {
-        product = new Product();
-        product.product_id = productEntity.product_id;
-        product.product_name = productEntity.product_name;
-        product.product_description = productEntity.product_description;
-        product.product_price = productEntity.product_price;
-        product.product_currency = productEntity.product_currency;
-        product.product_weight = productEntity.product_weight;
-        product.product_stock = productEntity.product_stock;
-        product.product_category = productEntity.product_category;
-        product.images = productEntity.images.map(img => {
-          const image = new Image();
-          image.image_id = img.image_id;
-          image.image_url = img.image_url;
-          return image;
-        });
-      }
     }
-
+  
     if (!product) {
       throw new NotFoundException(`Product with ${term} not found`);
     }
-    
-    return product;
+  
+    return {
+      ...product,
+      images: product.images.map(img => img.image_url),
+    };
   }
 
   async update(product_id: string, updateProductDto: UpdateProductDto) {
@@ -179,7 +146,7 @@ export class ProductService {
 
     // Eliminar las imágenes de Cloudinary antes de borrar los registros
     for (const image of product.images) {
-      const publicId = image.image_url.split('/').slice(-2).join('/').split('.')[0];
+      const publicId = image.split('/').slice(-2).join('/').split('.')[0];
       console.log('Public ID:', publicId);
 
       if (publicId) {

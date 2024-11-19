@@ -5,6 +5,7 @@ import { CreateComboDto } from '../application/dto/create-combo.dto';
 import { UpdateComboDto } from '../application/dto/update-combo.dto';
 import { Combo } from './typeorm/combo-entity';
 import { Product } from 'src/product/infrastructure/typeorm/product-entity';
+import { isUUID } from 'class-validator';
 
 @Injectable()
 export class ComboService {
@@ -47,16 +48,27 @@ export class ComboService {
     }));
   }
 
-  async findOne(id: number) {
-    const combo = await this.comboRepository.findOne({
-      where: { combo_id: id.toString() },
-      relations: ['products', 'products.images'],
-    });
-
-    if (!combo) {
-      throw new NotFoundException(`Combo with id ${id} not found`);
+  async findOne(term: string) {
+    let combo;
+  
+    if (isUUID(term)) {
+      combo = await this.comboRepository.findOne({
+        where: { combo_id: term },
+        relations: ['products', 'products.images'],
+      });
+    } else {
+      combo = await this.comboRepository
+        .createQueryBuilder('combo')
+        .leftJoinAndSelect('combo.products', 'product')
+        .leftJoinAndSelect('product.images', 'image')
+        .where('combo.combo_name = :combo_name', { combo_name: term })
+        .getOne();
     }
-
+  
+    if (!combo) {
+      throw new NotFoundException(`Combo with term ${term} not found`);
+    }
+  
     return {
       ...combo,
       products: combo.products.map(product => ({
@@ -64,7 +76,7 @@ export class ComboService {
         images: product.images.map(img => img.image_url),
       })),
     };
-  }
+  }  
 
   async update(id: number, updateComboDto: UpdateComboDto) {
     const { products, ...comboDetails } = updateComboDto;
