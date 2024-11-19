@@ -32,7 +32,7 @@ export class ProductService {
   
       const imageEntities = await Promise.all(
         images.map(async (imagePath) => {
-          const imageUrl = await this.cloudinaryService.uploadImage(imagePath);
+          const imageUrl = await this.cloudinaryService.uploadImage(imagePath,'products');
           const image = new Image();
           image.image_url = imageUrl;
           return image;
@@ -130,7 +130,7 @@ export class ProductService {
       // Subir las nuevas imágenes a Cloudinary y guardarlas en la base de datos
       productEntity.images = await Promise.all(
         images.map(async (imagePath) => {
-          const imageUrl = await this.cloudinaryService.uploadImage(imagePath);
+          const imageUrl = await this.cloudinaryService.uploadImage(imagePath,'products');
           const imageEntity = new Image();
           imageEntity.image_url = imageUrl;
           return imageEntity;
@@ -147,8 +147,6 @@ export class ProductService {
     // Eliminar las imágenes de Cloudinary antes de borrar los registros
     for (const image of product.images) {
       const publicId = image.split('/').slice(-2).join('/').split('.')[0];
-      console.log('Public ID:', publicId);
-
       if (publicId) {
         try {
           await this.cloudinaryService.deleteImage(publicId);

@@ -1,11 +1,12 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { CreateComboDto } from '../application/dto/create-combo.dto';
 import { UpdateComboDto } from '../application/dto/update-combo.dto';
+import { Repository } from 'typeorm';
 import { Combo } from './typeorm/combo-entity';
-import { Product } from 'src/product/infrastructure/typeorm/product-entity';
 import { isUUID } from 'class-validator';
+import { Product } from 'src/product/infrastructure/typeorm/product-entity';
+import { CloudinaryService } from 'src/product/infrastructure/cloudinary/cloudinary.service';
 
 @Injectable()
 export class ComboService {
@@ -14,10 +15,13 @@ export class ComboService {
     private readonly comboRepository: Repository<Combo>,
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async create(createComboDto: CreateComboDto) {
     const { products, ...comboDetails } = createComboDto;
+
+    const imageUrl = await this.cloudinaryService.uploadImage(comboDetails.combo_image,'combos');
 
     const productEntities = await this.productRepository.findByIds(products);
     if (productEntities.length !== products.length) {
@@ -26,6 +30,7 @@ export class ComboService {
 
     const combo = this.comboRepository.create({
       ...comboDetails,
+      combo_image: imageUrl
     });
 
     combo.products = productEntities;
@@ -79,7 +84,7 @@ export class ComboService {
   }  
 
   async update(id: number, updateComboDto: UpdateComboDto) {
-    const { products, ...comboDetails } = updateComboDto;
+    const { products, combo_image, ...comboDetails } = updateComboDto;
 
     const combo = await this.comboRepository.findOne({ where: { combo_id: id.toString() } });
     if (!combo) {
@@ -94,6 +99,17 @@ export class ComboService {
       combo.products = productEntities;
     }
 
+    if (combo_image && combo_image !== combo.combo_image) {
+      if (combo.combo_image) {
+        const publicId = combo.combo_image.split('/').slice(-2).join('/').split('.')[0];
+          if (publicId) {
+              await this.cloudinaryService.deleteImage(publicId);
+          }
+      }
+      const uploadedImageUrl = await this.cloudinaryService.uploadImage(combo_image, 'combos');
+      combo.combo_image = uploadedImageUrl;
+  }
+
     Object.assign(combo, comboDetails);
     await this.comboRepository.save(combo);
     return combo;
@@ -104,6 +120,9 @@ export class ComboService {
     if (!combo) {
       throw new NotFoundException(`Combo with id ${id} not found`);
     }
+    const publicId = combo.combo_image.split('/').slice(-2).join('/').split('.')[0];
+    await this.cloudinaryService.deleteImage(publicId);
+
     await this.comboRepository.remove(combo);
   }
 }

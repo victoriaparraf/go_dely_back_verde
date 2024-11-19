@@ -27,7 +27,7 @@ export class ProductController {
     // Cargar cada archivo en Cloudinary y guardar las URLs
     if (files && files.length) {
       for (const file of files) {
-        const imageUrl = await this.cloudinaryService.uploadImage(file.path);
+        const imageUrl = await this.cloudinaryService.uploadImage(file.path,'products');
         imageUrls.push(imageUrl);
       }
     }

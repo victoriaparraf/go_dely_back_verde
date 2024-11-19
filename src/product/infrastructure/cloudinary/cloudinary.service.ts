@@ -14,21 +14,18 @@ export class CloudinaryService {
         });
     }
 
-    async uploadImage(imagePath: string): Promise<string> {
+    async uploadImage(imagePath: string, folder: string): Promise<string> {
         try {
-            //Subir archivo a cloudinary en la carpeta products
             const result = await cloudinary.uploader.upload(imagePath, {
-                folder: 'products',
+                folder
             });
             return result.secure_url;
-
+    
         } catch (error) {
-
             throw new HttpException(`Failed to upload image: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
-
         }
-        
     }
+    
 
     async deleteImage(publicId: string): Promise<void> {
         try {
