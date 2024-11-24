@@ -8,6 +8,7 @@ export class Product {
     product_price: number;
     product_currency: string;
     product_weight: string;
+    product_measurement: string;
     product_stock: number;
     product_category: string;
     images: Image[];

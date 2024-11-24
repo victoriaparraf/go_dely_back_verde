@@ -6,6 +6,7 @@ import { UpdateComboDto } from '../application/dto/update-combo.dto';
 import { Combo } from './typeorm/combo-entity';
 import { Product } from 'src/product/infrastructure/typeorm/product-entity';
 import { isUUID } from 'class-validator';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
 
 @Injectable()
 export class ComboService {
@@ -34,8 +35,12 @@ export class ComboService {
   }
 
 
-  async findAll() {
+  async findAll(paginationDto: PaginationDto) {
+    const { page = 10, perpage = 0 } = paginationDto;
+    
     const combos = await this.comboRepository.find({
+      take: page,
+      skip: perpage,
       relations: ['products', 'products.images'],
     });
 

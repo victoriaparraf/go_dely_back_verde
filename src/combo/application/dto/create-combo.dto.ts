@@ -1,4 +1,4 @@
-import { IsString, IsArray, ArrayNotEmpty, MinLength, IsPositive, IsNumber } from 'class-validator';
+import { IsString, IsArray, ArrayNotEmpty, MinLength, IsPositive, IsNumber, IsInt, IsOptional } from 'class-validator';
 
 export class CreateComboDto {
 
@@ -18,6 +18,11 @@ export class CreateComboDto {
 
     @IsString()
     combo_category: string;
+
+    @IsInt()
+    @IsOptional()
+    @IsPositive()
+    combo_stock?: number;
 
     @IsString()
     combo_image: string;

@@ -19,11 +19,18 @@ export class Product {
     @Column('decimal', { default: 0.00 })
     product_price: number;
 
-    @Column()
+    @Column({
+        length: 3
+    })
     product_currency: string;
 
     @Column()
     product_weight: string;
+
+    @Column({
+        length: 2
+    })
+    product_measurement: string;
 
     @Column('int', { default: 0 })
     product_stock: number;

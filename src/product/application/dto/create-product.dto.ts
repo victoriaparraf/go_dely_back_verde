@@ -1,4 +1,4 @@
-import { IsArray, IsInt, IsNumber, IsOptional, IsPositive, IsString, MinLength } from "class-validator";
+import { IsArray, IsInt, IsNumber, IsOptional, IsPositive, IsString, Length, MinLength } from "class-validator";
 
 
 export class CreateProductDto {
@@ -15,10 +15,15 @@ export class CreateProductDto {
     product_price: number;
 
     @IsString()
+    @Length(3, 3)
     product_currency: string;
 
     @IsString()
     product_weight: string;
+
+    @IsString()
+    @Length(2, 2)
+    product_measurement: string;
 
     @IsInt()
     @IsOptional()

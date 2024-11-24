@@ -45,6 +45,7 @@ export class ProductService {
       product.product_price = productDetails.product_price;
       product.product_currency = productDetails.product_currency;
       product.product_weight = productDetails.product_weight;
+      product.product_measurement = productDetails.product_measurement;
       product.product_stock = productDetails.product_stock;
       product.product_category = productDetails.product_category;
       product.images = imageEntities;
@@ -58,6 +59,7 @@ export class ProductService {
         productName: createProductDto.product_name,
         productCategory: createProductDto.product_category,
         productWeight: createProductDto.product_weight,
+        productMeasurement: createProductDto.product_measurement,
         productDescription: createProductDto.product_description,
         message: 'Check out our new products and their offers!',
       }).toPromise();
@@ -74,11 +76,11 @@ export class ProductService {
   }
 
   async findAll(paginationDto: PaginationDto) {
-    const { limit = 10, offset = 0 } = paginationDto;
+    const { page = 10, perpage = 0 } = paginationDto;
 
     const productEntities = await this.productRepository.find({
-      take: limit,
-      skip: offset,
+      take: page,
+      skip: perpage,
       relations: ['images'],
     });
 

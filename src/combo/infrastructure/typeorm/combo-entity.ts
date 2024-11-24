@@ -1,5 +1,5 @@
 import { Product } from "src/product/infrastructure/typeorm/product-entity";
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from "typeorm";
 
 @Entity()
 export class Combo {
@@ -21,6 +21,9 @@ export class Combo {
 
     @Column('text')
     combo_category: string;
+
+    @Column('int', { default: 0 })
+    combo_stock: number;
 
     @Column()
     combo_image: string;

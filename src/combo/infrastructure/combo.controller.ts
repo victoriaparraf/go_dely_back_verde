@@ -1,22 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ComboService } from './combo.service';
 import { CreateComboDto } from '../application/dto/create-combo.dto';
 import { UpdateComboDto } from '../application/dto/update-combo.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
 
 @ApiTags('Combo')
 @Controller('combos')
 export class ComboController {
   constructor(private readonly comboService: ComboService) {}
 
-  @Post()
+  @Post('create')
   create(@Body() createComboDto: CreateComboDto) {
     return this.comboService.create(createComboDto);
   }
 
   @Get()
-  findAll() {
-    return this.comboService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.comboService.findAll(paginationDto);
   }
 
   @Get(':term')

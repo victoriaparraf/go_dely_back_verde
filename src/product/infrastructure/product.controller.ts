@@ -16,7 +16,7 @@ export class ProductController {
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
-  @Post()
+  @Post('create')
   @UseInterceptors(FilesInterceptor('files'))
   async create(
     @Body() createProductDto: CreateProductDto,
@@ -36,13 +36,10 @@ export class ProductController {
     return product;
   }
 
-
   @Get()
   findAll(@Query() paginationDto: PaginationDto) {
-    //console.log(paginationDto)
     return this.productService.findAll( paginationDto );
   }
-
 
   @Get(':term')
   findOne(@Param('term') term: string) {
