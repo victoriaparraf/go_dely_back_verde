@@ -1,6 +1,5 @@
 import { IsArray, IsInt, IsNumber, IsOptional, IsPositive, IsString, Length, MinLength } from "class-validator";
 
-
 export class CreateProductDto {
 
     @IsString()

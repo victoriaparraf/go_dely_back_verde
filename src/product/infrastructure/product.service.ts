@@ -9,6 +9,12 @@ import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { ClientProxy } from '@nestjs/microservices';
 import { Product } from './typeorm/product-entity'; 
 import { Image } from './typeorm/image-entity';
+import { ProductCurrency } from '../domain/value-objects/poduct-currency.vo';
+import { ProductDescription } from '../domain/value-objects/product-description.vo';
+import { ProductMeasurement } from '../domain/value-objects/product-measurement.vo';
+import { ProductName } from '../domain/value-objects/product-name.vo';
+import { ProductPrice } from '../domain/value-objects/product-price.vo';
+import { ProductWeight } from '../domain/value-objects/product-weight.vo';
 
 @Injectable()
 export class ProductService {
@@ -29,6 +35,13 @@ export class ProductService {
   async create(createProductDto: CreateProductDto, imageUrls: string[]) {
     try {
       const { images, ...productDetails } = createProductDto;
+
+      const productName = new ProductName(productDetails.product_name);
+      const productDescription = new ProductDescription(productDetails.product_description);
+      const productPrice = new ProductPrice(productDetails.product_price);
+      const productCurrency = new ProductCurrency(productDetails.product_currency);
+      const productWeight = new ProductWeight(productDetails.product_weight);
+      const productMeasurement = new ProductMeasurement(productDetails.product_measurement);
   
       const imageEntities = await Promise.all(
         images.map(async (imagePath) => {
@@ -40,12 +53,12 @@ export class ProductService {
       );
   
       const product = new Product();
-      product.product_name = productDetails.product_name;
-      product.product_description = productDetails.product_description;
-      product.product_price = productDetails.product_price;
-      product.product_currency = productDetails.product_currency;
-      product.product_weight = productDetails.product_weight;
-      product.product_measurement = productDetails.product_measurement;
+      product.product_name = productName;
+      product.product_description = productDescription;
+      product.product_price = productPrice;
+      product.product_currency = productCurrency;
+      product.product_weight = productWeight;
+      product.product_measurement = productMeasurement;
       product.product_stock = productDetails.product_stock;
       product.product_category = productDetails.product_category;
       product.images = imageEntities;
@@ -75,6 +88,20 @@ export class ProductService {
     }
   }
 
+  private mapProductToResponse(product: Product) {
+    return {
+      product_id: product.product_id,
+      product_name: product.product_name.getValue(),
+      product_description: product.product_description.getValue(),
+      product_price: product.product_price.getValue(),
+      product_currency: product.product_currency.getValue(),
+      product_weight: product.product_weight.getValue(),
+      product_measurement: product.product_measurement.getValue(),
+      product_category: product.product_category,
+      images: product.images.map(img => img.image_url),
+    };
+  }
+
   async findAll(paginationDto: PaginationDto) {
     const { page = 10, perpage = 0 } = paginationDto;
 
@@ -84,10 +111,8 @@ export class ProductService {
       relations: ['images'],
     });
 
-    return productEntities.map(product => ({
-      ...product, 
-      images: product.images.map(img => img.image_url),
-    }));
+    return productEntities.map(product => this.mapProductToResponse(product));
+
   }
 
   async findOne(term: string) {
@@ -110,10 +135,7 @@ export class ProductService {
       throw new NotFoundException(`Product with ${term} not found`);
     }
   
-    return {
-      ...product,
-      images: product.images.map(img => img.image_url),
-    };
+    return this.mapProductToResponse(product);
   }
 
   async update(product_id: string, updateProductDto: UpdateProductDto) {

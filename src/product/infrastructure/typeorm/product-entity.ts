@@ -1,55 +1,90 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable } from "typeorm";
 import { Image } from "./image-entity";
 import { Combo } from "src/combo/infrastructure/typeorm/combo-entity";
+import { ProductName } from "src/product/domain/value-objects/product-name.vo";
+import { ProductDescription } from "src/product/domain/value-objects/product-description.vo";
+import { ProductPrice } from "src/product/domain/value-objects/product-price.vo";
+import { ProductCurrency } from "src/product/domain/value-objects/poduct-currency.vo";
+import { ProductMeasurement } from "src/product/domain/value-objects/product-measurement.vo";
+import { ProductWeight } from "src/product/domain/value-objects/product-weight.vo";
 
 @Entity()
 export class Product {
-    @PrimaryGeneratedColumn('uuid')
-    product_id: string;
+  @PrimaryGeneratedColumn('uuid')
+  product_id: string;
 
-    @Column()
-    product_name: string;
+  @Column({
+    type: 'varchar',
+    transformer: {
+      to: (value: ProductName) => value.getValue(),
+      from: (value: string) => new ProductName(value),
+    },
+  })
+  product_name: ProductName;
 
-    @Column({
-        type: 'text',
-        nullable: true
-    })
-    product_description: string;
+  @Column({
+    type: 'varchar',
+    transformer: {
+      to: (value: ProductDescription) => value.getValue(),
+      from: (value: string) => new ProductDescription(value),
+    },
+  })
+  product_description: ProductDescription;
 
-    @Column('decimal', { default: 0.00 })
-    product_price: number;
+  @Column({
+    type: 'decimal',
+    transformer: {
+      to: (value: ProductPrice) => value.getValue(),
+      from: (value: number) => new ProductPrice(value),
+    },
+  })
+  product_price: ProductPrice;
 
-    @Column({
-        length: 3
-    })
-    product_currency: string;
+  @Column({
+    type: 'varchar',
+    transformer: {
+      to: (value: ProductCurrency) => value.getValue(),
+      from: (value: string) => new ProductCurrency(value),
+    },
+  })
+  product_currency: ProductCurrency;
 
-    @Column()
-    product_weight: string;
+  @Column({
+    type: 'decimal',
+    transformer: {
+      to: (value: ProductWeight) => value.getValue(),
+      from: (value: string) => new ProductWeight(value),
+    },
+  })
+  product_weight: ProductWeight;
 
-    @Column({
-        length: 2
-    })
-    product_measurement: string;
+  @Column({
+    type: 'varchar',
+    transformer: {
+      to: (value: ProductMeasurement) => value.getValue(),
+      from: (value: string) => new ProductMeasurement(value),
+    },
+  })
+  product_measurement: ProductMeasurement;
 
-    @Column('int', { default: 0 })
-    product_stock: number;
+  @Column('int', { default: 0 })
+  product_stock: number;
 
-    @OneToMany(() => Image, (image) => image.product, { cascade: true })
-    images: Image[];
+  @OneToMany(() => Image, (image) => image.product, { cascade: true })
+  images: Image[];
 
-    @Column('text')
-    product_category: string;
+  @Column('text')
+  product_category: string;
 
-    @ManyToMany(() => Combo, (combo) => combo.products)
-    @JoinTable({
-        name: 'product_combo',
-        joinColumn: {
-            name: 'product_id'
-        },
-        inverseJoinColumn: {
-            name: 'combo_id'
-        }
-    })
-    combos: Combo[];
+  @ManyToMany(() => Combo, (combo) => combo.products)
+  @JoinTable({
+    name: 'product_combo',
+    joinColumn: {
+      name: 'product_id'
+    },
+    inverseJoinColumn: {
+      name: 'combo_id'
+    }
+  })
+  combos: Combo[];
 }
