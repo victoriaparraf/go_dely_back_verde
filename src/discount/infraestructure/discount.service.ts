@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { CreateDiscountDto } from './dto/create-discount.dto';
-import { UpdateDiscountDto } from './dto/update-discount.dto';
+import { CreateDiscountDto } from '../application/dto/create-discount.dto';
+import { UpdateDiscountDto } from '../application/dto/update-discount.dto';
+
 
 @Injectable()
 export class DiscountService {
