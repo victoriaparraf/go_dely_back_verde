@@ -4,9 +4,9 @@ import { UpdateDiscountDto } from '../application/dto/update-discount.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Discount } from './typeorm/discount.entity';
-import { Product } from '../../product/domain/entities/product.entity';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { isUUID } from 'class-validator';
+import { Product } from 'src/product/infrastructure/typeorm/product-entity';
 
 
 
@@ -18,23 +18,29 @@ export class DiscountService {
   constructor(
 
     @InjectRepository(Discount)
-    private readonly discountRepository: Repository<Discount>
+    private readonly discountRepository: Repository<Discount>,
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>
 
   ){}
 
   async create(createDiscountDto: CreateDiscountDto) {
     try {
-      const { ...discountDetails } = createDiscountDto;
+      const { products, ...discountDetails } = createDiscountDto;
 
-      const discount = new Discount();
-      discount.discount_percentage = discountDetails.discount_percentage;
-      discount.discount_start_date = discountDetails.discount_start_date;
-      discount.discount_end_date = discountDetails.discount_end_date;
+      const discount = this.discountRepository.create({
+        discount_percentage: discountDetails.discount_percentage,
+        discount_start_date: discountDetails.discount_start_date,
+        discount_end_date: discountDetails.discount_end_date
+      });
 
-      const discountEntity = this.discountRepository.create(discount);
-      await this.discountRepository.save(discountEntity);
+      const productEntities = await this.productRepository.findByIds( products );
+      if (productEntities.length !== products.length) {
+        throw new NotFoundException('One or more products not found');
+      }
+      discount.products = productEntities;
 
-      return {...discount};
+      return await this.discountRepository.save( discount );
 
     } catch (error) {
       console.error('Error creating discount:', error);
@@ -49,7 +55,8 @@ export class DiscountService {
 
     const discountEntities = await this.discountRepository.find({
       take: limit,
-      skip: offset
+      skip: offset,
+      relations: ['products'],
     });
 
     return discountEntities.map(discount => ({
@@ -62,7 +69,8 @@ export class DiscountService {
 
     if (isUUID(term)) {
       discount = await this.discountRepository.findOne({
-        where: { discount_id: term }
+        where: { discount_id: term },
+        relations: ['products'],
       });
     }
 
@@ -70,27 +78,42 @@ export class DiscountService {
   }
 
   async update(discount_id: string, updateDiscountDto: UpdateDiscountDto) {
-    const { ...toUpdate } = updateDiscountDto;
+    const { products, ...toUpdate } = updateDiscountDto;
 
     const discountEntity = await this.discountRepository.findOne({
-      where: { discount_id }
+      where: { discount_id },
+      relations: ['products']
     });
+
     if ( !discountEntity ) throw new NotFoundException(`Product with id: ${discount_id} not found`);
 
     Object.assign(discountEntity, toUpdate);
 
-    return this.discountRepository.save( discountEntity );
+    if (products) {
+      const productEntities = await this.productRepository.findByIds(products);
+      if (productEntities.length !== products.length) {
+        throw new NotFoundException('One or more products not found');
+      }
+      discountEntity.products = productEntities;
+    }
+
+    await this.discountRepository.save(discountEntity);
+    return discountEntity;
   }
 
   async remove(discount_id: string) {
 
-    const discount = await this.findOne( discount_id );
+    const discount = await this.discountRepository.findOne({
+      where: { discount_id },
+      relations: ['products'],
+    });
 
-    const discountEntity = await this.discountRepository.findOne({ where: { discount_id: discount.discount_id } });
+    if (!discount) throw new NotFoundException(`Discount with id: ${discount_id} not found`);
 
-    if ( !discountEntity ) throw new NotFoundException(`Discount with id: ${discount.discount_id} not found`);
+    discount.products = [];
+    await this.discountRepository.save(discount);
 
-    await this.discountRepository.remove( discountEntity );
+    await this.discountRepository.remove(discount);
   }
 
   private handleDBExceptions (error: any) {

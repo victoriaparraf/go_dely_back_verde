@@ -1,4 +1,4 @@
-import { IsDate, IsNotEmpty, IsNumber, IsPositive, MinDate } from "class-validator";
+import { ArrayNotEmpty, IsArray, IsDateString, IsNotEmpty, IsNumber, IsPositive } from "class-validator";
 
 export class CreateDiscountDto {
 
@@ -6,12 +6,15 @@ export class CreateDiscountDto {
     @IsPositive()
     discount_percentage: number;
 
-    @IsDate()
+    @IsDateString()
     @IsNotEmpty()
-    @MinDate(new Date(), { message: 'La fecha de inicio debe ser igual o posterior a hoy' })
     discount_start_date: Date;
 
-    @IsDate()
+    @IsDateString()
     @IsNotEmpty()
     discount_end_date: Date;
+    
+    @IsArray()
+    @ArrayNotEmpty()
+    products: string[];
 }

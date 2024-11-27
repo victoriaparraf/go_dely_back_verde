@@ -79,12 +79,13 @@ export class ProductService {
     const productEntities = await this.productRepository.find({
       take: limit,
       skip: offset,
-      relations: ['images'],
+      relations: ['images', 'discount'],
     });
 
     return productEntities.map(product => ({
-      ...product, 
+      ...product,
       images: product.images.map(img => img.image_url),
+      discount: product.discount ? product.discount.discount_percentage: null,
     }));
   }
 
@@ -94,12 +95,13 @@ export class ProductService {
     if (isUUID(term)) {
       product = await this.productRepository.findOne({
         where: { product_id: term },
-        relations: ['images'],
+        relations: ['images', 'discount'],
       });
     } else {
       product = await this.productRepository
         .createQueryBuilder('product')
         .leftJoinAndSelect('product.images', 'image')
+        .leftJoinAndSelect('product.discount', 'discount')
         .where('product.product_name = :product_name', { product_name: term })
         .getOne();
     }
@@ -111,6 +113,7 @@ export class ProductService {
     return {
       ...product,
       images: product.images.map(img => img.image_url),
+      discount: product.discount ? product.discount.discount_percentage : null,
     };
   }
 

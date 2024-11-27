@@ -1,4 +1,5 @@
 import { Combo } from "src/combo/domain/entities/combo.entity";
+import { Discount } from "src/discount/infraestructure/typeorm/discount.entity";
 import { Image } from "./image.entity"; 
 
 export class Product {
@@ -11,5 +12,6 @@ export class Product {
     product_stock: number;
     product_category: string;
     images: Image[];
-    combos: Combo[]; 
+    combos: Combo[];
+    discount?: Discount;
 }

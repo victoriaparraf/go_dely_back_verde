@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Product } from "src/product/infrastructure/typeorm/product-entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Discount {
@@ -6,7 +7,7 @@ export class Discount {
     @PrimaryGeneratedColumn('uuid')
     discount_id: string;
 
-    @Column('int', { default: 0 })
+    @Column('decimal', { default: 0.00 })
     discount_percentage: number;
 
     @Column({ type: 'date' })  
@@ -14,5 +15,8 @@ export class Discount {
 
     @Column({ type: 'date' }) 
     discount_end_date: Date;
+
+    @OneToMany(() => Product, (product) => product.discount)
+    products: Product[];
 }
 
