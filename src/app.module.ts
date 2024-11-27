@@ -32,6 +32,8 @@ import { DiscountModule } from './discount/discount.module';
     CommonModule,
 
     ComboModule,
+
+    DiscountModule,
     
     ClientsModule.register([
       {
@@ -50,8 +52,6 @@ import { DiscountModule } from './discount/discount.module';
     RabbitmqModule,
 
     AuthModule,
-
-    DiscountModule,
   ],
 })
 export class AppModule {}

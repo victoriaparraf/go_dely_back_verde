@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable, ManyToOne } from "typeorm";
 import { Image } from "./image-entity";
 import { Combo } from "src/combo/infrastructure/typeorm/combo-entity";
+import { Discount } from "src/discount/infraestructure/typeorm/discount.entity";
 
 @Entity()
 export class Product {
@@ -52,4 +53,11 @@ export class Product {
         }
     })
     combos: Combo[];
+
+    @ManyToOne(
+        () => Discount, 
+        (discount) => discount.products, 
+        { nullable: true }
+    )
+    discount?: Discount;
 }
