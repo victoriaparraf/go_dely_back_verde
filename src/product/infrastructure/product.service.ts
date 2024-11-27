@@ -76,12 +76,15 @@ export class ProductService {
   }
 
   async findAll(paginationDto: PaginationDto) {
+
     const { page = 10, perpage = 0 } = paginationDto;
 
     const productEntities = await this.productRepository.find({
+
       take: page,
       skip: perpage,
       relations: ['images', 'discount'],
+      
     });
 
     return productEntities.map(product => ({
