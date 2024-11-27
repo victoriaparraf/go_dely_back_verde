@@ -51,11 +51,11 @@ export class DiscountService {
   }
 
   async findAll(paginationDto: PaginationDto) {
-    const { limit = 10, offset = 0 } = paginationDto;
+    const { page = 10, perpage = 0 } = paginationDto;
 
     const discountEntities = await this.discountRepository.find({
-      take: limit,
-      skip: offset,
+      take: page,
+      skip: perpage,
       relations: ['products'],
     });
 
