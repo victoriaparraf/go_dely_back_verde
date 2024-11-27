@@ -19,4 +19,3 @@ export class Discount {
     @OneToMany(() => Product, (product) => product.discount)
     products: Product[];
 }
-
