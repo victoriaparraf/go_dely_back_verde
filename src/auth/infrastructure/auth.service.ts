@@ -3,16 +3,21 @@ import { UpdateAuthDto } from './dto/update-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../domain/entities/user.entity';
+import { User } from './typeorm/user.entity';
 import * as bcrypt from 'bcrypt';
 import { LoginUserDto } from './dto/login-user.dto';
+import { IJwtPayload } from './jwt/interfaces/jwt-payload.interface.strategy';
+import { JwtService } from '@nestjs/jwt';
+
 
 @Injectable()
 export class AuthService {
+
   constructor(
-      @InjectRepository(User)
-      private readonly userRepository: Repository<User>
-  ){}
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
     
@@ -67,7 +72,18 @@ export class AuthService {
     if (!bcrypt.compareSync(user_password, user.user_password))
       throw new UnauthorizedException('Not valid password');
     
-    return user;
+    return {
+      ...user,
+      token: this.getJwtToken({ user_email: user_email })
+    };
+  }
+
+  private getJwtToken ( payload: IJwtPayload ){
+
+    const token = this.jwtService.sign( payload );
+
+    return token;
+
   }
 
   private handleDBErrors (error: any){
