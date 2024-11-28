@@ -8,6 +8,7 @@ import { ProductCurrency } from "src/product/domain/value-objects/poduct-currenc
 import { ProductMeasurement } from "src/product/domain/value-objects/product-measurement.vo";
 import { ProductWeight } from "src/product/domain/value-objects/product-weight.vo";
 import { ProductStock } from "src/product/domain/value-objects/product-stock.vo";
+import { Discount } from "src/discount/infraestructure/typeorm/discount.entity";
 
 @Entity()
 export class Product {
