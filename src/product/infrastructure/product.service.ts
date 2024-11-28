@@ -108,12 +108,12 @@ export class ProductService {
 
   async findAll(paginationDto: PaginationDto) {
 
-    const { page = 10, perpage = 0 } = paginationDto;
+    const { page = 1, perpage = 10 } = paginationDto;
 
     const productEntities = await this.productRepository.find({
 
-      take: page,
-      skip: perpage,
+      take: perpage,
+      skip: (page - 1) * perpage,
       relations: ['images', 'discount'],
       
     });
