@@ -102,16 +102,20 @@ export class ProductService {
       product_stock: product.product_stock.getValue(),
       product_category: product.product_category,
       images: product.images.map(img => img.image_url),
+      discount: product.discount ? product.discount.discount_percentage : null,
     };
   }
 
   async findAll(paginationDto: PaginationDto) {
+
     const { page = 10, perpage = 0 } = paginationDto;
 
     const productEntities = await this.productRepository.find({
+
       take: page,
       skip: perpage,
-      relations: ['images'],
+      relations: ['images', 'discount'],
+      
     });
 
     return productEntities.map(product => this.mapProductToResponse(product));
@@ -124,12 +128,13 @@ export class ProductService {
     if (isUUID(term)) {
       product = await this.productRepository.findOne({
         where: { product_id: term },
-        relations: ['images'],
+        relations: ['images', 'discount'],
       });
     } else {
       product = await this.productRepository
         .createQueryBuilder('product')
         .leftJoinAndSelect('product.images', 'image')
+        .leftJoinAndSelect('product.discount', 'discount')
         .where('product.product_name = :product_name', { product_name: term })
         .getOne();
     }
@@ -139,6 +144,7 @@ export class ProductService {
     }
   
     return this.mapProductToResponse(product);
+    
   }
 
   async update(product_id: string, updateProductDto: UpdateProductDto) {

@@ -1,4 +1,5 @@
 import { Combo } from "src/combo/domain/entities/combo.entity";
+import { Discount } from "src/discount/infraestructure/typeorm/discount.entity";
 import { Image } from "./image.entity"; 
 import { ProductCurrency } from "../value-objects/poduct-currency.vo";
 import { ProductMeasurement } from "../value-objects/product-measurement.vo";
@@ -8,6 +9,7 @@ import { ProductDescription } from "../value-objects/product-description.vo";
 import { ProductName } from "../value-objects/product-name.vo";
 
 export class Product {
+  
   product_id: string;
   product_name: ProductName;
   product_description: ProductDescription;
@@ -19,6 +21,7 @@ export class Product {
   images: Image[];
   product_category: string;
   combos: Combo[];
+  discount?: Discount;
 
   constructor(
     id: string,
@@ -31,7 +34,8 @@ export class Product {
     stock: number,
     category: string,
     images: Image[],
-    combos: Combo[] = []
+    combos: Combo[] = [],
+    discount?: Discount
   ) {
     this.product_id = id;
     this.product_name = new ProductName(name);
@@ -44,5 +48,6 @@ export class Product {
     this.product_category = category;
     this.images = images;
     this.combos = combos;
+    this.discount: Discount;
   }
 }
