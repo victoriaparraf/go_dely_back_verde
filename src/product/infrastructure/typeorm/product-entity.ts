@@ -53,7 +53,7 @@ export class Product {
   product_currency: ProductCurrency;
 
   @Column({
-    type: 'decimal',
+    type: 'varchar',
     transformer: {
       to: (value: ProductWeight) => value.getValue(),
       from: (value: string) => new ProductWeight(value),
@@ -86,16 +86,7 @@ export class Product {
   @Column('text')
   product_category: string;
 
-  @ManyToMany(() => Combo, (combo) => combo.products)
-  @JoinTable({
-    name: 'product_combo',
-    joinColumn: {
-      name: 'product_id'
-    },
-    inverseJoinColumn: {
-      name: 'combo_id'
-    }
-  })
+  @ManyToMany(() => Combo, combo => combo.products)
   combos: Combo[];
 
     @ManyToOne(

@@ -11,5 +11,5 @@ export class ProductWeight {
     getValue(): string {
       return this.value;
     }
-  }
+}
   

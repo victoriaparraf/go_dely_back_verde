@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, BadRequestException, Logger, InternalSer
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateComboDto } from '../application/dto/create-combo.dto';
 import { UpdateComboDto } from '../application/dto/update-combo.dto';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Combo } from './typeorm/combo-entity';
 import { Product } from 'src/product/infrastructure/typeorm/product-entity';
 import { CloudinaryService } from 'src/product/infrastructure/cloudinary/cloudinary.service';
@@ -38,11 +38,11 @@ export class ComboService {
       product_measurement: product.product_measurement.getValue(),
       product_stock: product.product_stock.getValue(),
       product_category: product.product_category,
-      images: product.images.map(img => img.image_url),
+      images: Array.isArray(product.images) ? product.images.map(img => img.image_url) : [product.images],
     };
   }
   
-  private mapComboToResponse(combo: Combo) {
+  private mapComboToResponse(combo: Combo): any {
     return {
       combo_id: combo.combo_id,
       combo_name: combo.combo_name.getValue(),
@@ -52,41 +52,37 @@ export class ComboService {
       combo_stock: combo.combo_stock.getValue(),
       combo_category: combo.combo_category,
       combo_image: combo.combo_image,
-      products: combo.products ? combo.products.map(product => this.mapProductToResponse(product)) : [],
+      products: Array.isArray(combo.products) ? combo.products.map(product => this.mapProductToResponse(product)) : [],
     };
   }
 
-  async create(createComboDto: CreateComboDto) {
+  async create(createComboDto: CreateComboDto): Promise<any> {
     try {
       const { products, combo_image, ...comboDetails } = createComboDto;
   
-      const comboName = new ComboName(comboDetails.combo_name);
-      const comboDescription = new ComboDescription(comboDetails.combo_description);
-      const comboPrice = new ComboPrice(comboDetails.combo_price);
-      const comboCurrency = new ComboCurrency(comboDetails.combo_currency);
-      const comboStock = new ComboStock(comboDetails.combo_stock);
-  
-      const imageUrl = await this.cloudinaryService.uploadImage(combo_image, 'combos');
-  
-      const productEntities = await this.productRepository.findByIds(products);
+
+      const productEntities = await this.productRepository.find({
+        where: { product_id: In(products) },
+        relations: ['images'],
+      });
+
       if (productEntities.length !== products.length) {
         throw new BadRequestException('Some products not found');
       }
-
+  
       const combo = this.comboRepository.create({
-        combo_name: comboName,
-        combo_description: comboDescription,
-        combo_price: comboPrice,
-        combo_currency: comboCurrency,
+        combo_name: new ComboName(comboDetails.combo_name),
+        combo_description: new ComboDescription(comboDetails.combo_description),
+        combo_price: new ComboPrice(comboDetails.combo_price),
+        combo_currency: new ComboCurrency(comboDetails.combo_currency),
         combo_category: comboDetails.combo_category,
-        combo_stock: comboStock,
-        combo_image: imageUrl,
+        combo_stock: new ComboStock(comboDetails.combo_stock),
+        combo_image: await this.cloudinaryService.uploadImage(combo_image, 'combos'),
+        products: productEntities,
       });
-
-      combo.products = productEntities;
-
+  
       await this.comboRepository.save(combo);
-
+  
       return this.mapComboToResponse(combo);
 
     } catch (error) {
@@ -108,7 +104,7 @@ export class ComboService {
 
   async findOne(term: string) {
     let combo: Combo;
-
+  
     if (isUUID(term)) {
       combo = await this.comboRepository.findOne({
         where: { combo_id: term },
@@ -122,11 +118,11 @@ export class ComboService {
         .where('combo.combo_name = :combo_name', { combo_name: term })
         .getOne();
     }
-
+  
     if (!combo) {
       throw new NotFoundException(`Combo with term ${term} not found`);
     }
-
+  
     return this.mapComboToResponse(combo);
   }  
 

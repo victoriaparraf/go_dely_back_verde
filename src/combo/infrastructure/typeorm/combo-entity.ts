@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from "typeorm";
 import { Product } from "src/product/infrastructure/typeorm/product-entity";
 import { ComboName } from "src/combo/domain/value-objects/combo-name.vo";
 import { ComboDescription } from "src/combo/domain/value-objects/combo-description.vo";
@@ -64,6 +64,11 @@ export class Combo {
     @Column()
     combo_image: string;
 
-    @ManyToMany(() => Product, (product) => product.combos)
+    @ManyToMany(() => Product, product => product.combos)
+    @JoinTable({
+        name: 'combo_products',
+        joinColumn: { name: 'combo_id', referencedColumnName: 'combo_id' },
+        inverseJoinColumn: { name: 'product_id', referencedColumnName: 'product_id' },
+    })
     products: Product[];
 }
