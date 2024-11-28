@@ -7,9 +7,11 @@ import { ProductPrice } from "src/product/domain/value-objects/product-price.vo"
 import { ProductCurrency } from "src/product/domain/value-objects/poduct-currency.vo";
 import { ProductMeasurement } from "src/product/domain/value-objects/product-measurement.vo";
 import { ProductWeight } from "src/product/domain/value-objects/product-weight.vo";
+import { ProductStock } from "src/product/domain/value-objects/product-stock.vo";
 
 @Entity()
 export class Product {
+  
   @PrimaryGeneratedColumn('uuid')
   product_id: string;
 
@@ -67,8 +69,15 @@ export class Product {
   })
   product_measurement: ProductMeasurement;
 
-  @Column('int', { default: 0 })
-  product_stock: number;
+  @Column({
+    type: 'int',
+    default: 0,
+    transformer: {
+      to: (value: ProductStock) => value.getValue(),
+      from: (value: number) => new ProductStock(value),
+    },
+  })
+  product_stock: ProductStock;
 
   @OneToMany(() => Image, (image) => image.product, { cascade: true })
   images: Image[];

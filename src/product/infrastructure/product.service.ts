@@ -15,6 +15,7 @@ import { ProductMeasurement } from '../domain/value-objects/product-measurement.
 import { ProductName } from '../domain/value-objects/product-name.vo';
 import { ProductPrice } from '../domain/value-objects/product-price.vo';
 import { ProductWeight } from '../domain/value-objects/product-weight.vo';
+import { ProductStock } from '../domain/value-objects/product-stock.vo';
 
 @Injectable()
 export class ProductService {
@@ -42,6 +43,7 @@ export class ProductService {
       const productCurrency = new ProductCurrency(productDetails.product_currency);
       const productWeight = new ProductWeight(productDetails.product_weight);
       const productMeasurement = new ProductMeasurement(productDetails.product_measurement);
+      const productStock = new ProductStock(productDetails.product_stock);
   
       const imageEntities = await Promise.all(
         images.map(async (imagePath) => {
@@ -59,7 +61,7 @@ export class ProductService {
       product.product_currency = productCurrency;
       product.product_weight = productWeight;
       product.product_measurement = productMeasurement;
-      product.product_stock = productDetails.product_stock;
+      product.product_stock = productStock;
       product.product_category = productDetails.product_category;
       product.images = imageEntities;
 
@@ -97,6 +99,7 @@ export class ProductService {
       product_currency: product.product_currency.getValue(),
       product_weight: product.product_weight.getValue(),
       product_measurement: product.product_measurement.getValue(),
+      product_stock: product.product_stock.getValue(),
       product_category: product.product_category,
       images: product.images.map(img => img.image_url),
     };

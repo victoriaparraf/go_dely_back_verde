@@ -1,4 +1,5 @@
-export class ProductCurrency {
+export class ComboCurrency {
+
     protected readonly value: string;
   
     constructor(value: string) {
@@ -15,5 +16,4 @@ export class ProductCurrency {
     public getValue(): string {
       return this.value;
     }
-  }
-  
+}

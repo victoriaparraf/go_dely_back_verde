@@ -1,5 +1,5 @@
 export class ProductMeasurement {
-    private readonly value: string;
+    protected readonly value: string;
   
     constructor(value: string) {
       if (!this.isValidMeasurement(value)) {

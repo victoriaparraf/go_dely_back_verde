@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, Logger, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateComboDto } from '../application/dto/create-combo.dto';
 import { UpdateComboDto } from '../application/dto/update-combo.dto';
@@ -8,59 +8,107 @@ import { Product } from 'src/product/infrastructure/typeorm/product-entity';
 import { CloudinaryService } from 'src/product/infrastructure/cloudinary/cloudinary.service';
 import { isUUID } from 'class-validator';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
+import { ComboDescription } from '../domain/value-objects/combo-description.vo';
+import { ComboName } from '../domain/value-objects/combo-name.vo';
+import { ComboPrice } from '../domain/value-objects/combo-price.vo';
+import { ComboCurrency } from '../domain/value-objects/combo-currency.vo';
+import { ComboStock } from '../domain/value-objects/combo-stock.vo';
 
 @Injectable()
 export class ComboService {
+
+  private readonly logger = new Logger('ComboService');
+
   constructor(
     @InjectRepository(Combo)
     private readonly comboRepository: Repository<Combo>,
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
-    private readonly cloudinaryService: CloudinaryService,
+    private readonly cloudinaryService: CloudinaryService
   ) {}
 
-  async create(createComboDto: CreateComboDto) {
-    const { products, ...comboDetails } = createComboDto;
-
-    const imageUrl = await this.cloudinaryService.uploadImage(comboDetails.combo_image,'combos');
-
-    const productEntities = await this.productRepository.findByIds(products);
-    if (productEntities.length !== products.length) {
-      throw new BadRequestException('Some products not found');
-    }
-
-    const combo = this.comboRepository.create({
-      ...comboDetails,
-      combo_image: imageUrl
-    });
-
-    combo.products = productEntities;
-
-    return await this.comboRepository.save(combo);
+  private mapProductToResponse(product: Product) {
+    return {
+      product_id: product.product_id,
+      product_name: product.product_name.getValue(),
+      product_description: product.product_description.getValue(),
+      product_price: product.product_price.getValue(),
+      product_currency: product.product_currency.getValue(),
+      product_weight: product.product_weight.getValue(),
+      product_measurement: product.product_measurement.getValue(),
+      product_stock: product.product_stock.getValue(),
+      product_category: product.product_category,
+      images: product.images.map(img => img.image_url),
+    };
+  }
+  
+  private mapComboToResponse(combo: Combo) {
+    return {
+      combo_id: combo.combo_id,
+      combo_name: combo.combo_name.getValue(),
+      combo_description: combo.combo_description.getValue(),
+      combo_price: combo.combo_price.getValue(),
+      combo_currency: combo.combo_currency.getValue(),
+      combo_stock: combo.combo_stock.getValue(),
+      combo_category: combo.combo_category,
+      combo_image: combo.combo_image,
+      products: combo.products ? combo.products.map(product => this.mapProductToResponse(product)) : [],
+    };
   }
 
+  async create(createComboDto: CreateComboDto) {
+    try {
+      const { products, combo_image, ...comboDetails } = createComboDto;
+  
+      const comboName = new ComboName(comboDetails.combo_name);
+      const comboDescription = new ComboDescription(comboDetails.combo_description);
+      const comboPrice = new ComboPrice(comboDetails.combo_price);
+      const comboCurrency = new ComboCurrency(comboDetails.combo_currency);
+      const comboStock = new ComboStock(comboDetails.combo_stock);
+  
+      const imageUrl = await this.cloudinaryService.uploadImage(combo_image, 'combos');
+  
+      const productEntities = await this.productRepository.findByIds(products);
+      if (productEntities.length !== products.length) {
+        throw new BadRequestException('Some products not found');
+      }
+
+      const combo = this.comboRepository.create({
+        combo_name: comboName,
+        combo_description: comboDescription,
+        combo_price: comboPrice,
+        combo_currency: comboCurrency,
+        combo_category: comboDetails.combo_category,
+        combo_stock: comboStock,
+        combo_image: imageUrl,
+      });
+
+      combo.products = productEntities;
+
+      await this.comboRepository.save(combo);
+
+      return this.mapComboToResponse(combo);
+
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
+  }
 
   async findAll(paginationDto: PaginationDto) {
     const { page = 10, perpage = 0 } = paginationDto;
-    
+
     const combos = await this.comboRepository.find({
       take: page,
       skip: perpage,
       relations: ['products', 'products.images'],
     });
 
-    return combos.map(combo => ({
-      ...combo,
-      products: combo.products.map(product => ({
-        ...product,
-        images: product.images.map(img => img.image_url),
-      })),
-    }));
+    return combos.map(combo => this.mapComboToResponse(combo));
   }
 
   async findOne(term: string) {
-    let combo;
-  
+    let combo: Combo;
+
     if (isUUID(term)) {
       combo = await this.comboRepository.findOne({
         where: { combo_id: term },
@@ -74,18 +122,12 @@ export class ComboService {
         .where('combo.combo_name = :combo_name', { combo_name: term })
         .getOne();
     }
-  
+
     if (!combo) {
       throw new NotFoundException(`Combo with term ${term} not found`);
     }
-  
-    return {
-      ...combo,
-      products: combo.products.map(product => ({
-        ...product,
-        images: product.images.map(img => img.image_url),
-      })),
-    };
+
+    return this.mapComboToResponse(combo);
   }  
 
   async update(id: number, updateComboDto: UpdateComboDto) {
@@ -130,4 +172,14 @@ export class ComboService {
 
     await this.comboRepository.remove(combo);
   }
+
+  private handleDBExceptions(error: any) {
+    if (error.code === '23505') {
+      throw new BadRequestException(error.detail);
+    }
+
+    this.logger.error(error);
+    throw new InternalServerErrorException('Unexpected error, check server logs');
+  }
+  
 }

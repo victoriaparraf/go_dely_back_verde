@@ -1,9 +1,10 @@
-export class ProductName {
+export class ComboName {
+
     protected readonly value: string;
 
     constructor(value: string) {
         if (!value || value.trim().length === 0) {
-            throw new Error('Name cannot be empty');
+            throw new Error('Combo name cannot be empty');
         }
         this.value = value.trim();
     }
@@ -11,4 +12,5 @@ export class ProductName {
     public getValue(): string {
         return this.value;
     }
+    
 }

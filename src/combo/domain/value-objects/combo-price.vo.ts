@@ -1,4 +1,5 @@
-export class ProductPrice {
+export class ComboPrice {
+  
     protected readonly value: number;
   
     constructor(value: number) {
@@ -12,4 +13,3 @@ export class ProductPrice {
       return this.value;
     }
   }
-  
