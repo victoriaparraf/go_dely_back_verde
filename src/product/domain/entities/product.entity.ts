@@ -48,6 +48,6 @@ export class Product {
     this.product_category = category;
     this.images = images;
     this.combos = combos;
-    this.discount: Discount;
+    this.discount = discount;
   }
 }
