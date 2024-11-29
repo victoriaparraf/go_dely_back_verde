@@ -24,7 +24,7 @@ export class Discount {
     @Column({
         type: 'date',
         transformer: {
-            to: (value: DiscountStartDate) => value.getValue(),
+            to: (value: DiscountStartDate) => value instanceof DiscountStartDate ? value.getValue() : value,
             from: (value: Date) => new DiscountStartDate(value),
         },
     })
@@ -33,7 +33,7 @@ export class Discount {
     @Column({
         type: 'date',
         transformer: {
-            to: (value: DiscountEndDate) => value.getValue(),
+            to: (value: DiscountEndDate) => value instanceof DiscountEndDate ? value.getValue() : value,
             from: (value: Date) => new DiscountEndDate(value),
         },
     })

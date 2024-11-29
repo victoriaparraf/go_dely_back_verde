@@ -19,4 +19,11 @@ export class DiscountEndDate {
     public getValue(): Date {
         return this.value;
     }
+
+    public static from(value: any): DiscountEndDate {
+        if (!value) {
+            return null;
+        }
+        return new DiscountEndDate(value);
+    }
 }
