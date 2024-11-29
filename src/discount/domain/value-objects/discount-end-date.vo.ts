@@ -1,11 +1,15 @@
 export class DiscountEndDate {
     protected readonly value: Date;
 
-    constructor(value: Date) {
-        if (!this.isValidDate(value)) {
-            throw new Error('Invalid discount end date.');
+    constructor(value: Date | string) {
+        if(value){
+            const dateValue = typeof value === 'string' ? new Date(value) : value;
+            if (!this.isValidDate(dateValue)) {
+                throw new Error('Invalid discount end date.');
+            }
+            this.value = dateValue;
         }
-        this.value = value;
+        return null;
     }
 
     private isValidDate(value: Date): boolean {

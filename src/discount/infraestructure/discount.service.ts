@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, InternalServerErrorException, Logger, 
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDiscountDto } from '../application/dto/create-discount.dto';
 import { UpdateDiscountDto } from '../application/dto/update-discount.dto';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Discount } from './typeorm/discount.entity';
 import { Product } from 'src/product/infrastructure/typeorm/product-entity';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
@@ -34,17 +34,18 @@ export class DiscountService {
       product_measurement: product.product_measurement.getValue(),
       product_stock: product.product_stock.getValue(),
       product_category: product.product_category,
-      images: product.images.map(img => img.image_url),
+      images: product.images ? product.images.map(img => img.image_url) : [],
     };
   }
+  
 
   private mapDiscountToResponse(discount: Discount) {
     return {
       discount_id: discount.discount_id,
       discount_percentage: discount.discount_percentage,
-      discount_start_date: discount.discount_start_date,
-      discount_end_date: discount.discount_end_date,
-      products: discount.products ? discount.products.map(product => this.mapProductToResponse( product )) : [],
+      discount_start_date: discount.discount_start_date.getValue(),
+      discount_end_date: discount.discount_end_date.getValue(),
+      products: discount.products ? discount.products.map(product => this.mapProductToResponse(product)) : [],
     };
   }
 
@@ -52,10 +53,13 @@ export class DiscountService {
     try {
       const { products, ...discountDetails } = createDiscountDto;
 
-      const discountPercetage = new DiscountPercentage(discountDetails.discount_percentage);
-      const discountStartDate = new DiscountStartDate(discountDetails.discount_start_date);
-      const discountEndtDate = new DiscountEndDate(discountDetails.discount_end_date);
+      if (!products || !Array.isArray(products)) {
+        throw new BadRequestException('Products must be an array of product IDs');
+      }
 
+      const discountPercentage = new DiscountPercentage(discountDetails.discount_percentage);
+      const discountStartDate = new DiscountStartDate(discountDetails.discount_start_date);
+      const discountEndDate = new DiscountEndDate(discountDetails.discount_end_date);
 
       const productEntities = await this.productRepository.findByIds(products);
       if (productEntities.length !== products.length) {
@@ -63,15 +67,15 @@ export class DiscountService {
       }
 
       const discount = this.discountRepository.create({
-        discount_percentage: discountPercetage,
+        discount_percentage: discountPercentage,
         discount_start_date: discountStartDate,
-        discount_end_date: discountEndtDate
+        discount_end_date: discountEndDate,
       });
 
       discount.products = productEntities;
 
-      await this.discountRepository.save( discount );
-      return this.mapDiscountToResponse( discount );
+      await this.discountRepository.save(discount);
+      return this.mapDiscountToResponse(discount);
 
     } catch (error) {
       this.handleDBExceptions(error);
@@ -79,12 +83,13 @@ export class DiscountService {
   }
 
   async findAll(paginationDto: PaginationDto) {
-    const { page = 10, perpage = 0 } = paginationDto;
+
+    const { page = 1, perpage = 10 } = paginationDto;
 
     const discounts = await this.discountRepository.find({
-      take: page,
-      skip: perpage,
-      relations: ['products'],
+      take: perpage,
+      skip: (page - 1) * perpage,
+      relations: ['products', 'products.images'],
     });
 
     return discounts.map(discount => this.mapDiscountToResponse(discount));
@@ -114,7 +119,7 @@ export class DiscountService {
 
     const discount = await this.discountRepository.findOne({
       where: { discount_id },
-      relations: ['products'],
+      relations: ['products', 'products.images'],
     });
 
     if (!discount) throw new NotFoundException(`Discount with id ${discount_id} not found`);
@@ -122,7 +127,11 @@ export class DiscountService {
     Object.assign(discount, toUpdate);
 
     if (products) {
-      const productEntities = await this.productRepository.findByIds(products);
+      const productEntities = await this.productRepository.find({
+        where: { product_id: In(products) },
+        relations: ['images'],
+      });
+      
       if (productEntities.length !== products.length) {
         throw new BadRequestException('Some products not found');
       }
@@ -137,6 +146,13 @@ export class DiscountService {
     const discount = await this.discountRepository.findOne({ where: { discount_id } });
 
     if (!discount) throw new NotFoundException(`Discount with id ${discount_id} not found`);
+
+    if (discount.products) {
+      discount.products.forEach(product => {
+        product.discount = null;
+      });
+      await this.productRepository.save(discount.products);
+    }
 
     await this.discountRepository.remove(discount);
   }
