@@ -17,7 +17,12 @@ export class User {
     user_password: string;
 
     @Column('text', {
-        default: 'user'
+        default: 'client'
     })
     user_type: string;
+
+    @Column('text', {
+        default: 'active'
+    })
+    user_status: string;
 }
