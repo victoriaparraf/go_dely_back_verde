@@ -1,4 +1,6 @@
 import { IsArray, IsInt, IsNumber, IsOptional, IsPositive, IsString, Length, MinLength } from "class-validator";
+import { Discount } from "src/discount/infraestructure/typeorm/discount.entity";
+import { ManyToOne } from "typeorm";
 
 export class CreateProductDto {
 

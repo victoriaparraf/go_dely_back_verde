@@ -8,11 +8,11 @@ export class CreateDiscountDto {
 
     @IsDateString()
     @IsNotEmpty()
-    discount_start_date: Date;
+    discount_start_date: string;
 
     @IsDateString()
     @IsNotEmpty()
-    discount_end_date: Date;
+    discount_end_date: string;
     
     @IsArray()
     @ArrayNotEmpty()

@@ -92,7 +92,7 @@ export class Product {
     @ManyToOne(
         () => Discount, 
         (discount) => discount.products, 
-        { nullable: true }
+        { nullable: true, onDelete: 'SET NULL'}
     )
     discount?: Discount;
   
