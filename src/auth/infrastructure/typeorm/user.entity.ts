@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('user')
 export class User {
@@ -25,4 +25,9 @@ export class User {
         default: 'active'
     })
     user_status: string;
+
+    @BeforeInsert()
+    checkEmaill() {
+        this.user_email = this.user_email.toLowerCase().trim();
+    }
 }

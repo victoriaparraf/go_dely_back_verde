@@ -1,6 +1,6 @@
 import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
-import { User } from "src/auth/domain/entities/user.entity";
+import { User } from "src/auth/infrastructure/typeorm/user.entity";
 import { IJwtPayload } from "../interfaces/jwt-payload.interface.strategy";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -28,14 +28,14 @@ export class JwtStrategy extends PassportStrategy( Strategy ){
 
     async validate( payload: IJwtPayload ): Promise<User>{
 
-        const { user_email } = payload;
+        const { user_id } = payload;
 
-        const user = await this.userRepository.findOneBy( { user_email } )
+        const user = await this.userRepository.findOneBy( { user_id } )
 
         if ( !user )
             throw new UnauthorizedException('Token not valid')
 
-        if ( !(user.user_status = 'active') )
+        if ( !(user.user_status === 'active') )
             throw new UnauthorizedException('Inactive user, talk to an admin')
 
         return user;
