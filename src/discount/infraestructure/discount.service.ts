@@ -10,6 +10,7 @@ import { isUUID } from 'class-validator';
 import { DiscountPercentage } from '../domain/value-objects/discount-percentage.vo';
 import { DiscountStartDate } from '../domain/value-objects/discount-start-date.vo';
 import { DiscountEndDate } from '../domain/value-objects/discount-end-date.vo';
+import { Combo } from 'src/combo/infrastructure/typeorm/combo-entity';
 
 
 @Injectable()
@@ -21,9 +22,25 @@ export class DiscountService {
     private readonly discountRepository: Repository<Discount>,
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    @InjectRepository(Combo)
+    private readonly comboRepository: Repository<Combo>,
   ) {}
 
-  private mapProductToResponse(product: Product) {
+
+  private mapComboToResponse(combo: Combo): any {
+    return {
+      combo_id: combo.combo_id,
+      combo_name: combo.combo_name.getValue(),
+      combo_description: combo.combo_description.getValue(),
+      combo_price: combo.combo_price.getValue(),
+      combo_currency: combo.combo_currency.getValue(),
+      combo_stock: combo.combo_stock.getValue(),
+      combo_category: combo.combo_category,
+      combo_image: combo.combo_image,
+    };
+  }
+
+  private mapProductToResponse(product: Product): any {
     return {
       product_id: product.product_id,
       product_name: product.product_name.getValue(),
@@ -40,32 +57,26 @@ export class DiscountService {
   
 
   private mapDiscountToResponse(discount: Discount) {
-    console.log('Mapping Discount to Response:', discount);
     return {
         discount_id: discount.discount_id,
         discount_percentage: discount.discount_percentage.getValue(),
-        discount_start_date: discount.discount_start_date.getValue().toISOString().split('T')[0], // Solo la fecha sin la hora
-        discount_end_date: discount.discount_end_date.getValue().toISOString().split('T')[0], // Solo la fecha sin la hora
+        discount_start_date: discount.discount_start_date.getValue().toISOString().split('T')[0], 
+        discount_end_date: discount.discount_end_date.getValue().toISOString().split('T')[0],
         products: discount.products ? discount.products.map(product => this.mapProductToResponse(product)) : [],
+        combos: discount.combos ? discount.combos.map(combo => this.mapComboToResponse(combo)) : [],
     };
   }
 
   async create(createDiscountDto: CreateDiscountDto) {
     try {
-      const { products, ...discountDetails } = createDiscountDto;
+      const { products, combos, ...discountDetails } = createDiscountDto;
 
-      if (!products || !Array.isArray(products)) {
-        throw new BadRequestException('Products must be an array of product IDs');
-      }
+      const startDate = new Date(`${discountDetails.discount_start_date}T00:00:00`);
+      const endDate = new Date(`${discountDetails.discount_end_date}T23:59:59`);  
 
       const discountPercentage = new DiscountPercentage(discountDetails.discount_percentage);
-      const discountStartDate = new DiscountStartDate(discountDetails.discount_start_date);
-      const discountEndDate = new DiscountEndDate(discountDetails.discount_end_date);
-
-      const productEntities = await this.productRepository.findByIds(products);
-      if (productEntities.length !== products.length) {
-        throw new BadRequestException('Some products not found');
-      }
+      const discountStartDate = new DiscountStartDate(startDate);
+      const discountEndDate = new DiscountEndDate(endDate);
 
       const discount = this.discountRepository.create({
         discount_percentage: discountPercentage,
@@ -73,7 +84,21 @@ export class DiscountService {
         discount_end_date: discountEndDate,
       });
 
+    if (products && Array.isArray(products) && products.length > 0) {
+      const productEntities = await this.productRepository.findByIds(products);
+      if (productEntities.length !== products.length) {
+        throw new BadRequestException('Some products not found');
+      }
       discount.products = productEntities;
+    }
+
+    if (combos && Array.isArray(combos) && combos.length > 0) {
+      const comboEntities = await this.comboRepository.findByIds(combos);
+      if (comboEntities.length !== combos.length) {
+        throw new BadRequestException('Some combos not found');
+      }
+      discount.combos = comboEntities;
+    }
 
       await this.discountRepository.save(discount);
       return this.mapDiscountToResponse(discount);
@@ -84,15 +109,14 @@ export class DiscountService {
   }
 
   async findAll(paginationDto: PaginationDto) {
-
     const { page = 1, perpage = 10 } = paginationDto;
 
     const discounts = await this.discountRepository.find({
       take: perpage,
       skip: (page - 1) * perpage,
-      relations: ['products', 'products.images'],
+      relations: ['products', 'products.images', 'combos'],
     });
-
+    console.log(discounts);
     return discounts.map(discount => this.mapDiscountToResponse(discount));
   }
 
@@ -102,7 +126,7 @@ export class DiscountService {
     if (isUUID(term)) {
       discount = await this.discountRepository.findOne({
         where: { discount_id: term },
-        relations: ['products'],
+        relations: ['products','combos'],
       });
     } else {
       throw new NotFoundException(`Invalid discount identifier: ${term}`);
@@ -117,48 +141,54 @@ export class DiscountService {
 
   async update(discount_id: string, updateDiscountDto: UpdateDiscountDto) {
     try {
-        const discount = await this.discountRepository.findOne({
-            where: { discount_id },
-            relations: ['products', 'products.images'],
-        });
+      const { products, combos, discount_percentage, discount_start_date, discount_end_date} = updateDiscountDto;
 
-        if (!discount) {
-            throw new NotFoundException(`Discount with id ${discount_id} not found`);
-        }
+      const discount = await this.discountRepository.findOne({
+          where: { discount_id },
+          relations: ['products', 'combos', 'products.images'],
+      });
 
-        console.log('Original Discount:', discount);
+      if (!discount) throw new NotFoundException(`Discount with id ${discount_id} not found`);
 
-        if (updateDiscountDto.discount_percentage) {
-          discount.discount_percentage = new DiscountPercentage(updateDiscountDto.discount_percentage);
-        }
+      if (discount_percentage !== undefined) {
+          discount.discount_percentage = new DiscountPercentage(discount_percentage);
+      }
 
-        if (updateDiscountDto.discount_start_date) {
-            discount.discount_start_date = new DiscountStartDate(updateDiscountDto.discount_start_date);
-        }
+      if (discount_start_date !== undefined) {
+          const startDate = new Date(`${discount_start_date}T00:00:00`);
+          discount.discount_start_date = new DiscountStartDate(startDate);
+      }
 
-        if (updateDiscountDto.discount_end_date) {
-            discount.discount_end_date = new DiscountEndDate(updateDiscountDto.discount_end_date);
-        }
-        console.log('Updated Discount:', discount);
-        if (updateDiscountDto.products) {
-            const productEntities = await this.productRepository.findByIds(updateDiscountDto.products);
-            if (productEntities.length !== updateDiscountDto.products.length) {
-                throw new BadRequestException('Some products not found');
-            }
-            discount.products = productEntities;
-        }
+      if (discount_end_date !== undefined) {
+          const endDate = new Date(`${discount_end_date}T23:59:59`);
+          discount.discount_end_date = new DiscountEndDate(endDate);
+      }
 
-        await this.discountRepository.save(discount);
+      Object.assign(discount, discount_percentage, discount_start_date, discount_end_date);
 
-        const response = this.mapDiscountToResponse(discount);
-        console.log('Response:', response);
+      if (products) {
+          const productEntities = await this.productRepository.findByIds(products);
+          if (productEntities.length !== products.length) {
+              throw new BadRequestException('Some products not found');
+          }
+          discount.products = productEntities;
+      }
 
-        return response;
+      if (combos) {
+          const comboEntities = await this.comboRepository.findByIds(combos);
+          if (comboEntities.length !== combos.length) {
+              throw new BadRequestException('Some combos not found');
+          }
+          discount.combos = comboEntities;
+      }
+
+      await this.discountRepository.save(discount);
+      return this.mapDiscountToResponse(discount);
 
     } catch (error) {
         this.handleDBExceptions(error);
     }
-}
+  }
 
 
   async remove(discount_id: string) {

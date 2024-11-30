@@ -20,7 +20,7 @@ export class Product {
     type: 'varchar',
     transformer: {
       to: (value: ProductName) => value.getValue(),
-      from: (value: string) => new ProductName(value),
+      from: (value: string) => value ? new ProductName(value) : new ProductName('Producto'),
     },
   })
   product_name: ProductName;
@@ -29,7 +29,7 @@ export class Product {
     type: 'varchar',
     transformer: {
       to: (value: ProductDescription) => value.getValue(),
-      from: (value: string) => new ProductDescription(value),
+      from: (value: string) => value ? new ProductDescription(value) : new ProductDescription('Descripcion del producto'),
     },
   })
   product_description: ProductDescription;
@@ -38,7 +38,7 @@ export class Product {
     type: 'decimal',
     transformer: {
       to: (value: ProductPrice) => value.getValue(),
-      from: (value: number) => new ProductPrice(value),
+      from: (value: number) => value ? new ProductPrice(value) : new ProductPrice(0),
     },
   })
   product_price: ProductPrice;
@@ -47,7 +47,7 @@ export class Product {
     type: 'varchar',
     transformer: {
       to: (value: ProductCurrency) => value.getValue(),
-      from: (value: string) => new ProductCurrency(value),
+      from: (value: string) => value ? new ProductCurrency(value) : new ProductCurrency('USD'),
     },
   })
   product_currency: ProductCurrency;
@@ -56,7 +56,7 @@ export class Product {
     type: 'varchar',
     transformer: {
       to: (value: ProductWeight) => value.getValue(),
-      from: (value: string) => new ProductWeight(value),
+      from: (value: string) => value ? new ProductWeight(value) : new ProductWeight('0'),
     },
   })
   product_weight: ProductWeight;
@@ -65,7 +65,7 @@ export class Product {
     type: 'varchar',
     transformer: {
       to: (value: ProductMeasurement) => value.getValue(),
-      from: (value: string) => new ProductMeasurement(value),
+      from: (value: string) => value ? new ProductMeasurement(value): new ProductMeasurement('ml'),
     },
   })
   product_measurement: ProductMeasurement;
@@ -75,7 +75,7 @@ export class Product {
     default: 0,
     transformer: {
       to: (value: ProductStock) => value.getValue(),
-      from: (value: number) => new ProductStock(value),
+      from: (value: number) => value ? new ProductStock(value): new ProductStock(0),
     },
   })
   product_stock: ProductStock;
