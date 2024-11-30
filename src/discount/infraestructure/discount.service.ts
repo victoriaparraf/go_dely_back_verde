@@ -57,7 +57,6 @@ export class DiscountService {
   
 
   private mapDiscountToResponse(discount: Discount) {
-    console.log('Mapping Discount to Response:', discount);
     return {
         discount_id: discount.discount_id,
         discount_percentage: discount.discount_percentage.getValue(),
@@ -142,48 +141,54 @@ export class DiscountService {
 
   async update(discount_id: string, updateDiscountDto: UpdateDiscountDto) {
     try {
-        const discount = await this.discountRepository.findOne({
-            where: { discount_id },
-            relations: ['products', 'products.images', 'combos'],
-        });
+      const { products, combos, discount_percentage, discount_start_date, discount_end_date} = updateDiscountDto;
 
-        if (!discount) {
-            throw new NotFoundException(`Discount with id ${discount_id} not found`);
-        }
+      const discount = await this.discountRepository.findOne({
+          where: { discount_id },
+          relations: ['products', 'combos', 'products.images'],
+      });
 
-        console.log('Original Discount:', discount);
+      if (!discount) throw new NotFoundException(`Discount with id ${discount_id} not found`);
 
-        if (updateDiscountDto.discount_percentage) {
-          discount.discount_percentage = new DiscountPercentage(updateDiscountDto.discount_percentage);
-        }
+      if (discount_percentage !== undefined) {
+          discount.discount_percentage = new DiscountPercentage(discount_percentage);
+      }
 
-        if (updateDiscountDto.discount_start_date) {
-            discount.discount_start_date = new DiscountStartDate(updateDiscountDto.discount_start_date);
-        }
+      if (discount_start_date !== undefined) {
+          const startDate = new Date(`${discount_start_date}T00:00:00`);
+          discount.discount_start_date = new DiscountStartDate(startDate);
+      }
 
-        if (updateDiscountDto.discount_end_date) {
-            discount.discount_end_date = new DiscountEndDate(updateDiscountDto.discount_end_date);
-        }
-        console.log('Updated Discount:', discount);
-        if (updateDiscountDto.products) {
-            const productEntities = await this.productRepository.findByIds(updateDiscountDto.products);
-            if (productEntities.length !== updateDiscountDto.products.length) {
-                throw new BadRequestException('Some products not found');
-            }
-            discount.products = productEntities;
-        }
+      if (discount_end_date !== undefined) {
+          const endDate = new Date(`${discount_end_date}T23:59:59`);
+          discount.discount_end_date = new DiscountEndDate(endDate);
+      }
 
-        await this.discountRepository.save(discount);
+      Object.assign(discount, discount_percentage, discount_start_date, discount_end_date);
 
-        const response = this.mapDiscountToResponse(discount);
-        console.log('Response:', response);
+      if (products) {
+          const productEntities = await this.productRepository.findByIds(products);
+          if (productEntities.length !== products.length) {
+              throw new BadRequestException('Some products not found');
+          }
+          discount.products = productEntities;
+      }
 
-        return response;
+      if (combos) {
+          const comboEntities = await this.comboRepository.findByIds(combos);
+          if (comboEntities.length !== combos.length) {
+              throw new BadRequestException('Some combos not found');
+          }
+          discount.combos = comboEntities;
+      }
+
+      await this.discountRepository.save(discount);
+      return this.mapDiscountToResponse(discount);
 
     } catch (error) {
         this.handleDBExceptions(error);
     }
-}
+  }
 
 
   async remove(discount_id: string) {
