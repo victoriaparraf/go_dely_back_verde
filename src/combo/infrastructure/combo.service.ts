@@ -53,6 +53,7 @@ export class ComboService {
       combo_category: combo.combo_category,
       combo_image: combo.combo_image,
       products: Array.isArray(combo.products) ? combo.products.map(product => this.mapProductToResponse(product)) : [],
+      discount: combo.discount ? combo.discount.discount_percentage : null,
     };
   }
 
@@ -80,7 +81,7 @@ export class ComboService {
         combo_image: await this.cloudinaryService.uploadImage(combo_image, 'combos'),
         products: productEntities,
       });
-  
+
       await this.comboRepository.save(combo);
   
       return this.mapComboToResponse(combo);
@@ -98,7 +99,7 @@ export class ComboService {
 
       take: perpage,
       skip: (page - 1) * perpage,
-      relations: ['products', 'products.images'],
+      relations: ['products', 'products.images', 'discount'],
       
     });
 
@@ -111,13 +112,14 @@ export class ComboService {
     if (isUUID(term)) {
       combo = await this.comboRepository.findOne({
         where: { combo_id: term },
-        relations: ['products', 'products.images'],
+        relations: ['products', 'products.images', 'discount'],
       });
     } else {
       combo = await this.comboRepository
         .createQueryBuilder('combo')
         .leftJoinAndSelect('combo.products', 'product')
         .leftJoinAndSelect('product.images', 'image')
+        .leftJoinAndSelect('product.discount', 'discount')
         .where('combo.combo_name = :combo_name', { combo_name: term })
         .getOne();
     }

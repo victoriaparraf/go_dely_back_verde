@@ -1,4 +1,4 @@
-import { ArrayNotEmpty, IsArray, IsDateString, IsNotEmpty, IsNumber, IsPositive } from "class-validator";
+import { ArrayNotEmpty, IsArray, IsDateString, IsNotEmpty, IsNumber, IsOptional, IsPositive } from "class-validator";
 
 export class CreateDiscountDto {
 
@@ -15,6 +15,10 @@ export class CreateDiscountDto {
     discount_end_date: string;
     
     @IsArray()
-    @ArrayNotEmpty()
-    products: string[];
+    @IsOptional()
+    products?: string[];
+
+    @IsArray()
+    @IsOptional()
+    combos?: string[];
 }

@@ -1,10 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, ManyToOne } from "typeorm";
 import { Product } from "src/product/infrastructure/typeorm/product-entity";
 import { ComboName } from "src/combo/domain/value-objects/combo-name.vo";
 import { ComboDescription } from "src/combo/domain/value-objects/combo-description.vo";
 import { ComboPrice } from "src/combo/domain/value-objects/combo-price.vo";
 import { ComboCurrency } from "src/combo/domain/value-objects/combo-currency.vo";
 import { ComboStock } from "src/combo/domain/value-objects/combo-stock.vo";
+import { Discount } from "src/discount/infraestructure/typeorm/discount.entity";
 
 @Entity()
 export class Combo {
@@ -71,4 +72,7 @@ export class Combo {
         inverseJoinColumn: { name: 'product_id', referencedColumnName: 'product_id' },
     })
     products: Product[];
+
+    @ManyToOne(() => Discount, (discount) => discount.combos, { nullable: true })
+    discount: Discount;
 }

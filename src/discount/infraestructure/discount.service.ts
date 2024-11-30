@@ -10,6 +10,7 @@ import { isUUID } from 'class-validator';
 import { DiscountPercentage } from '../domain/value-objects/discount-percentage.vo';
 import { DiscountStartDate } from '../domain/value-objects/discount-start-date.vo';
 import { DiscountEndDate } from '../domain/value-objects/discount-end-date.vo';
+import { Combo } from 'src/combo/infrastructure/typeorm/combo-entity';
 
 
 @Injectable()
@@ -21,7 +22,23 @@ export class DiscountService {
     private readonly discountRepository: Repository<Discount>,
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    @InjectRepository(Combo)
+    private readonly comboRepository: Repository<Combo>,
   ) {}
+
+
+  private mapComboToResponse(combo: Combo) {
+    console.log('Mapping Combo:', combo);
+    return {
+      combo_id: combo.combo_id,
+      combo_name: combo.combo_name.getValue(),
+      combo_price: combo.combo_price.getValue(),
+      combo_description: combo.combo_description.getValue(),
+      combo_currency: combo.combo_currency.getValue(),
+      combo_category: combo.combo_category,
+      combo_stock: combo.combo_stock.getValue(),
+    };
+  }
 
   private mapProductToResponse(product: Product) {
     return {
@@ -44,28 +61,20 @@ export class DiscountService {
     return {
         discount_id: discount.discount_id,
         discount_percentage: discount.discount_percentage.getValue(),
-        discount_start_date: discount.discount_start_date.getValue().toISOString().split('T')[0], // Solo la fecha sin la hora
-        discount_end_date: discount.discount_end_date.getValue().toISOString().split('T')[0], // Solo la fecha sin la hora
+        discount_start_date: discount.discount_start_date.getValue().toISOString().split('T')[0], 
+        discount_end_date: discount.discount_end_date.getValue().toISOString().split('T')[0],
         products: discount.products ? discount.products.map(product => this.mapProductToResponse(product)) : [],
+        combos: discount.combos ? discount.combos.map(combo => this.mapComboToResponse(combo)) : [],
     };
   }
 
   async create(createDiscountDto: CreateDiscountDto) {
     try {
-      const { products, ...discountDetails } = createDiscountDto;
-
-      if (!products || !Array.isArray(products)) {
-        throw new BadRequestException('Products must be an array of product IDs');
-      }
+      const { products, combos, ...discountDetails } = createDiscountDto;
 
       const discountPercentage = new DiscountPercentage(discountDetails.discount_percentage);
       const discountStartDate = new DiscountStartDate(discountDetails.discount_start_date);
       const discountEndDate = new DiscountEndDate(discountDetails.discount_end_date);
-
-      const productEntities = await this.productRepository.findByIds(products);
-      if (productEntities.length !== products.length) {
-        throw new BadRequestException('Some products not found');
-      }
 
       const discount = this.discountRepository.create({
         discount_percentage: discountPercentage,
@@ -73,7 +82,21 @@ export class DiscountService {
         discount_end_date: discountEndDate,
       });
 
+    if (products && Array.isArray(products)) {
+      const productEntities = await this.productRepository.findByIds(products);
+      if (productEntities.length !== products.length) {
+        throw new BadRequestException('Some products not found');
+      }
       discount.products = productEntities;
+    }
+
+    if (combos && Array.isArray(combos)) {
+      const comboEntities = await this.comboRepository.findByIds(combos);
+      if (comboEntities.length !== combos.length) {
+        throw new BadRequestException('Some combos not found');
+      }
+      discount.combos = comboEntities;
+    }
 
       await this.discountRepository.save(discount);
       return this.mapDiscountToResponse(discount);
@@ -84,13 +107,12 @@ export class DiscountService {
   }
 
   async findAll(paginationDto: PaginationDto) {
-
     const { page = 1, perpage = 10 } = paginationDto;
 
     const discounts = await this.discountRepository.find({
       take: perpage,
       skip: (page - 1) * perpage,
-      relations: ['products', 'products.images'],
+      relations: ['products', 'products.images', 'combos'],
     });
 
     return discounts.map(discount => this.mapDiscountToResponse(discount));
@@ -102,7 +124,7 @@ export class DiscountService {
     if (isUUID(term)) {
       discount = await this.discountRepository.findOne({
         where: { discount_id: term },
-        relations: ['products'],
+        relations: ['products','combos'],
       });
     } else {
       throw new NotFoundException(`Invalid discount identifier: ${term}`);
@@ -119,7 +141,7 @@ export class DiscountService {
     try {
         const discount = await this.discountRepository.findOne({
             where: { discount_id },
-            relations: ['products', 'products.images'],
+            relations: ['products', 'products.images', 'combos'],
         });
 
         if (!discount) {
