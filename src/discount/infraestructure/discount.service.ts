@@ -117,7 +117,7 @@ export class DiscountService {
       skip: (page - 1) * perpage,
       relations: ['products', 'products.images', 'combos'],
     });
-
+    console.log(discounts);
     return discounts.map(discount => this.mapDiscountToResponse(discount));
   }
 
