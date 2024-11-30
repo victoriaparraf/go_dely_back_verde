@@ -27,20 +27,20 @@ export class DiscountService {
   ) {}
 
 
-  private mapComboToResponse(combo: Combo) {
-    console.log('Mapping Combo:', combo);
+  private mapComboToResponse(combo: Combo): any {
     return {
       combo_id: combo.combo_id,
       combo_name: combo.combo_name.getValue(),
-      combo_price: combo.combo_price.getValue(),
       combo_description: combo.combo_description.getValue(),
+      combo_price: combo.combo_price.getValue(),
       combo_currency: combo.combo_currency.getValue(),
-      combo_category: combo.combo_category,
       combo_stock: combo.combo_stock.getValue(),
+      combo_category: combo.combo_category,
+      combo_image: combo.combo_image,
     };
   }
 
-  private mapProductToResponse(product: Product) {
+  private mapProductToResponse(product: Product): any {
     return {
       product_id: product.product_id,
       product_name: product.product_name.getValue(),
@@ -72,9 +72,12 @@ export class DiscountService {
     try {
       const { products, combos, ...discountDetails } = createDiscountDto;
 
+      const startDate = new Date(`${discountDetails.discount_start_date}T00:00:00`);
+      const endDate = new Date(`${discountDetails.discount_end_date}T23:59:59`);  
+
       const discountPercentage = new DiscountPercentage(discountDetails.discount_percentage);
-      const discountStartDate = new DiscountStartDate(discountDetails.discount_start_date);
-      const discountEndDate = new DiscountEndDate(discountDetails.discount_end_date);
+      const discountStartDate = new DiscountStartDate(startDate);
+      const discountEndDate = new DiscountEndDate(endDate);
 
       const discount = this.discountRepository.create({
         discount_percentage: discountPercentage,
@@ -82,7 +85,7 @@ export class DiscountService {
         discount_end_date: discountEndDate,
       });
 
-    if (products && Array.isArray(products)) {
+    if (products && Array.isArray(products) && products.length > 0) {
       const productEntities = await this.productRepository.findByIds(products);
       if (productEntities.length !== products.length) {
         throw new BadRequestException('Some products not found');
@@ -90,7 +93,7 @@ export class DiscountService {
       discount.products = productEntities;
     }
 
-    if (combos && Array.isArray(combos)) {
+    if (combos && Array.isArray(combos) && combos.length > 0) {
       const comboEntities = await this.comboRepository.findByIds(combos);
       if (comboEntities.length !== combos.length) {
         throw new BadRequestException('Some combos not found');

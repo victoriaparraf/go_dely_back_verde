@@ -3,9 +3,10 @@ export class DiscountStartDate {
 
     constructor(value: Date | string) {
         if(value){
-            const dateValue = typeof value === 'string' ? new Date(value) : value;
+            const dateValue = new Date(value);
+            dateValue.setHours(0, 0, 0, 0); // Elimina la hora, dejando solo la fecha
             if (!this.isValidDate(dateValue)) {
-                throw new Error('Invalid discount start date.');
+                throw new Error('Invalid discount end date.');
             }
             this.value = dateValue;
         }
@@ -18,12 +19,5 @@ export class DiscountStartDate {
 
     public getValue(): Date {
         return this.value;
-    }
-
-    public static from(value: any): DiscountStartDate {
-        if (!value) {
-            return null;
-        }
-        return new DiscountStartDate(value);
     }
 }
