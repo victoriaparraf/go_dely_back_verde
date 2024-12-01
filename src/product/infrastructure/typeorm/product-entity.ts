@@ -83,17 +83,17 @@ export class Product {
   @OneToMany(() => Image, (image) => image.product, { cascade: true })
   images: Image[];
 
-  @Column('text')
+  @Column({ type: 'uuid', nullable: true })
   product_category: string;
 
   @ManyToMany(() => Combo, combo => combo.products)
   combos: Combo[];
 
-    @ManyToOne(
-        () => Discount, 
-        (discount) => discount.products, 
-        { nullable: true, onDelete: 'SET NULL'}
-    )
-    discount?: Discount;
+  @ManyToOne(
+      () => Discount, 
+      (discount) => discount.products, 
+      { nullable: true, onDelete: 'SET NULL'}
+  )
+  discount?: Discount;
   
 }

@@ -8,6 +8,7 @@ import { RabbitmqModule } from './product/infrastructure/rabbitmq/rabbitmq.modul
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AuthModule } from './auth/auth.module';
 import { DiscountModule } from './discount/discount.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -34,6 +35,8 @@ import { DiscountModule } from './discount/discount.module';
     ComboModule,
 
     DiscountModule,
+
+    CategoryModule,
     
     ClientsModule.register([
       {
