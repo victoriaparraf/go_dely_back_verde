@@ -1,50 +1,51 @@
+import { AggregateRoot } from 'src/common/domain/aggregate.root';
+import { CategoryID } from './value-objects/category-id.vo';
 import { CategoryName } from './value-objects/category-name.vo';
 import { CategoryDescription } from './value-objects/category-description.vo';
-import { Product } from 'src/product/infrastructure/typeorm/product-entity';
 
-export class CategoryAggregate {
-  private readonly id: string;
-  private name: CategoryName;
-  private description: CategoryDescription;
-  private readonly products: Product[];
+export class Category extends AggregateRoot<CategoryID> {
+    private name: CategoryName;
+    private description: CategoryDescription;
 
-  constructor(
-    id: string, 
-    name: CategoryName, 
-    description: CategoryDescription, 
-    products: Product[] = []
-  ) {
-    this.id = id;
-    this.name = name;
-    this.description = description;
-    this.products = products;
-  }
+    constructor (id: CategoryID, name: CategoryName, description: CategoryDescription) {
+        super(id);
+        this.name = name;
+        this.description = description;
+    }
 
-  getId(): string {
-    return this.id;
-  }
+    static create(name: string, description: string): Category {
+        return new Category(
+            new CategoryID(),
+            new CategoryName(name),
+            new CategoryDescription(description)
+        );
+    }
 
-  getName(): string {
-    return this.name.getValue();
-  }
+    static reconstitute(id: CategoryID, name: string, description: string): Category {
+        return new Category(
+            id,
+            new CategoryName(name),
+            new CategoryDescription(description)
+        );
+    }
 
-  getDescription(): string {
-    return this.description.getValue();
-  }
+    getId(): CategoryID {
+        return this.id;
+    }
 
-  getProducts(): Product[] {
-    return this.products;
-  }
+    public getName(): CategoryName {
+        return this.name;
+    }
 
-  updateName(name: CategoryName): void {
-    this.name = name;
-  }
+    public getDescription(): CategoryDescription {
+        return this.description;
+    }
 
-  updateDescription(description: CategoryDescription): void {
-    this.description = description;
-  }
+    updateName(newName: CategoryName): void {
+        this.name = newName;
+    }
 
-  addProduct(product: Product): void {
-    this.products.push(product);
-  }
+    updateDescription(newDescription: CategoryDescription): void {
+        this.description = newDescription;
+    }
 }

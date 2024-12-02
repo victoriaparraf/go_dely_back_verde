@@ -1,34 +1,67 @@
-import { Injectable } from '@nestjs/common';
+import { CategoryRepository } from '../../domain/repositories/category.repository.interface';
+import { Category } from '../../domain/category-aggregate';
+import { CategoryID } from '../../domain/value-objects/category-id.vo';
 import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
 import { CategoryEntity } from './category-entity';
-import { CategoryAggregate } from 'src/category/domain/category-aggregate';
-import { CategoryMapper } from '../mappers/category.mapper';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
-export class CategoryRepository {
-  constructor(
-    @InjectRepository(CategoryEntity)
-    private readonly categoryRepo: Repository<CategoryEntity>,
-  ) {}
+export class TypeORMCategoryRepository implements CategoryRepository {
 
-  async save(category: CategoryAggregate): Promise<void> {
-    const categoryEntity = CategoryMapper.toPersistence(category);
-    await this.categoryRepo.save(categoryEntity);
-  }
+    constructor(
+        @InjectRepository(CategoryEntity)
+        private readonly ormRepository: Repository<CategoryEntity>,
+    ) {}
 
-  async findById(id: string): Promise<CategoryAggregate | null> {
-    const categoryEntity = await this.categoryRepo.findOne({ where: { category_id: id }, relations: ['products'] });
-    if (!categoryEntity) return null;
-    return CategoryMapper.toDomain(categoryEntity);
-  }
+    async save(category: Category): Promise<void> {
+      const entity = new CategoryEntity();
+      entity.category_id = category.getId().getValue();
+      entity.category_name = category.getName().getValue();
+      entity.category_description = category.getDescription().getValue();
+  
+      await this.ormRepository.save(entity);
+    }
 
-  async findAll(): Promise<CategoryAggregate[]> {
-    const categoryEntities = await this.categoryRepo.find({ relations: ['products'] });
-    return categoryEntities.map((entity) => CategoryMapper.toDomain(entity));
-  }
+    async findById(id: CategoryID): Promise<Category | null> {
+        const entity = await this.ormRepository.findOne({ where: { category_id: id.value } });
+        if (!entity) return null;
 
-  async delete(id: string): Promise<void> {
-    await this.categoryRepo.delete(id);
-  }
+        return Category.reconstitute(
+            new CategoryID(entity.category_id),
+            entity.category_name,
+            entity.category_description
+        );
+    }
+
+    async findAll(): Promise<Category[]> {
+        const entities = await this.ormRepository.find();
+        return entities.map(entity => 
+            Category.reconstitute(
+                new CategoryID(entity.category_id),
+                entity.category_name,
+                entity.category_description
+            )
+        );
+    }
+
+    async update(category: Category): Promise<void> {
+        const entity = await this.ormRepository.findOne({
+            where: { category_id: category.getId().getValue() },
+        });
+    
+        if (!entity) {
+            throw new Error(`Category with ID ${category.getId().getValue()} not found`);
+        }
+    
+        entity.category_name = category.getName().getValue();
+        entity.category_description = category.getDescription().getValue();
+    
+        await this.ormRepository.save(entity);
+    }
+    
+
+    async delete(id: CategoryID): Promise<void> {
+        await this.ormRepository.delete({ category_id: id.value });
+    }
 }

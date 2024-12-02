@@ -6,12 +6,12 @@ export class CategoryEntity {
   @PrimaryGeneratedColumn('uuid')
   category_id: string;
 
-  @Column(() => String)
+  @Column({ type: 'varchar', length: 255 })
   category_name: string;
 
-  @Column(() => String)
+  @Column({ type: 'text', nullable: true })
   category_description: string;
 
-  @OneToMany(() => Product, (product) => product.category, { cascade: true })
+  @OneToMany(() => Product, (product) => product.product_category, { cascade: true })
   products: Product[];
 }

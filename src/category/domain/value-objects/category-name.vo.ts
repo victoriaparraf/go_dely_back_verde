@@ -1,15 +1,18 @@
-export class CategoryName {
-    private readonly value: string;
-  
+import { ValueObject } from 'src/common/domain/value.object';
+
+export class CategoryName extends ValueObject<string> {
     constructor(value: string) {
-      if (!value || value.trim().length === 0) {
-        throw new Error('Category name must not be empty');
-      }
-      this.value = value.trim();
+        super(value);
+        this.validate(value);
     }
-  
+
+    protected validate(value: string): void {
+        if (!value || value.length < 1) {
+            throw new Error('Invalid category name');
+        }
+    }
+
     getValue(): string {
-      return this.value;
+        return this.value;
     }
-  }
-  
+}

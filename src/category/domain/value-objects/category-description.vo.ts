@@ -1,15 +1,17 @@
-export class CategoryDescription {
-    private readonly value: string;
-  
+import { ValueObject } from 'src/common/domain/value.object';
+
+export class CategoryDescription extends ValueObject<string> {
     constructor(value: string) {
-      if (!value || value.trim().length === 0) {
-        throw new Error('Category description must not be empty');
-      }
-      this.value = value.trim();
+        super(value ?? '');
     }
-  
+
+    validate(value: string): void {
+        if (!value || value.length === 0) {
+            throw new Error('Category description cannot be empty');
+        }
+    }
+
     getValue(): string {
-      return this.value;
+        return this.value;
     }
-  }
-  
+}
