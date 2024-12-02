@@ -12,6 +12,6 @@ export class CategoryEntity {
   @Column({ type: 'text', nullable: true })
   category_description: string;
 
-  @OneToMany(() => Product, (product) => product.product_category, { cascade: true })
+  @OneToMany(() => Product, (product) => product.product_category)
   products: Product[];
 }

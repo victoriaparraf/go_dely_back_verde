@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable, ManyToOne, JoinColumn } from "typeorm";
 import { Image } from "./image-entity";
 import { Combo } from "src/combo/infrastructure/typeorm/combo-entity";
 import { ProductName } from "src/product/domain/value-objects/product-name.vo";
@@ -9,6 +9,7 @@ import { ProductMeasurement } from "src/product/domain/value-objects/product-mea
 import { ProductWeight } from "src/product/domain/value-objects/product-weight.vo";
 import { ProductStock } from "src/product/domain/value-objects/product-stock.vo";
 import { Discount } from "src/discount/infraestructure/typeorm/discount.entity";
+import { CategoryEntity } from "src/category/infrastructure/typeorm/category-entity";
 
 @Entity()
 export class Product {
@@ -83,8 +84,8 @@ export class Product {
   @OneToMany(() => Image, (image) => image.product, { cascade: true })
   images: Image[];
 
-  @Column({ type: 'uuid', nullable: true })
-  product_category: string;
+  @ManyToOne(() => CategoryEntity, (category) => category.products)
+  product_category: CategoryEntity;
 
   @ManyToMany(() => Combo, combo => combo.products)
   combos: Combo[];
