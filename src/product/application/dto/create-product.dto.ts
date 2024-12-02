@@ -1,6 +1,4 @@
-import { IsArray, IsInt, IsNumber, IsOptional, IsPositive, IsString, Length, MinLength } from "class-validator";
-import { Discount } from "src/discount/infraestructure/typeorm/discount.entity";
-import { ManyToOne } from "typeorm";
+import { IsArray, IsInt, IsNumber, IsOptional, IsPositive, IsString, IsUUID, Length, MinLength } from "class-validator";
 
 export class CreateProductDto {
 
@@ -35,7 +33,7 @@ export class CreateProductDto {
     @IsArray()
     images: string[];
 
-    @IsString()
+    @IsUUID()
     product_category: string;
 
 }

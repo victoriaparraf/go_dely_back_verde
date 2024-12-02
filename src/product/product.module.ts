@@ -8,12 +8,13 @@ import { CloudinaryModule } from './infrastructure/cloudinary/cloudinary.module'
 import { RabbitmqModule } from './infrastructure/rabbitmq/rabbitmq.module';
 import { MailModule } from './infrastructure/mail/mail.module';
 import { Combo } from 'src/combo/infrastructure/typeorm/combo-entity';
+import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
 
 @Module({
   controllers: [ProductController],
   providers: [ProductService],
   imports:[
-    TypeOrmModule.forFeature([ Product, Image, Combo ]),
+    TypeOrmModule.forFeature([ Product, Image, Combo, CategoryEntity ]),
     CloudinaryModule,
     RabbitmqModule,
     MailModule
