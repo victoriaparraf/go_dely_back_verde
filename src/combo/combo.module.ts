@@ -5,9 +5,10 @@ import { Combo } from './infrastructure/typeorm/combo-entity';
 import { ComboController } from './infrastructure/combo.controller';
 import { Product } from 'src/product/infrastructure/typeorm/product-entity';
 import { CloudinaryModule } from 'src/product/infrastructure/cloudinary/cloudinary.module';
+import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Combo, Product]),CloudinaryModule],
+  imports: [TypeOrmModule.forFeature([Combo, Product, CategoryEntity]),CloudinaryModule],
   controllers: [ComboController],
   providers: [ComboService],
 })

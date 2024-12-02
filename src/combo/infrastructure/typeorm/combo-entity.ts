@@ -6,6 +6,7 @@ import { ComboPrice } from "src/combo/domain/value-objects/combo-price.vo";
 import { ComboCurrency } from "src/combo/domain/value-objects/combo-currency.vo";
 import { ComboStock } from "src/combo/domain/value-objects/combo-stock.vo";
 import { Discount } from "src/discount/infraestructure/typeorm/discount.entity";
+import { CategoryEntity } from "src/category/infrastructure/typeorm/category-entity";
 
 @Entity()
 export class Combo {
@@ -49,8 +50,8 @@ export class Combo {
     })
     combo_currency: ComboCurrency;
 
-    @Column('text')
-    combo_category: string;
+    @ManyToOne(() => CategoryEntity, (category) => category.products)
+    combo_category: CategoryEntity;
 
     @Column({
         type: 'int',

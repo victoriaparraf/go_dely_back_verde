@@ -1,4 +1,4 @@
-import { IsString, IsArray, ArrayNotEmpty, MinLength, IsPositive, IsNumber, IsInt, IsOptional } from 'class-validator';
+import { IsString, IsArray, ArrayNotEmpty, MinLength, IsPositive, IsNumber, IsInt, IsOptional, IsUUID } from 'class-validator';
 
 export class CreateComboDto {
 
@@ -16,7 +16,7 @@ export class CreateComboDto {
     @IsString()
     combo_currency: string;
 
-    @IsString()
+    @IsUUID()
     combo_category: string;
 
     @IsInt()

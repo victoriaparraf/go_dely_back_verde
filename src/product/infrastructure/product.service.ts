@@ -16,6 +16,7 @@ import { ProductName } from '../domain/value-objects/product-name.vo';
 import { ProductPrice } from '../domain/value-objects/product-price.vo';
 import { ProductWeight } from '../domain/value-objects/product-weight.vo';
 import { ProductStock } from '../domain/value-objects/product-stock.vo';
+import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
 
 @Injectable()
 export class ProductService {
@@ -31,11 +32,20 @@ export class ProductService {
     private readonly cloudinaryService: CloudinaryService,
 
     @Inject('RABBITMQ_SERVICE') private readonly client: ClientProxy,
+
+    @InjectRepository(CategoryEntity)
+    private readonly categoryRepository: Repository<CategoryEntity>
+    
   ) {}
 
   async create(createProductDto: CreateProductDto, imageUrls: string[]) {
     try {
-      const { images, ...productDetails } = createProductDto;
+      const { product_category, images, ...productDetails } = createProductDto;
+
+      const category = await this.categoryRepository.findOne({ where: { category_id: product_category as any } });
+      if (!category) {
+        throw new NotFoundException(`Category with ID ${product_category} not found`);
+      }
 
       const productName = new ProductName(productDetails.product_name);
       const productDescription = new ProductDescription(productDetails.product_description);
@@ -62,22 +72,22 @@ export class ProductService {
       product.product_weight = productWeight;
       product.product_measurement = productMeasurement;
       product.product_stock = productStock;
-      product.product_category = productDetails.product_category;
+      product.product_category = category;
       product.images = imageEntities;
 
       const productEntity = this.productRepository.create(product);
       await this.productRepository.save(productEntity);
 
       // Emitir el evento a RabbitMQ
-      await this.client.send('product_notification', {
+      this.client.send('product_notification', {
         productImages: createProductDto.images,
         productName: createProductDto.product_name,
-        productCategory: createProductDto.product_category,
+        productCategory: category.category_name,
         productWeight: createProductDto.product_weight,
         productMeasurement: createProductDto.product_measurement,
         productDescription: createProductDto.product_description,
         message: 'Check out our new products and their offers!',
-      }).toPromise();
+      }).subscribe();
   
       return {
         ...product,
@@ -100,7 +110,7 @@ export class ProductService {
       product_weight: product.product_weight.getValue(),
       product_measurement: product.product_measurement.getValue(),
       product_stock: product.product_stock.getValue(),
-      product_category: product.product_category,
+      product_category: product.product_category?.category_name,
       images: product.images.map(img => img.image_url),
       discount: product.discount ? product.discount.discount_percentage : null,
     };
@@ -114,7 +124,7 @@ export class ProductService {
 
       take: perpage,
       skip: (page - 1) * perpage,
-      relations: ['images', 'discount'],
+      relations: ['product_category','images', 'discount'],
       
     });
 
@@ -128,7 +138,7 @@ export class ProductService {
     if (isUUID(term)) {
       product = await this.productRepository.findOne({
         where: { product_id: term },
-        relations: ['images', 'discount'],
+        relations: ['product_category', 'images', 'discount'],
       });
     } else {
       product = await this.productRepository
