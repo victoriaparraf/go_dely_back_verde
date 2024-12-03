@@ -38,4 +38,8 @@ export class PaymentMethodRepository implements PaymentMethodRepositoryInterface
         entity.active = paymentMethod.isActive();
         await this.ormRepository.save(entity);
     }
+
+    async delete(id: string): Promise<void> {
+        await this.ormRepository.delete({ id });
+    }
 }

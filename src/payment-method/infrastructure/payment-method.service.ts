@@ -47,6 +47,15 @@ export class PaymentMethodService {
         await this.paymentMethodRepository.save(paymentMethod);
     }
 
+    async activatePaymentMethod(id: string): Promise<void> {
+        const paymentMethod = await this.paymentMethodRepository.findById(id);
+        if (!paymentMethod) {
+            throw new NotFoundException(`Payment method with ID ${id} not found`);
+        }
+        paymentMethod.activate();
+        await this.paymentMethodRepository.save(paymentMethod);
+    }
+
     async updatePaymentMethod(id: string, name: string, icon: string): Promise<void> {
         const paymentMethod = await this.paymentMethodRepository.findById(id);
         if (!paymentMethod) {
@@ -55,5 +64,13 @@ export class PaymentMethodService {
         paymentMethod.updateName(new PaymentMethodName(name));
         paymentMethod.updateIcon(new PaymentMethodIcon(icon));
         await this.paymentMethodRepository.save(paymentMethod);
+    }
+
+    async deletePaymentMethod(id: string): Promise<void> {
+        const paymentMethod = await this.paymentMethodRepository.findById(id);
+        if (!paymentMethod) {
+            throw new NotFoundException(`Payment method with ID ${id} not found`);
+        }
+        await this.paymentMethodRepository.delete(id);
     }
 }
