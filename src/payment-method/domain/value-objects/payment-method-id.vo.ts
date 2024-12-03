@@ -15,4 +15,8 @@ export class PaymentMethodId extends ValueObject<string> {
     static generate(): PaymentMethodId {
         return new PaymentMethodId(uuidv4());
     }
+
+    getValue(): string {
+        return this.value;
+    }
 }

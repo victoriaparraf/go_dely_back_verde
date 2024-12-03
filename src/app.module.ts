@@ -8,6 +8,7 @@ import { RabbitmqModule } from './product/infrastructure/rabbitmq/rabbitmq.modul
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AuthModule } from './auth/auth.module';
 import { DiscountModule } from './discount/discount.module';
+import { OrderModule } from './order/order.module';
 import { CategoryModule } from './category/category.module';
 import { PaymentMethodModule } from './payment-method/payment-method.module';
 
@@ -40,6 +41,12 @@ import { PaymentMethodModule } from './payment-method/payment-method.module';
     CategoryModule,
 
     PaymentMethodModule,
+
+    RabbitmqModule,
+
+    AuthModule,
+
+    OrderModule,
     
     ClientsModule.register([
       {
@@ -55,9 +62,6 @@ import { PaymentMethodModule } from './payment-method/payment-method.module';
       },
     ]),
     
-    RabbitmqModule,
-
-    AuthModule,
   ],
 })
 export class AppModule {}
