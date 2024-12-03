@@ -14,7 +14,7 @@ export class PaymentMethodController {
     return paymentMethods.map(PaymentMethodResponseDTO.fromDomain);
   }
 
-  @Post()
+  @Post('create')
   async createPaymentMethod(@Body() createDTO: CreatePaymentMethodDTO): Promise<{ message: string }> {
     await this.paymentMethodService.createPaymentMethod(createDTO);
     return { message: 'Payment method created successfully' };
