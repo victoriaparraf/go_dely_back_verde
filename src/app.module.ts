@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { DiscountModule } from './discount/discount.module';
 import { OrderModule } from './order/order.module';
 import { CategoryModule } from './category/category.module';
+import { PaymentMethodModule } from './payment-method/payment-method.module';
 
 @Module({
   imports: [
@@ -38,6 +39,8 @@ import { CategoryModule } from './category/category.module';
     DiscountModule,
 
     CategoryModule,
+
+    PaymentMethodModule,
     
     ClientsModule.register([
       {
