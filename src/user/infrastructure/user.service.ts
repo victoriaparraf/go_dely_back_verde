@@ -1,12 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CreateClientDto } from './application/dto/create-cliente.dto';
-import { UpdateClientDto } from './application/dto/update-cliente.dto';
+
+import { UpdateUserDto } from '../application/dto/update-user.dto';
+
 
 @Injectable()
-export class ClientService {
-  create(createClientDto: CreateClientDto) {
-    return 'This action adds a new client';
-  }
+export class UserService {
 
   findAll() {
     return `This action returns all client`;
@@ -16,7 +14,7 @@ export class ClientService {
     return `This action returns a #${id} client`;
   }
 
-  update(id: number, updateClientDto: UpdateClientDto) {
+  update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} client`;
   }
 

@@ -1,42 +1,42 @@
 
 
 export class Address {
-    private readonly _latitude: number;
-    private readonly _longitude: number;
-    private readonly _name: string;
-    private readonly _clientId: string;
+    private readonly latitude: number;
+    private readonly longitude: number;
+    private readonly name: string;
+    private readonly clientId: string;
   
     constructor(latitude: number, longitude: number, name: string, clientId: string) {
       this.ensureIsValidCoordinates(latitude, longitude);
       this.ensureIsValidName(name);
-      this._latitude = latitude;
-      this._longitude = longitude;
-      this._name = name;
-      this._clientId = clientId;
+      this.latitude = latitude;
+      this.longitude = longitude;
+      this.name = name;
+      this.clientId = clientId;
     }
   
     public getLatitude(): number {
-      return this._latitude;
+      return this.latitude;
     }
   
     public getLongitude(): number {
-      return this._longitude;
+      return this.longitude;
     }
   
     public getName(): string {
-      return this._name;
+      return this.name;
     }
   
     public getClientId(): string {
-      return this._clientId;
+      return this.clientId;
     }
   
     private ensureIsValidCoordinates(latitude: number, longitude: number): void {
       if (latitude < -90 || latitude > 90) {
-        throw new Error('La latitud debe estar entre -90 y 90 grados.');
+        throw new Error('The latitude must be between -90 and 90 degrees.');
       }
       if (longitude < -180 || longitude > 180) {
-        throw new Error('La longitud debe estar entre -180 y 180 grados.');
+        throw new Error('The longitude must be between -180 and 180 degrees.');
       }
     }
   
@@ -49,7 +49,7 @@ export class Address {
     }
 
     if (name.length < minLength || name.length > maxLength) {
-        throw new Error(`El nombre debe tener entre ${minLength} y ${maxLength} caracteres.`);
+        throw new Error(`The name must be between ${minLength} and ${maxLength} characters.`);
     }
   
     }
