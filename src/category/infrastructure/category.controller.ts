@@ -1,14 +1,15 @@
-import { Controller, Post, Get, Delete, Param, Body, Put } from '@nestjs/common';
+import { Controller, Post, Get, Delete, Param, Body, Put, Patch } from '@nestjs/common';
 import { CreateCategoryDto } from '../application/dto/create-category.dto';
 import { UpdateCategoryDto } from '../application/dto/update-category.dto';
 import { CategoryService } from './category.service';
 import { CategoryMapper } from './mappers/category.mapper';
+import { CategoryResponseDto } from '../application/dto/response-category.dto';
 
 @Controller('categories')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
-  @Post()
+  @Post('create')
   async createCategory(@Body() createCategoryDto: CreateCategoryDto) {
     const category = await this.categoryService.createCategory(createCategoryDto);
     return {
@@ -31,15 +32,15 @@ export class CategoryController {
     return await this.categoryService.getAllCategories();
   }
 
-  @Put(':id')
+  @Patch(':id')
   async updateCategory(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
-  ) {
+  ): Promise<{ message: string; data: CategoryResponseDto }> {
     const updatedCategory = await this.categoryService.updateCategory(id, updateCategoryDto);
     return {
       message: 'Category updated successfully',
-      data: updatedCategory,
+      data: CategoryResponseDto.fromDomain(updatedCategory),
     };
   }
 
