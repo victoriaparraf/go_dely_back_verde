@@ -13,7 +13,7 @@ export class OrderEntity {
     @Column({ type: 'varchar', length: 10 })
     currency: string;
 
-    @Column({ type: 'decimal', precision: 10})
+    @Column('decimal', { precision: 10, scale: 2 })
     total: number;
 
     @Column({ type: 'varchar', length: 50 })
