@@ -10,6 +10,7 @@ import { ProductWeight } from "src/product/domain/value-objects/product-weight.v
 import { ProductStock } from "src/product/domain/value-objects/product-stock.vo";
 import { Discount } from "src/discount/infraestructure/typeorm/discount.entity";
 import { CategoryEntity } from "src/category/infrastructure/typeorm/category-entity";
+import { OrderEntity } from "src/order/infraestructure/typeorm/order-entity";
 
 @Entity()
 export class Product {
@@ -97,4 +98,6 @@ export class Product {
   )
   discount?: Discount;
   
+  @ManyToOne(() => OrderEntity, order => order.products)
+  order: OrderEntity[];
 }
