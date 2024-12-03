@@ -3,10 +3,15 @@ import { PaymentMethodRepositoryInterface } from '../../domain/payment-method.re
 import { PaymentMethod } from 'src/payment-method/domain/payment-method.aggregate';
 import { PaymentMethodMapper } from '../mappers/payment-method.mapper';
 import { PaymentMethodEntity } from './payment-method-orm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
 
-
+@Injectable()
 export class PaymentMethodRepository implements PaymentMethodRepositoryInterface {
-    constructor(private ormRepository: Repository<PaymentMethodEntity>) {}
+    constructor(
+        @InjectRepository(PaymentMethodEntity)
+        private readonly ormRepository: Repository<PaymentMethodEntity>,
+    ) {}
 
     async findById(id: string): Promise<PaymentMethod | null> {
         const entity = await this.ormRepository.findOneBy({ id });

@@ -1,32 +1,34 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PaymentMethod } from '../domain/payment-method.aggregate';
 import { PaymentMethodName } from '../domain/value-objects/payment-method-name.vo';
-import { PaymentMethodIcon } from '../domain/value-objects/payment-method-icon.vo';
-import { PaymentMethodRepositoryInterface } from '../domain/payment-method.repository.interface';
+import { PaymentMethodIcon } from '../domain/value-objects/payment-method-icon.vo'
 import { CreatePaymentMethodDTO } from '../application/dtos/payment-method.dto';
 import { PaymentMethodId } from '../domain/value-objects/payment-method-id.vo';
+import { PaymentMethodRepository } from './typeorm/payment-method.repository';
 
 @Injectable()
 export class PaymentMethodService {
-    constructor(private readonly paymentMethodRepository: PaymentMethodRepositoryInterface) {}
+    constructor(
+        private readonly paymentMethodRepository: PaymentMethodRepository,
+    ) {}
 
-      async createPaymentMethod(createPaymentMethodDto: CreatePaymentMethodDTO): Promise<PaymentMethod> {
-        const { name, icon } = createPaymentMethodDto;
-        const paymentMethodName = new PaymentMethodName(name);
-        const paymentMethodIcon = new PaymentMethodIcon(icon);
-    
-        const paymentMethodId = PaymentMethodId.generate();
-        const isActive = true;
-        const paymentMethodAggregate = new PaymentMethod(
-            paymentMethodId.value,
-            paymentMethodName,
-            paymentMethodIcon,
-            isActive
-        );
-    
-        await this.paymentMethodRepository.save(paymentMethodAggregate);
-        return paymentMethodAggregate;
-      }
+    async createPaymentMethod(createPaymentMethodDto: CreatePaymentMethodDTO): Promise<PaymentMethod> {
+    const { name, icon } = createPaymentMethodDto;
+    const paymentMethodName = new PaymentMethodName(name);
+    const paymentMethodIcon = new PaymentMethodIcon(icon);
+
+    const paymentMethodId = PaymentMethodId.generate();
+    const isActive = true;
+    const paymentMethodAggregate = new PaymentMethod(
+        paymentMethodId.value,
+        paymentMethodName,
+        paymentMethodIcon,
+        isActive
+    );
+
+    await this.paymentMethodRepository.save(paymentMethodAggregate);
+    return paymentMethodAggregate;
+    }
 
     async getPaymentMethod(id: string): Promise<PaymentMethod | null> {
         return await this.paymentMethodRepository.findById(id);
