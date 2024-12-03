@@ -1,3 +1,4 @@
+import { Currency } from 'src/common/domain/enums/currency.enum';
 import { ValueObject } from 'src/common/domain/value.object';
 
 export class OrderCurrency extends ValueObject<string> {
@@ -7,8 +8,8 @@ export class OrderCurrency extends ValueObject<string> {
     }
 
     protected validate(value: string): void {
-        const validCurrencies = ['USD', 'EUR', 'MXN']; // Puedes agregar más según sea necesario.
-        if (!value || value.length < 3) {
+        const validCurrencies = Object.values(Currency);
+        if (!value || value.length < 3 || !validCurrencies.includes(value as Currency)) {
             throw new Error('Invalid currency');
         }
     }
