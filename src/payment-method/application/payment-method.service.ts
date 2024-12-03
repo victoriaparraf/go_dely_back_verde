@@ -1,10 +1,10 @@
 import { PaymentMethod } from "../domain/payment-method.aggregate";
-import { PaymentMethodRepository } from "../domain/payment-method.repository.interface";
+import { PaymentMethodRepositoryInterface } from "../domain/payment-method.repository.interface";
 import { PaymentMethodIcon } from "../domain/value-objects/payment-method-icon.vo";
 import { PaymentMethodName } from "../domain/value-objects/payment-method-name.vo";
 
 export class PaymentMethodService {
-    constructor(private paymentMethodRepository: PaymentMethodRepository) {}
+    constructor(private paymentMethodRepository: PaymentMethodRepositoryInterface) {}
 
     async createPaymentMethod(id: string, name: string, icon: string): Promise<void> {
         const paymentMethod = new PaymentMethod(id, new PaymentMethodName(name), new PaymentMethodIcon(icon), true);

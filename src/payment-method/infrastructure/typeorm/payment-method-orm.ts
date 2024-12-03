@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryColumn } from 'typeorm';
 
 @Entity('payment_methods')
 export class PaymentMethodEntity {
-    @PrimaryColumn()
+    @PrimaryColumn('uuid')
     id: string;
 
     @Column()

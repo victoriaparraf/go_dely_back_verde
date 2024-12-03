@@ -3,6 +3,7 @@ import { PaymentMethodIcon } from "./value-objects/payment-method-icon.vo";
 import { PaymentMethodName } from "./value-objects/payment-method-name.vo";
 
 export class PaymentMethod extends AggregateRoot<string> {
+
     private name: PaymentMethodName;
     private icon: PaymentMethodIcon;
     private active: boolean;
@@ -32,5 +33,13 @@ export class PaymentMethod extends AggregateRoot<string> {
 
     getIcon(): string {
         return this.icon.value;
+    }
+
+    updateIcon(newIcon: PaymentMethodIcon): void {
+        this.icon = newIcon;
+    }
+
+    updateName(newName: PaymentMethodName): void {
+        this.name = newName;
     }
 }

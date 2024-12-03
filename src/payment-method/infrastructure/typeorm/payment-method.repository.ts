@@ -22,4 +22,15 @@ export class PaymentMethodRepository implements PaymentMethodRepositoryInterface
         const entities = await this.ormRepository.find();
         return entities.map(PaymentMethodMapper.toDomain);
     }
+
+    async update(paymentMethod: PaymentMethod): Promise<void> {
+        const entity = await this.ormRepository.findOneBy({ id: paymentMethod.id });
+        if (!entity) {
+            throw new Error('Payment method not found');
+        }
+        entity.name = paymentMethod.getName();
+        entity.icon = paymentMethod.getIcon();
+        entity.active = paymentMethod.isActive();
+        await this.ormRepository.save(entity);
+    }
 }
