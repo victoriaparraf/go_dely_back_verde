@@ -9,7 +9,8 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AuthModule } from './auth/auth.module';
 import { DiscountModule } from './discount/discount.module';
 import { ClientModule } from './cliente/cliente.module';
-
+import { CategoryModule } from './category/category.module';
+import { PaymentMethodModule } from './payment-method/payment-method.module';
 
 @Module({
   imports: [
@@ -36,6 +37,10 @@ import { ClientModule } from './cliente/cliente.module';
     ComboModule,
 
     DiscountModule,
+
+    CategoryModule,
+
+    PaymentMethodModule,
     
     ClientsModule.register([
       {

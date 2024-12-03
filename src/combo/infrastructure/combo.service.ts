@@ -13,6 +13,7 @@ import { ComboName } from '../domain/value-objects/combo-name.vo';
 import { ComboPrice } from '../domain/value-objects/combo-price.vo';
 import { ComboCurrency } from '../domain/value-objects/combo-currency.vo';
 import { ComboStock } from '../domain/value-objects/combo-stock.vo';
+import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
 
 @Injectable()
 export class ComboService {
@@ -24,6 +25,8 @@ export class ComboService {
     private readonly comboRepository: Repository<Combo>,
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    @InjectRepository(CategoryEntity)
+    private readonly categoryRepository: Repository<CategoryEntity>,
     private readonly cloudinaryService: CloudinaryService
   ) {}
 
@@ -50,7 +53,7 @@ export class ComboService {
       combo_price: combo.combo_price.getValue(),
       combo_currency: combo.combo_currency.getValue(),
       combo_stock: combo.combo_stock.getValue(),
-      combo_category: combo.combo_category,
+      combo_category: combo.combo_category?.category_name,
       combo_image: combo.combo_image,
       products: Array.isArray(combo.products) ? combo.products.map(product => this.mapProductToResponse(product)) : [],
       discount: combo.discount ? combo.discount.discount_percentage : null,
@@ -59,8 +62,12 @@ export class ComboService {
 
   async create(createComboDto: CreateComboDto): Promise<any> {
     try {
-      const { products, combo_image, ...comboDetails } = createComboDto;
-  
+      const { products, combo_image, combo_category, ...comboDetails } = createComboDto;
+
+      const category = await this.categoryRepository.findOne({ where: { category_id: combo_category as any } });
+      if (!category) {
+        throw new NotFoundException(`Category with ID ${combo_category} not found`);
+      }
 
       const productEntities = await this.productRepository.find({
         where: { product_id: In(products) },
@@ -76,7 +83,7 @@ export class ComboService {
         combo_description: new ComboDescription(comboDetails.combo_description),
         combo_price: new ComboPrice(comboDetails.combo_price),
         combo_currency: new ComboCurrency(comboDetails.combo_currency),
-        combo_category: comboDetails.combo_category,
+        combo_category: category,
         combo_stock: new ComboStock(comboDetails.combo_stock),
         combo_image: await this.cloudinaryService.uploadImage(combo_image, 'combos'),
         products: productEntities,
@@ -99,7 +106,7 @@ export class ComboService {
 
       take: perpage,
       skip: (page - 1) * perpage,
-      relations: ['products', 'products.images', 'discount'],
+      relations: ['products', 'products.images', 'discount', 'combo_category'],
       
     });
 
@@ -112,7 +119,7 @@ export class ComboService {
     if (isUUID(term)) {
       combo = await this.comboRepository.findOne({
         where: { combo_id: term },
-        relations: ['products', 'products.images', 'discount'],
+        relations: ['products', 'products.images', 'discount', 'combo_category'],
       });
     } else {
       combo = await this.comboRepository
