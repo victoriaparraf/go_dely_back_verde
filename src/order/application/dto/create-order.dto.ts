@@ -1,5 +1,4 @@
-import { Type } from "class-transformer";
-import { IsArray, IsNumber, IsString, Min, MinLength, ValidateNested } from "class-validator";
+import { IsNumber, IsString, Min, MinLength } from "class-validator";
 
 
 export class CreateOrderDto{
@@ -9,7 +8,7 @@ export class CreateOrderDto{
 
     @IsString()
     @MinLength(6)
-    paymentMethod: string;
+    paymentMethodId: string;
 
     @IsString()
     @MinLength(3)

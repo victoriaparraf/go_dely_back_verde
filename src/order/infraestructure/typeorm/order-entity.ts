@@ -17,7 +17,7 @@ export class OrderEntity {
     total: number;
 
     @Column({ type: 'varchar', length: 50 })
-    payment_method: string;
+    paymentMethodId: string;
 
     @OneToMany(() => Product, (product) => product.order, { nullable: true })
     products: Product[];

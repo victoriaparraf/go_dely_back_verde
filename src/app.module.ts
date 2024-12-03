@@ -41,6 +41,12 @@ import { PaymentMethodModule } from './payment-method/payment-method.module';
     CategoryModule,
 
     PaymentMethodModule,
+
+    RabbitmqModule,
+
+    AuthModule,
+
+    OrderModule,
     
     ClientsModule.register([
       {
@@ -56,11 +62,6 @@ import { PaymentMethodModule } from './payment-method/payment-method.module';
       },
     ]),
     
-    RabbitmqModule,
-
-    AuthModule,
-
-    OrderModule,
   ],
 })
 export class AppModule {}

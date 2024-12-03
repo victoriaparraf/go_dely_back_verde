@@ -4,7 +4,7 @@ import { OrderPaymentMethod } from "../value-objects/order-payment-methos.vo";
 import { OrderTotal } from "../value-objects/order-total.vo";
 
 
-export class Order {
+export class OrderEntity {
     order_id: string;
     address: OrderAddress;
     currency: OrderCurrency;

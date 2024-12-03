@@ -3,26 +3,26 @@ import { OrderID } from './value-objects/order-id.vo';
 import { OrderAddress } from './value-objects/order-address.vo';
 import { OrderCurrency } from './value-objects/order-currency.vo';
 import { OrderTotal } from './value-objects/order-total.vo';
-import { OrderPaymentMethod } from './value-objects/order-payment-methos.vo';
+import { PaymentMethodId } from 'src/payment-method/domain/value-objects/payment-method-id.vo';
 
 export class Order extends AggregateRoot<OrderID> {
     private address: OrderAddress;
     private currency: OrderCurrency;
     private total: OrderTotal;
-    private paymentMethod: OrderPaymentMethod;
+    private paymentMethodId: PaymentMethodId;
 
     constructor(
         id: OrderID,
         address: OrderAddress,
         currency: OrderCurrency,
         total: OrderTotal,
-        paymentMethod: OrderPaymentMethod,
+        paymentMethodId: PaymentMethodId
     ) {
         super(id);
         this.address = address;
         this.currency = currency;
         this.total = total;
-        this.paymentMethod = paymentMethod;
+        this.paymentMethodId = paymentMethodId;
     }
 
     static create(
@@ -36,7 +36,7 @@ export class Order extends AggregateRoot<OrderID> {
             new OrderAddress(address),
             new OrderCurrency(currency),
             new OrderTotal(total),
-            new OrderPaymentMethod(paymentMethod),
+            new PaymentMethodId(paymentMethod),
         );
     }
 
@@ -52,7 +52,7 @@ export class Order extends AggregateRoot<OrderID> {
             new OrderAddress(address),
             new OrderCurrency(currency),
             new OrderTotal(total),
-            new OrderPaymentMethod(paymentMethod),
+            new PaymentMethodId(paymentMethod),
         );
     }
 
@@ -72,8 +72,8 @@ export class Order extends AggregateRoot<OrderID> {
         return this.total;
     }
 
-    getPaymentMethod(): OrderPaymentMethod {
-        return this.paymentMethod;
+    getPaymentMethodId(): PaymentMethodId {
+        return this.paymentMethodId;
     }
 
     updateAddress(newAddress: string): void {
