@@ -1,4 +1,19 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateOrderDto } from './create-order.dto';
+import { IsNumber, IsString, Min, MinLength } from "class-validator";
 
-export class UpdateOrderDto extends PartialType(CreateOrderDto) {}
+export class UpdateOrderDto {
+    @IsString()
+    @MinLength(6)
+    address: string;
+
+    @IsString()
+    @MinLength(6)
+    paymentMethod: string;
+
+    @IsString()
+    @MinLength(3)
+    currency: string;
+
+    @IsNumber()
+    @Min(0)
+    total: number;
+}
