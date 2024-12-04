@@ -16,4 +16,9 @@ export class UserId extends ValueObject<string> {
   static generate(): UserId {
     return new UserId(uuidv4());
   }
+
+  getValue(): string {
+    return this.value;
+  }
+
 }

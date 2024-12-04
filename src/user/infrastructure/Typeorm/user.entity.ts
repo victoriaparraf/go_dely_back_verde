@@ -62,9 +62,4 @@ export class User {
     @OneToMany(() => OrderEntity, (order) => order.user)
     orders: OrderEntity[];
 
-    // @BeforeInsert()
-    // checkEmaill() {
-    //     this.user_email = this.user_email.getValue().toLowerCase().trim();
-    // }
-
 }
