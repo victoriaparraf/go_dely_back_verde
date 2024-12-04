@@ -5,4 +5,5 @@ export class ResponseOrderDTO {
     total: number;
     paymentMethodId: string;
     user_id: string;
+    status: string;
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PaymentMethodRepository } from 'src/payment-method/infrastructure/typeorm/payment-method.repository';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -7,6 +7,8 @@ import { Order } from '../domain/order-aggregate';
 import { OrderMapper } from '../infraestructure/mappers/order.mapper';
 import { ResponseOrderDTO } from './dto/response-order.dto';
 import { UserRepository } from 'src/user/infrastructure/typeorm/user.repository';
+import { UpdateOrderStatusDto } from './dto/update-status.dto';
+import { OrderStatus } from '../domain/enums/order-status.enum';
 
 @Injectable()
 export class OrderService {
@@ -66,5 +68,14 @@ export class OrderService {
 
     async remove(orderId: string): Promise<void> {
         await this.orderRepository.remove(orderId);
+    }
+
+    async updateOrderStatus(orderId: string, newStatus: OrderStatus): Promise<void> {
+        const order = await this.orderRepository.findById(orderId);
+        if (!order) {
+            throw new Error('Order not found');
+        }
+        order.setStatus(newStatus);
+        await this.orderRepository.save(order);
     }
 }
