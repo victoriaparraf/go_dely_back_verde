@@ -11,6 +11,7 @@ import { DiscountModule } from './discount/discount.module';
 import { OrderModule } from './order/order.module';
 import { CategoryModule } from './category/category.module';
 import { PaymentMethodModule } from './payment-method/payment-method.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -44,9 +45,11 @@ import { PaymentMethodModule } from './payment-method/payment-method.module';
 
     RabbitmqModule,
 
-    AuthModule,
-
     OrderModule,
+
+    UserModule,
+
+    AuthModule,
     
     ClientsModule.register([
       {
@@ -61,7 +64,7 @@ import { PaymentMethodModule } from './payment-method/payment-method.module';
         },
       },
     ]),
-    
+
   ],
 })
 export class AppModule {}

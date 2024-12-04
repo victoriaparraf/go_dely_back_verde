@@ -1,13 +1,15 @@
 import { BadRequestException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
-import { UpdateAuthDto } from './dto/update-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './typeorm/user.entity';
+import { User } from '../../user/infrastructure/typeorm/user.entity';
 import * as bcrypt from 'bcrypt';
 import { LoginUserDto } from './dto/login-user.dto';
 import { IJwtPayload } from './jwt/interfaces/jwt-payload.interface.strategy';
 import { JwtService } from '@nestjs/jwt';
+import { UserEmail } from 'src/user/domain/value-object/user-email';
+import { UserName } from 'src/user/domain/value-object/user-name';
+import { UserPhone } from 'src/user/domain/value-object/user-phone';
 
 
 @Injectable()
@@ -19,6 +21,14 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  private mapUserLoginToResponse(user:User):any{
+    return{
+      user_id: user.user_id,
+      user_email: user.user_email.getValue(),
+      token: this.getJwtToken({ user_id: user.user_id })
+    }
+  }
+
   async create(createUserDto: CreateUserDto) {
     
     try {
@@ -26,7 +36,9 @@ export class AuthService {
       const { user_password, ...userData} = createUserDto;
 
       const user = this.userRepository.create({
-        ...userData,
+        user_email: new UserEmail(userData.user_email),
+        user_name: new UserName(userData.user_name),
+        user_phone: new UserPhone(userData.user_phone),
         user_password: bcrypt.hashSync( user_password, 10 )
       });
 
@@ -49,33 +61,44 @@ export class AuthService {
     return `This action returns a #${id} auth`;
   }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
   remove(id: number) {
     return `This action removes a #${id} auth`;
   }
 
   async login( loginUserDto: LoginUserDto ) {
+    
+    // const { user_password, user_email } = loginUserDto;
 
+    // const user = await this.userRepository.findOne({
+    //   where: { user_email },
+    //   select: { user_id: true, user_email : true, user_password: true}
+    // });
+    
+    
     const { user_password, user_email } = loginUserDto;
-
-    const user = await this.userRepository.findOne({
-      where: { user_email },
-      select: { user_id: true, user_email: true, user_password: true}
-    });
-
+    
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.user_email = :email', { email: user_email })
+      .addSelect(['user.user_id', 'user.user_email', 'user.user_password'])
+      .getOne();
+    
+    
     if ( !user )
       throw new UnauthorizedException('Not valid credentials');
 
     if (!bcrypt.compareSync(user_password, user.user_password))
       throw new UnauthorizedException('Not valid password');
+
+    if (user.user_status !== 'active') {
+      throw new UnauthorizedException('User is inactive');
+    }
     
-    return {
-      ...user,
-      token: this.getJwtToken({ user_id: user.user_id })
-    };
+    // return {
+    //   ...user,
+    //   token: this.getJwtToken({ user_id: user.user_id })
+    // };
+    return this.mapUserLoginToResponse(user);
   }
 
   private getJwtToken ( payload: IJwtPayload ){
