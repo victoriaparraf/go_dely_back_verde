@@ -67,14 +67,6 @@ export class AuthService {
 
   async login( loginUserDto: LoginUserDto ) {
     
-    // const { user_password, user_email } = loginUserDto;
-
-    // const user = await this.userRepository.findOne({
-    //   where: { user_email },
-    //   select: { user_id: true, user_email : true, user_password: true}
-    // });
-    
-    
     const { user_password, user_email } = loginUserDto;
     
     const user = await this.userRepository
@@ -94,11 +86,25 @@ export class AuthService {
       throw new UnauthorizedException('User is inactive');
     }
     
-    // return {
-    //   ...user,
-    //   token: this.getJwtToken({ user_id: user.user_id })
-    // };
     return this.mapUserLoginToResponse(user);
+
+  }
+
+  logout(token: string) {
+    try {
+
+      const decoded = this.jwtService.decode(token);
+      if (!decoded) {
+        throw new UnauthorizedException('Invalid token');
+      }
+
+      this.jwtService.verify(token);
+
+      console.log(`Token for user ${decoded.user_id} is now invalid.`);
+
+    } catch (error) {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
   }
 
   private getJwtToken ( payload: IJwtPayload ){

@@ -32,7 +32,7 @@ export class OrderController {
 
     @Patch(':id/status')
     async updateStatus(@Param('id') id: string, @Body() dto: UpdateOrderStatusDto): Promise<{ message: string }> {
-        const updatedStatus = await this.orderService.updateOrderStatus(id, dto.status);
+        await this.orderService.updateOrderStatus(id, dto.status);
         return {
             message: `Order status successfully updated`
         };
