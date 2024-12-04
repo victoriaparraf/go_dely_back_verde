@@ -3,6 +3,7 @@ import { Address } from "./address.entity";
 import { UserName } from "src/user/domain/value-object/user-name";
 import { UserPhone } from "src/user/domain/value-object/user-phone";
 import { UserEmail } from "src/user/domain/value-object/user-email";
+import { OrderEntity } from "src/order/infraestructure/typeorm/order-entity";
 
 @Entity('user')
 export class User {
@@ -58,6 +59,8 @@ export class User {
     @OneToMany(() => Address, address => address.user, { cascade: true }) 
     addresses: Address[];
 
+    @OneToMany(() => OrderEntity, (order) => order.user)
+    orders: OrderEntity[];
 
     // @BeforeInsert()
     // checkEmaill() {

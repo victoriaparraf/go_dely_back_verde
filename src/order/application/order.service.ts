@@ -6,12 +6,14 @@ import { OrderRepository } from '../infraestructure/typeorm/order-repository';
 import { Order } from '../domain/order-aggregate';
 import { OrderMapper } from '../infraestructure/mappers/order.mapper';
 import { ResponseOrderDTO } from './dto/response-order.dto';
+import { UserRepository } from 'src/user/infrastructure/typeorm/user.repository';
 
 @Injectable()
 export class OrderService {
     constructor(
         private readonly orderRepository: OrderRepository,
         private readonly paymentMethodRepository: PaymentMethodRepository,
+        private readonly userRepository: UserRepository,
     ) {}
 
     async createOrder(dto: CreateOrderDto): Promise<ResponseOrderDTO> {
@@ -20,7 +22,14 @@ export class OrderService {
             throw new Error(`Payment method with ID ${dto.paymentMethodId} not found`);
         }
 
-        const order = Order.create(dto.address, dto.currency, dto.total, dto.paymentMethodId);
+        const order = Order.create(
+            dto.address,
+            dto.currency,
+            dto.total,
+            dto.paymentMethodId,
+            dto.user_id,
+        );
+        
         await this.orderRepository.save(order);
 
         return OrderMapper.toDTO(order);

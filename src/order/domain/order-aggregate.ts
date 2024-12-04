@@ -4,25 +4,29 @@ import { OrderAddress } from './value-objects/order-address.vo';
 import { OrderCurrency } from './value-objects/order-currency.vo';
 import { OrderTotal } from './value-objects/order-total.vo';
 import { PaymentMethodId } from 'src/payment-method/domain/value-objects/payment-method-id.vo';
+import { UserId } from 'src/user/domain/value-object/user-id';
 
 export class Order extends AggregateRoot<OrderID> {
     private address: OrderAddress;
     private currency: OrderCurrency;
     private total: OrderTotal;
     private paymentMethodId: PaymentMethodId;
+    private user_id: UserId;
 
     constructor(
         id: OrderID,
         address: OrderAddress,
         currency: OrderCurrency,
         total: OrderTotal,
-        paymentMethodId: PaymentMethodId
+        paymentMethodId: PaymentMethodId,
+        user_id: UserId
     ) {
         super(id);
         this.address = address;
         this.currency = currency;
         this.total = total;
         this.paymentMethodId = paymentMethodId;
+        this.user_id = user_id;
     }
 
     static create(
@@ -30,6 +34,7 @@ export class Order extends AggregateRoot<OrderID> {
         currency: string,
         total: number,
         paymentMethod: string,
+        user_id: string,
     ): Order {
         return new Order(
             OrderID.create(),
@@ -37,6 +42,7 @@ export class Order extends AggregateRoot<OrderID> {
             new OrderCurrency(currency),
             new OrderTotal(total),
             new PaymentMethodId(paymentMethod),
+            new UserId(user_id),
         );
     }
 
@@ -46,6 +52,7 @@ export class Order extends AggregateRoot<OrderID> {
         currency: string,
         total: number,
         paymentMethod: string,
+        user_id: string,
     ): Order {
         return new Order(
             new OrderID(id),
@@ -53,6 +60,7 @@ export class Order extends AggregateRoot<OrderID> {
             new OrderCurrency(currency),
             new OrderTotal(total),
             new PaymentMethodId(paymentMethod),
+            new UserId(user_id),
         );
     }
 
@@ -82,5 +90,9 @@ export class Order extends AggregateRoot<OrderID> {
 
     updateTotal(newTotal: number): void {
         this.total = new OrderTotal(newTotal);
+    }
+
+    getUserId(): UserId {
+        return this.user_id;
     }
 }

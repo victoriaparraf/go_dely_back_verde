@@ -10,7 +10,7 @@ export class OrderMapper {
         address: order.getAddress().value,
         currency: order.getCurrency().value,
         total: order.getTotal().value,
-        paymentMethodId: order.getPaymentMethodId().value,
+        paymentMethodId: order.getPaymentMethodId().value
     };
   }
 
@@ -21,6 +21,7 @@ export class OrderMapper {
       entity.currency,
       entity.total,
       entity.paymentMethodId,
+      entity.user.user_id,
     );
   }
 
@@ -31,6 +32,7 @@ export class OrderMapper {
         currency: order.getCurrency().value,
         total: order.getTotal().getValue(),
         paymentMethodId: order.getPaymentMethodId().value,
+        user_id: order.getUserId().value
     };
   }
 }

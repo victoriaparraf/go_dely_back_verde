@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from 'typeorm';
 import { Product } from 'src/product/infrastructure/typeorm/product-entity';
 import { Combo } from 'src/combo/infrastructure/typeorm/combo-entity';
+import { User } from 'src/user/infrastructure/typeorm/user.entity';
 
 @Entity('orders')
 export class OrderEntity {
@@ -24,4 +25,7 @@ export class OrderEntity {
 
     @OneToMany(() => Product, (combo) => combo.order, { nullable: true })
     combos: Combo[];
+
+    @ManyToOne(() => User, user => user.orders)
+    user: User;
 }
