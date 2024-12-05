@@ -4,8 +4,8 @@ import { User } from './user.entity';
 
 @Entity()
 export class Address {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  address_id: string;
 
   @Column('decimal', { precision: 10, scale: 7 })
   latitude: number;
