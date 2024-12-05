@@ -6,8 +6,6 @@ import { OrderRepository } from '../infraestructure/typeorm/order-repository';
 import { Order } from '../domain/order-aggregate';
 import { OrderMapper } from '../infraestructure/mappers/order.mapper';
 import { ResponseOrderDTO } from './dto/response-order.dto';
-import { UserRepository } from 'src/user/infrastructure/typeorm/user.repository';
-import { UpdateOrderStatusDto } from './dto/update-status.dto';
 import { OrderStatus } from '../domain/enums/order-status.enum';
 
 @Injectable()
@@ -15,10 +13,9 @@ export class OrderService {
     constructor(
         private readonly orderRepository: OrderRepository,
         private readonly paymentMethodRepository: PaymentMethodRepository,
-        private readonly userRepository: UserRepository,
     ) {}
 
-    async createOrder(dto: CreateOrderDto): Promise<ResponseOrderDTO> {
+    async createOrder(dto: CreateOrderDto, user_id: string): Promise<ResponseOrderDTO> {
         const paymentMethod = await this.paymentMethodRepository.findById(dto.paymentMethodId);
         if (!paymentMethod) {
             throw new Error(`Payment method with ID ${dto.paymentMethodId} not found`);
@@ -29,7 +26,7 @@ export class OrderService {
             dto.currency,
             dto.total,
             dto.paymentMethodId,
-            dto.user_id,
+            user_id,
         );
         
         await this.orderRepository.save(order);
@@ -53,6 +50,14 @@ export class OrderService {
         const order = await this.orderRepository.findById(orderId);
         if (!order) {
             throw new Error(`Order with ID ${orderId} not found`);
+        }
+
+        if (dto.currency) {
+            order.updateCurrency(dto.currency);
+        }
+
+        if (dto.paymentMethodId) {
+            order.updatePaymentMethodId(dto.paymentMethodId);
         }
 
         if (dto.address) {

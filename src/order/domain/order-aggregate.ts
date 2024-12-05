@@ -92,6 +92,14 @@ export class Order extends AggregateRoot<OrderID> {
         return this.paymentMethodId;
     }
 
+    updateCurrency(newCurrency: string): void {
+        this.currency = new OrderCurrency(newCurrency);
+    }
+
+    updatePaymentMethodId(newPaymentMethodId: string): void {
+        this.paymentMethodId = new PaymentMethodId(newPaymentMethodId);
+    }
+
     updateAddress(newAddress: string): void {
         this.address = new OrderAddress(newAddress);
     }

@@ -1,5 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
+import { GetUser } from 'src/auth/infrastructure/get-user.decorator';
 import { CreateOrderDto } from 'src/order/application/dto/create-order.dto';
 import { UpdateOrderDto } from 'src/order/application/dto/update-order.dto';
 import { UpdateOrderStatusDto } from 'src/order/application/dto/update-status.dto';
@@ -11,8 +13,9 @@ export class OrderController {
     constructor(private readonly orderService: OrderService) {}
 
     @Post('create')
-    create(@Body() createOrderDto: CreateOrderDto) {
-        return this.orderService.createOrder(createOrderDto);
+    @UseGuards( AuthGuard('jwt') )
+    create(@Body() createOrderDto: CreateOrderDto, @GetUser('user_id') user_id: string) {
+        return this.orderService.createOrder(createOrderDto, user_id);
     }
 
     @Get()
@@ -26,8 +29,11 @@ export class OrderController {
     }
 
     @Patch(':id')
-    update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-        return this.orderService.updateOrder(id, updateOrderDto);
+    async update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
+        await this.orderService.updateOrder(id, updateOrderDto);
+        return {
+            message: `Order successfully updated`
+        };
     }
 
     @Patch(':id/status')
@@ -39,7 +45,10 @@ export class OrderController {
     }
 
     @Delete(':id')
-    remove(@Param('id') id: string) {
-        return this.orderService.remove(id);
+    async remove(@Param('id') id: string) {
+        await this.orderService.remove(id);
+        return {
+            message: `Order successfully deleted`
+        };
     }
 }

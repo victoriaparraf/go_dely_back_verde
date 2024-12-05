@@ -22,7 +22,7 @@ export class AuthController {
   }
 
   @Get('private')
-  @UseGuards( AuthGuard() )
+  @UseGuards( AuthGuard('jwt') )
   testingPrivateRoute(
     @GetUser() user: User
   ){

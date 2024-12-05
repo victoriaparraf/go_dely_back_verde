@@ -29,13 +29,13 @@ export class OrderRepository {
 
     async save(order: Order): Promise<void> {
         const user = await this.userRepository.findOne({ where: { user_id: order.getUserId().value } });
-        if (!user) {
-          throw new Error('User not found');
-        }
+    if (!user) {
+        throw new Error('User not found');
+    }
     
         const orderEntity = this.repository.create({
             ...OrderMapper.toEntity(order),
-            user: user,
+            user,
         });
     
         await this.repository.save(orderEntity);

@@ -18,6 +18,4 @@ export class CreateOrderDto{
     @Min(0)
     total: number;
 
-    @IsUUID()
-    user_id: string;
 }
