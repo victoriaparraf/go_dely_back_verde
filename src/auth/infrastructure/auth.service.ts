@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, InternalServerErrorException, Unauthor
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../../user/infrastructure/Typeorm/user.entity';
+import { User } from '../../user/infrastructure/typeorm/user.entity';
 import * as bcrypt from 'bcrypt';
 import { LoginUserDto } from './dto/login-user.dto';
 import { IJwtPayload } from './jwt/interfaces/jwt-payload.interface.strategy';
@@ -67,14 +67,6 @@ export class AuthService {
 
   async login( loginUserDto: LoginUserDto ) {
     
-    // const { user_password, user_email } = loginUserDto;
-
-    // const user = await this.userRepository.findOne({
-    //   where: { user_email },
-    //   select: { user_id: true, user_email : true, user_password: true}
-    // });
-    
-    
     const { user_password, user_email } = loginUserDto;
     
     const user = await this.userRepository
@@ -89,12 +81,30 @@ export class AuthService {
 
     if (!bcrypt.compareSync(user_password, user.user_password))
       throw new UnauthorizedException('Not valid password');
+
+    if (user.user_status !== 'active') {
+      throw new UnauthorizedException('User is inactive');
+    }
     
-    // return {
-    //   ...user,
-    //   token: this.getJwtToken({ user_id: user.user_id })
-    // };
     return this.mapUserLoginToResponse(user);
+
+  }
+
+  logout(token: string) {
+    try {
+
+      const decoded = this.jwtService.decode(token);
+      if (!decoded) {
+        throw new UnauthorizedException('Invalid token');
+      }
+
+      this.jwtService.verify(token);
+
+      console.log(`Token for user ${decoded.user_id} is now invalid.`);
+
+    } catch (error) {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
   }
 
   private getJwtToken ( payload: IJwtPayload ){

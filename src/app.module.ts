@@ -4,13 +4,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductModule } from './product/product.module';
 import { ComboModule } from './combo/combo.module';
 import { CommonModule } from './common/common.module';
-import { RabbitmqModule } from './product/infrastructure/rabbitmq/rabbitmq.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AuthModule } from './auth/auth.module';
 import { DiscountModule } from './discount/discount.module';
-import { UserModule } from './user/user.module';
+import { OrderModule } from './order/order.module';
 import { CategoryModule } from './category/category.module';
 import { PaymentMethodModule } from './payment-method/payment-method.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -41,6 +41,14 @@ import { PaymentMethodModule } from './payment-method/payment-method.module';
     CategoryModule,
 
     PaymentMethodModule,
+
+    AuthModule,
+
+    OrderModule,
+
+    UserModule,
+
+    AuthModule,
     
     ClientsModule.register([
       {
@@ -55,12 +63,7 @@ import { PaymentMethodModule } from './payment-method/payment-method.module';
         },
       },
     ]),
-    
-    RabbitmqModule,
 
-    AuthModule,
-
-    UserModule,
   ],
 })
 export class AppModule {}
