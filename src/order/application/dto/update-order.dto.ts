@@ -7,7 +7,7 @@ export class UpdateOrderDto {
 
     @IsString()
     @MinLength(6)
-    paymentMethod: string;
+    paymentMethodId: string;
 
     @IsString()
     @MinLength(3)

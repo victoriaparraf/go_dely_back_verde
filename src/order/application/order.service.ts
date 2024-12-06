@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PaymentMethodRepository } from 'src/payment-method/infrastructure/typeorm/payment-method.repository';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -6,6 +6,7 @@ import { OrderRepository } from '../infraestructure/typeorm/order-repository';
 import { Order } from '../domain/order-aggregate';
 import { OrderMapper } from '../infraestructure/mappers/order.mapper';
 import { ResponseOrderDTO } from './dto/response-order.dto';
+import { OrderStatus } from '../domain/enums/order-status.enum';
 import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
@@ -16,13 +17,20 @@ export class OrderService {
         @Inject('RABBITMQ_SERVICE') private readonly client: ClientProxy,
     ) {}
 
-    async createOrder(dto: CreateOrderDto): Promise<ResponseOrderDTO> {
+    async createOrder(dto: CreateOrderDto, user_id: string): Promise<ResponseOrderDTO> {
         const paymentMethod = await this.paymentMethodRepository.findById(dto.paymentMethodId);
         if (!paymentMethod) {
             throw new Error(`Payment method with ID ${dto.paymentMethodId} not found`);
         }
 
-        const order = Order.create(dto.address, dto.currency, dto.total, dto.paymentMethodId);
+        const order = Order.create(
+            dto.address,
+            dto.currency,
+            dto.total,
+            dto.paymentMethodId,
+            user_id,
+        );
+        
         await this.orderRepository.save(order);
 
         this.client.send('order_notification', {
@@ -53,6 +61,14 @@ export class OrderService {
             throw new Error(`Order with ID ${orderId} not found`);
         }
 
+        if (dto.currency) {
+            order.updateCurrency(dto.currency);
+        }
+
+        if (dto.paymentMethodId) {
+            order.updatePaymentMethodId(dto.paymentMethodId);
+        }
+
         if (dto.address) {
             order.updateAddress(dto.address);
         }
@@ -66,5 +82,14 @@ export class OrderService {
 
     async remove(orderId: string): Promise<void> {
         await this.orderRepository.remove(orderId);
+    }
+
+    async updateOrderStatus(orderId: string, newStatus: OrderStatus): Promise<void> {
+        const order = await this.orderRepository.findById(orderId);
+        if (!order) {
+            throw new Error('Order not found');
+        }
+        order.setStatus(newStatus);
+        await this.orderRepository.save(order);
     }
 }

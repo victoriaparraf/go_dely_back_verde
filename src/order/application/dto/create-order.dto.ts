@@ -1,4 +1,4 @@
-import { IsNumber, IsString, Min, MinLength } from "class-validator";
+import { IsNumber, IsString, IsUUID, Min, MinLength } from "class-validator";
 
 
 export class CreateOrderDto{
@@ -17,4 +17,5 @@ export class CreateOrderDto{
     @IsNumber()
     @Min(0)
     total: number;
+
 }
