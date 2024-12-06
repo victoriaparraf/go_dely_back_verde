@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PaymentMethodRepository } from 'src/payment-method/infrastructure/typeorm/payment-method.repository';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -29,80 +29,95 @@ export class OrderService {
     ) {}
 
     async createOrder(dto: CreateOrderDto, user_id: string): Promise<ResponseOrderDTO> {
-        try{
+        try {
             const paymentMethod = await this.paymentMethodRepository.findById(dto.paymentMethodId);
             if (!paymentMethod) {
                 throw new Error(`Payment method with ID ${dto.paymentMethodId} not found`);
             }
-        
+    
+            if ((!dto.order_products || dto.order_products.length === 0) && (!dto.order_combos || dto.order_combos.length === 0)) {
+                throw new Error('At least one product or combo must be included in the order');
+            }
+    
             const order = Order.create(dto.address, dto.currency, 0, dto.paymentMethodId, user_id);
-        
-            const products = await Promise.all(dto.order_products.map(p => this.productRepository.findOne(p.product_id)));
-            if (products.includes(null)) {
-                throw new Error('Some products not found');
-            }
-        
+    
             let total = 0;
-            const orderProducts = dto.order_products.map(productData => {
-            const product = products.find(p => p?.product_id === productData.product_id);
-            if (!product) {
-                throw new Error(`Product with ID ${productData.product_id} not found`);
+            const orderProducts = [];
+            const orderCombos = [];
+    
+            if (dto.order_products && dto.order_products.length > 0) {
+                const products = await Promise.all(dto.order_products.map(p => this.productRepository.findOne(p.product_id)));
+                if (products.includes(null)) {
+                    throw new Error('Some products not found');
+                }
+    
+                dto.order_products.forEach(productData => {
+                    const product = products.find(p => p?.product_id === productData.product_id);
+                    if (!product) {
+                        throw new Error(`Product with ID ${productData.product_id} not found`);
+                    }
+    
+                    const orderProduct = new OrderProduct();
+                    orderProduct.order_id = order.getId().toString();
+                    orderProduct.product_id = product.product_id;
+                    orderProduct.quantity = productData.quantity;
+                    orderProduct.product_price = productData.product_price;
+                    orderProduct.total_price = productData.quantity * productData.product_price;
+                    orderProduct.order = null; // Se asignará más adelante
+    
+                    total += orderProduct.total_price;
+                    orderProducts.push(orderProduct);
+                });
+    
+                orderProducts.forEach(op => order.addOrderProduct(op));
             }
-
-            const orderProduct = new OrderProduct();
-            const orderEntity = new OrderEntity();
-            orderEntity.order_id = order.getId().toString();
-            orderProduct.order = orderEntity;
-            orderProduct.product = product;
-            orderProduct.order_id = order.getId().toString();
-            orderProduct.product_id = product.product_id;
-            orderProduct.quantity = productData.quantity;
-            orderProduct.product_price = productData.product_price;
-            orderProduct.total_price = productData.quantity * productData.product_price;
-
-            total += orderProduct.total_price;
-
-            return orderProduct;
-            });
-
-            orderProducts.forEach(op => order.addOrderProduct(op));
-
-            
+    
+            if (dto.order_combos && dto.order_combos.length > 0) {
                 const combos = await Promise.all(dto.order_combos.map(c => this.comboRepository.findComboById(c.combo_id)));
                 if (combos.includes(null)) {
                     throw new Error('Some combos not found');
                 }
-
-            const orderCombos = dto.order_combos.map(comboData => {
-                const combo = combos.find(c => c?.combo_id === comboData.combo_id);
-                if (!combo) {
-                    throw new Error(`Combo with ID ${comboData.combo_id} not found`);
-                }
-
-                const orderCombo = new OrderCombo();
-                const orderEntity = new OrderEntity();
-                orderEntity.order_id = order.getId().toString();
-                orderCombo.order = orderEntity;
-                orderCombo.combo = combo;
-                orderCombo.order_id = order.getId().toString();
-                orderCombo.combo_id = combo.combo_id;
-                orderCombo.quantity = comboData.quantity;
-                orderCombo.combo_price = comboData.combo_price;
-                orderCombo.total_price = comboData.quantity * comboData.combo_price;
-
-                total += orderCombo.total_price;
-
-                return orderCombo;
-            });
-
-            orderCombos.forEach(oc => order.addOrderCombo(oc));
-        
+    
+                dto.order_combos.forEach(comboData => {
+                    const combo = combos.find(c => c?.combo_id === comboData.combo_id);
+                    if (!combo) {
+                        throw new Error(`Combo with ID ${comboData.combo_id} not found`);
+                    }
+    
+                    const orderCombo = new OrderCombo();
+                    orderCombo.order_id = order.getId().toString();
+                    orderCombo.combo_id = combo.combo_id;
+                    orderCombo.quantity = comboData.quantity;
+                    orderCombo.combo_price = comboData.combo_price;
+                    orderCombo.total_price = comboData.quantity * comboData.combo_price;
+                    orderCombo.order = null; // Se asignará más adelante
+    
+                    total += orderCombo.total_price;
+                    orderCombos.push(orderCombo);
+                });
+    
+                orderCombos.forEach(oc => order.addOrderCombo(oc));
+            }
+    
             order.updateTotal(total);
-
+    
+            const orderEntity = new OrderEntity();
+            orderEntity.order_id = order.getId().toString();
+            orderEntity.address = order.getAddress().toString();
+            orderEntity.currency = order.getCurrency().toString();
+            orderEntity.total = order.getTotal().getValue();
+            orderEntity.paymentMethodId = order.getPaymentMethodId().toString();
+            orderEntity.status = order.getStatus();
+            orderEntity.order_products = orderProducts;
+            orderEntity.order_combos = orderCombos;
+    
+            orderProducts.forEach(op => op.order = orderEntity);
+            orderCombos.forEach(oc => oc.order = orderEntity);
+    
             await this.orderRepository.save(order);
             await this.orderProductRepository.save(orderProducts);
             await this.orderComboRepository.save(orderCombos);
-        
+    
             // Enviar la notificación de la orden
             this.client.send('order_notification', {
                 orderAddress: dto.address,
@@ -110,11 +125,10 @@ export class OrderService {
                 orderCurrency: dto.currency,
                 message: 'Your order is ready to be served',
             }).subscribe();
-        
+    
             return OrderMapper.toDTO(order);
         } catch (error) {
-            console.error('Error creating order:', error);
-            throw new Error('Failed to create order');
+            throw new InternalServerErrorException(`Failed to create order: ${error}`);
         }
     }
     
