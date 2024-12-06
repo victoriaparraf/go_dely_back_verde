@@ -6,8 +6,8 @@ import { OrderTotal } from './value-objects/order-total.vo';
 import { PaymentMethodId } from 'src/payment-method/domain/value-objects/payment-method-id.vo';
 import { UserId } from 'src/user/domain/value-object/user-id';
 import { OrderStatus } from './enums/order-status.enum';
-import { Product } from 'src/product/infrastructure/typeorm/product-entity';
 import { OrderProduct } from '../infraestructure/typeorm/order-product';
+import { OrderCombo } from '../infraestructure/typeorm/order-combo';
 
 export class Order extends AggregateRoot<OrderID> {
     private address: OrderAddress;
@@ -16,7 +16,8 @@ export class Order extends AggregateRoot<OrderID> {
     private paymentMethodId: PaymentMethodId;
     private user_id: UserId;
     private status: OrderStatus;
-    private order_products: OrderProduct[]; 
+    private order_products: OrderProduct[];
+    private order_combos: OrderCombo[]; 
 
     constructor(
         id: OrderID,
@@ -27,6 +28,8 @@ export class Order extends AggregateRoot<OrderID> {
         user_id: UserId,
         status: OrderStatus = OrderStatus.CREATED,
         order_products: OrderProduct[] = [],
+        order_combos: OrderCombo[] = [],
+
     ) {
         super(id);
         this.address = address;
@@ -36,6 +39,7 @@ export class Order extends AggregateRoot<OrderID> {
         this.user_id = user_id;
         this.status = status;
         this.order_products = order_products;
+        this.order_combos = order_combos;
     }
 
     static create(
@@ -45,7 +49,8 @@ export class Order extends AggregateRoot<OrderID> {
         paymentMethod: string,
         user_id: string,
         status: OrderStatus = OrderStatus.CREATED,
-        order_products: OrderProduct[] = []
+        order_products: OrderProduct[] = [],
+        order_combos: OrderCombo[] = [],
 
     ): Order {
         return new Order(
@@ -56,7 +61,8 @@ export class Order extends AggregateRoot<OrderID> {
             new PaymentMethodId(paymentMethod),
             new UserId(user_id),
             status,
-            order_products
+            order_products,
+            order_combos
         );
     }
 
@@ -68,7 +74,9 @@ export class Order extends AggregateRoot<OrderID> {
         paymentMethod: string,
         user_id: string,
         status: OrderStatus,
-        order_products: OrderProduct[] = []
+        order_products: OrderProduct[] = [],
+        order_combos: OrderCombo[] = []
+        
 
     ): Order {
         return new Order(
@@ -79,7 +87,8 @@ export class Order extends AggregateRoot<OrderID> {
             new PaymentMethodId(paymentMethod),
             new UserId(user_id),
             status,
-            order_products
+            order_products,
+            order_combos
         );
     }
 
@@ -140,6 +149,17 @@ export class Order extends AggregateRoot<OrderID> {
 
     getOrderProducts(): OrderProduct[] {
         return this.order_products;
+    }
+
+    addOrderCombo(orderCombo: OrderCombo) {
+        if (!this.order_combos) {
+            this.order_combos = [];
+        }
+        this.order_combos.push(orderCombo);
+    }
+
+    getOrderCombos(): OrderCombo[] {
+        return this.order_combos;
     }
 
     updateTotal(newTotal: number): void {

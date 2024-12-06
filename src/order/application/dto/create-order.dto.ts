@@ -14,6 +14,19 @@ class ProductDto {
     quantity: number;
 }
 
+class ComboDto {
+    @IsUUID()
+    combo_id: string;
+
+    @IsNumber()
+    @Min(0)
+    combo_price: number;
+
+    @IsNumber()
+    @Min(1)
+    quantity: number;
+}
+
 export class CreateOrderDto{
     @IsString()
     @MinLength(6)
@@ -34,6 +47,11 @@ export class CreateOrderDto{
     @IsArray()
     @ValidateNested({ each: true })
     @Type(() => ProductDto)
-    order_products: ProductDto[];
+    order_products?: ProductDto[];
+
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => ComboDto)
+    order_combos?: ComboDto[];
 
 }

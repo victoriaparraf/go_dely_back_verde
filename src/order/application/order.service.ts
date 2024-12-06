@@ -13,6 +13,8 @@ import { OrderProduct } from '../infraestructure/typeorm/order-product';
 import { OrderEntity } from '../infraestructure/typeorm/order-entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ComboRepository } from 'src/combo/infrastructure/typeorm/combo-repository';
+import { OrderCombo } from '../infraestructure/typeorm/order-combo';
 
 @Injectable()
 export class OrderService {
@@ -21,7 +23,9 @@ export class OrderService {
         private readonly paymentMethodRepository: PaymentMethodRepository,
         @Inject('RABBITMQ_SERVICE') private readonly client: ClientProxy,
         private readonly productRepository: ProductRepository,
-        @InjectRepository(OrderProduct) private readonly orderProductRepository: Repository<OrderProduct>
+        private readonly comboRepository: ComboRepository,
+        @InjectRepository(OrderProduct) private readonly orderProductRepository: Repository<OrderProduct>,
+        @InjectRepository(OrderCombo) private readonly orderComboRepository: Repository<OrderCombo>
     ) {}
 
     async createOrder(dto: CreateOrderDto, user_id: string): Promise<ResponseOrderDTO> {
@@ -62,11 +66,42 @@ export class OrderService {
             });
 
             orderProducts.forEach(op => order.addOrderProduct(op));
-            console.log(order.getOrderProducts());
+
+            
+                const combos = await Promise.all(dto.order_combos.map(c => this.comboRepository.findComboById(c.combo_id)));
+                if (combos.includes(null)) {
+                    throw new Error('Some combos not found');
+                }
+
+            const orderCombos = dto.order_combos.map(comboData => {
+                const combo = combos.find(c => c?.combo_id === comboData.combo_id);
+                if (!combo) {
+                    throw new Error(`Combo with ID ${comboData.combo_id} not found`);
+                }
+
+                const orderCombo = new OrderCombo();
+                const orderEntity = new OrderEntity();
+                orderEntity.order_id = order.getId().toString();
+                orderCombo.order = orderEntity;
+                orderCombo.combo = combo;
+                orderCombo.order_id = order.getId().toString();
+                orderCombo.combo_id = combo.combo_id;
+                orderCombo.quantity = comboData.quantity;
+                orderCombo.combo_price = comboData.combo_price;
+                orderCombo.total_price = comboData.quantity * comboData.combo_price;
+
+                total += orderCombo.total_price;
+
+                return orderCombo;
+            });
+
+            orderCombos.forEach(oc => order.addOrderCombo(oc));
+        
             order.updateTotal(total);
 
             await this.orderRepository.save(order);
             await this.orderProductRepository.save(orderProducts);
+            await this.orderComboRepository.save(orderCombos);
         
             // Enviar la notificación de la orden
             this.client.send('order_notification', {
@@ -122,6 +157,12 @@ export class OrderService {
     }
 
     async remove(orderId: string): Promise<void> {
+        const order = await this.orderRepository.findById(orderId);
+        if (!order) {
+        throw new Error(`Order with ID ${orderId} not found`);
+        }
+        await this.orderProductRepository.delete({ order_id: orderId });
+        await this.orderComboRepository.delete({ order_id: orderId });
         await this.orderRepository.remove(orderId);
     }
 
