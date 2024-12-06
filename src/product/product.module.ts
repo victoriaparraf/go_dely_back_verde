@@ -9,15 +9,17 @@ import { RabbitmqModule } from './infrastructure/rabbitmq/rabbitmq.module';
 import { MailModule } from './infrastructure/mail/mail.module';
 import { Combo } from 'src/combo/infrastructure/typeorm/combo-entity';
 import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
+import { ProductRepository } from './infrastructure/typeorm/product-repositoy';
 
 @Module({
   controllers: [ProductController],
-  providers: [ProductService],
+  providers: [ProductService, ProductRepository],
   imports:[
     TypeOrmModule.forFeature([ Product, Image, Combo, CategoryEntity ]),
     CloudinaryModule,
     RabbitmqModule,
     MailModule
-  ]
+  ],
+  exports: [ProductService, ProductRepository],
 })
 export class ProductModule {}

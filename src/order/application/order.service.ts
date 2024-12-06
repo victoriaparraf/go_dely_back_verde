@@ -8,6 +8,11 @@ import { OrderMapper } from '../infraestructure/mappers/order.mapper';
 import { ResponseOrderDTO } from './dto/response-order.dto';
 import { OrderStatus } from '../domain/enums/order-status.enum';
 import { ClientProxy } from '@nestjs/microservices';
+import { ProductRepository } from 'src/product/infrastructure/typeorm/product-repositoy';
+import { OrderProduct } from '../infraestructure/typeorm/order-product';
+import { OrderEntity } from '../infraestructure/typeorm/order-entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class OrderService {
@@ -15,35 +20,69 @@ export class OrderService {
         private readonly orderRepository: OrderRepository,
         private readonly paymentMethodRepository: PaymentMethodRepository,
         @Inject('RABBITMQ_SERVICE') private readonly client: ClientProxy,
+        private readonly productRepository: ProductRepository,
+        @InjectRepository(OrderProduct) private readonly orderProductRepository: Repository<OrderProduct>
     ) {}
 
     async createOrder(dto: CreateOrderDto, user_id: string): Promise<ResponseOrderDTO> {
-        const paymentMethod = await this.paymentMethodRepository.findById(dto.paymentMethodId);
-        if (!paymentMethod) {
-            throw new Error(`Payment method with ID ${dto.paymentMethodId} not found`);
-        }
-
-        const order = Order.create(
-            dto.address,
-            dto.currency,
-            dto.total,
-            dto.paymentMethodId,
-            user_id,
-        );
+        try{
+            const paymentMethod = await this.paymentMethodRepository.findById(dto.paymentMethodId);
+            if (!paymentMethod) {
+                throw new Error(`Payment method with ID ${dto.paymentMethodId} not found`);
+            }
         
-        //aqui van los productos
+            const order = Order.create(dto.address, dto.currency, 0, dto.paymentMethodId, user_id);
+        
+            const products = await Promise.all(dto.order_products.map(p => this.productRepository.findOne(p.product_id)));
+            if (products.includes(null)) {
+                throw new Error('Some products not found');
+            }
+        
+            let total = 0;
+            const orderProducts = dto.order_products.map(productData => {
+            const product = products.find(p => p?.product_id === productData.product_id);
+            if (!product) {
+                throw new Error(`Product with ID ${productData.product_id} not found`);
+            }
 
-        await this.orderRepository.save(order);
+            const orderProduct = new OrderProduct();
+            const orderEntity = new OrderEntity();
+            orderEntity.order_id = order.getId().toString();
+            orderProduct.order = orderEntity;
+            orderProduct.product = product;
+            orderProduct.order_id = order.getId().toString();
+            orderProduct.product_id = product.product_id;
+            orderProduct.quantity = productData.quantity;
+            orderProduct.product_price = productData.product_price;
+            orderProduct.total_price = productData.quantity * productData.product_price;
 
-        this.client.send('order_notification', {
-            orderAddress: dto.address,
-            orderTotal: dto.total,
-            orderCurrency: dto.currency,
-            message: 'You order is ready to be served',
-        }).subscribe();
+            total += orderProduct.total_price;
 
-        return OrderMapper.toDTO(order);
+            return orderProduct;
+            });
+
+            orderProducts.forEach(op => order.addOrderProduct(op));
+            console.log(order.getOrderProducts());
+            order.updateTotal(total);
+
+            await this.orderRepository.save(order);
+            await this.orderProductRepository.save(orderProducts);
+        
+            // Enviar la notificación de la orden
+            this.client.send('order_notification', {
+                orderAddress: dto.address,
+                orderTotal: total,
+                orderCurrency: dto.currency,
+                message: 'Your order is ready to be served',
+            }).subscribe();
+        
+            return OrderMapper.toDTO(order);
+        } catch (error) {
+            console.error('Error creating order:', error);
+            throw new Error('Failed to create order');
+        }
     }
+    
 
     async findAll(): Promise<ResponseOrderDTO[]> {
         const orders = await this.orderRepository.findAll();

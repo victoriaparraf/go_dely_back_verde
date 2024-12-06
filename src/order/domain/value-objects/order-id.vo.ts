@@ -24,4 +24,8 @@ export class OrderID extends ValueObject<string> {
     getValue(): string {
         return this.value;
     }
+
+    toString(): string {
+        return this.value;
+    }
 }

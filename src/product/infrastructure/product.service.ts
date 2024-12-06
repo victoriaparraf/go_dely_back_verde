@@ -1,41 +1,34 @@
 import { BadRequestException, Inject, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from '../application/dto/create-product.dto';
 import { UpdateProductDto } from '../application/dto/update-product.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { validate as isUUID } from 'uuid';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { ClientProxy } from '@nestjs/microservices';
-import { Product } from './typeorm/product-entity'; 
+import { Product } from './typeorm/product-entity';
 import { Image } from './typeorm/image-entity';
-import { ProductCurrency } from '../domain/value-objects/poduct-currency.vo';
 import { ProductDescription } from '../domain/value-objects/product-description.vo';
 import { ProductMeasurement } from '../domain/value-objects/product-measurement.vo';
 import { ProductName } from '../domain/value-objects/product-name.vo';
 import { ProductPrice } from '../domain/value-objects/product-price.vo';
 import { ProductWeight } from '../domain/value-objects/product-weight.vo';
 import { ProductStock } from '../domain/value-objects/product-stock.vo';
+import { ProductRepository } from './typeorm/product-repositoy';
+import { ProductCurrency } from '../domain/value-objects/poduct-currency.vo';
 import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ProductService {
-
   private readonly logger = new Logger('ProductService');
 
-  constructor (
-    @InjectRepository(Product)
-    private readonly productRepository: Repository<Product>,  
-
-    @InjectRepository(Image)
-    private readonly imageRepository: Repository<Image>,
+  constructor(
+    private readonly productRepository: ProductRepository,
     private readonly cloudinaryService: CloudinaryService,
-
     @Inject('RABBITMQ_SERVICE') private readonly client: ClientProxy,
-
     @InjectRepository(CategoryEntity)
     private readonly categoryRepository: Repository<CategoryEntity>
-    
   ) {}
 
   async create(createProductDto: CreateProductDto, imageUrls: string[]) {
@@ -54,16 +47,16 @@ export class ProductService {
       const productWeight = new ProductWeight(productDetails.product_weight);
       const productMeasurement = new ProductMeasurement(productDetails.product_measurement);
       const productStock = new ProductStock(productDetails.product_stock);
-  
+
       const imageEntities = await Promise.all(
         images.map(async (imagePath) => {
-          const imageUrl = await this.cloudinaryService.uploadImage(imagePath,'products');
+          const imageUrl = await this.cloudinaryService.uploadImage(imagePath, 'products');
           const image = new Image();
           image.image_url = imageUrl;
           return image;
         }),
       );
-  
+
       const product = new Product();
       product.product_name = productName;
       product.product_description = productDescription;
@@ -75,10 +68,9 @@ export class ProductService {
       product.product_category = category;
       product.images = imageEntities;
 
-      const productEntity = this.productRepository.create(product);
-      await this.productRepository.save(productEntity);
+      const productEntity = this.productRepository.createProduct(product);
+      await this.productRepository.saveProduct(await productEntity);
 
-      // Emitir el evento a RabbitMQ
       this.client.send('product_notification', {
         productImages: createProductDto.images,
         productName: createProductDto.product_name,
@@ -88,12 +80,11 @@ export class ProductService {
         productDescription: createProductDto.product_description,
         message: 'Check out our new products and their offers!',
       }).subscribe();
-  
+
       return {
         ...product,
         images: product.images.map((img) => img.image_url),
       };
-  
     } catch (error) {
       console.error('Error creating product:', error);
       this.handleDBExceptions(error);
@@ -111,69 +102,49 @@ export class ProductService {
       product_measurement: product.product_measurement.getValue(),
       product_stock: product.product_stock.getValue(),
       product_category: product.product_category?.category_name,
-      images: product.images.map(img => img.image_url),
+      images: product.images.map((img) => img.image_url),
       discount: product.discount ? product.discount.discount_percentage : null,
     };
   }
 
   async findAll(paginationDto: PaginationDto) {
-
     const { page = 1, perpage = 10 } = paginationDto;
-
-    const productEntities = await this.productRepository.find({
-
-      take: perpage,
-      skip: (page - 1) * perpage,
-      relations: ['product_category','images', 'discount'],
-      
+    const productEntities = await this.productRepository.findAll({
+      page,
+      perpage,
     });
-
-    return productEntities.map(product => this.mapProductToResponse(product));
-
+    return productEntities.map((product) => this.mapProductToResponse(product));
   }
 
   async findOne(term: string) {
     let product: Product;
-  
+
     if (isUUID(term)) {
-      product = await this.productRepository.findOne({
-        where: { product_id: term },
-        relations: ['product_category', 'images', 'discount'],
-      });
+      product = await this.productRepository.findOne(term);
     } else {
-      product = await this.productRepository
-        .createQueryBuilder('product')
-        .leftJoinAndSelect('product.images', 'image')
-        .leftJoinAndSelect('product.discount', 'discount')
-        .where('product.product_name = :product_name', { product_name: term })
-        .getOne();
+      product = await this.productRepository.findOne(term);
     }
-  
+
     if (!product) {
       throw new NotFoundException(`Product with ${term} not found`);
     }
-  
+
     return this.mapProductToResponse(product);
-    
   }
 
   async update(product_id: string, updateProductDto: UpdateProductDto) {
     const { images, ...toUpdate } = updateProductDto;
 
-    const productEntity = await this.productRepository.findOne({
-      where: { product_id },
-      relations: ['images'],
-    });
+    const productEntity = await this.productRepository.findOne(product_id);
     if (!productEntity) throw new NotFoundException(`Product with id: ${product_id} not found`);
 
     Object.assign(productEntity, toUpdate);
 
     if (images) {
-      await this.imageRepository.delete({ product: { product_id } });
-      // Subir las nuevas imágenes a Cloudinary y guardarlas en la base de datos
+      await this.productRepository.deleteImagesByProduct(product_id);
       productEntity.images = await Promise.all(
         images.map(async (imagePath) => {
-          const imageUrl = await this.cloudinaryService.uploadImage(imagePath,'products');
+          const imageUrl = await this.cloudinaryService.uploadImage(imagePath, 'products');
           const imageEntity = new Image();
           imageEntity.image_url = imageUrl;
           return imageEntity;
@@ -181,13 +152,12 @@ export class ProductService {
       );
     }
 
-    return this.productRepository.save(productEntity);
+    return this.productRepository.saveProduct(productEntity);
   }
 
   async remove(product_id: string) {
     const product = await this.findOne(product_id);
 
-    // Eliminar las imágenes de Cloudinary antes de borrar los registros
     for (const image of product.images) {
       const publicId = image.split('/').slice(-2).join('/').split('.')[0];
       if (publicId) {
@@ -199,19 +169,18 @@ export class ProductService {
       }
     }
 
-    await this.imageRepository.delete({ product: { product_id } });
-    const productEntity = await this.productRepository.findOne({ where: { product_id: product.product_id } });
+    await this.productRepository.deleteImagesByProduct(product_id);
+    const productEntity = await this.productRepository.findOne(product_id);
     if (!productEntity) throw new NotFoundException(`Product with id: ${product.product_id} not found`);
-    await this.productRepository.remove(productEntity);
+    await this.productRepository.removeProduct(productEntity);
   }
 
-  private handleDBExceptions (error: any) {
+  private handleDBExceptions(error: any) {
     if (error.code === '23505') {
       throw new BadRequestException(error.detail);
     }
 
     this.logger.error(error);
-    throw new InternalServerErrorException('Unexpected error, check server logs');
+    throw new InternalServerErrorException('Please check server logs');
   }
-
 }

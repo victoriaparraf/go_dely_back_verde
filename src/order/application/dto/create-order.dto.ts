@@ -1,5 +1,18 @@
-import { IsNumber, IsString, IsUUID, Min, MinLength } from "class-validator";
+import { Type } from "class-transformer";
+import { IsArray, IsNumber, IsString, IsUUID, Min, MinLength, ValidateNested } from "class-validator";
 
+class ProductDto {
+    @IsUUID()
+    product_id: string;
+
+    @IsNumber()
+    @Min(0)
+    product_price: number;
+
+    @IsNumber()
+    @Min(1)
+    quantity: number;
+}
 
 export class CreateOrderDto{
     @IsString()
@@ -17,5 +30,10 @@ export class CreateOrderDto{
     @IsNumber()
     @Min(0)
     total: number;
+
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => ProductDto)
+    order_products: ProductDto[];
 
 }
