@@ -124,7 +124,7 @@ export class UserService {
     try {
       const user = await this.findUserById(id);
       if (!user) {
-        throw new Error('User not found');
+        throw new NotFoundException('User not found');
       }
       return user.addresses.map(address => AddressMapper.toDtoAddres(address));;
     } catch (error) {

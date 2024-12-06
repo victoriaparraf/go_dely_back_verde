@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsArray, IsNumber, IsString, IsUUID, Min, MinLength, ValidateNested } from "class-validator";
+import { IsArray, IsNumber, IsOptional, IsString, IsUUID, Min, MinLength, ValidateNested } from "class-validator";
 
 class ProductDto {
     @IsUUID()
@@ -8,6 +8,19 @@ class ProductDto {
     @IsNumber()
     @Min(0)
     product_price: number;
+
+    @IsNumber()
+    @Min(1)
+    quantity: number;
+}
+
+class ComboDto {
+    @IsUUID()
+    combo_id: string;
+
+    @IsNumber()
+    @Min(0)
+    combo_price: number;
 
     @IsNumber()
     @Min(1)
@@ -32,8 +45,15 @@ export class CreateOrderDto{
     total: number;
 
     @IsArray()
+    @IsOptional()
     @ValidateNested({ each: true })
     @Type(() => ProductDto)
-    order_products: ProductDto[];
+    order_products?: ProductDto[];
+
+    @IsArray()
+    @IsOptional()
+    @ValidateNested({ each: true })
+    @Type(() => ComboDto)
+    order_combos?: ComboDto[];
 
 }

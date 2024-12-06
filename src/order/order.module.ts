@@ -10,9 +10,11 @@ import { MailModule } from './infraestructure/mail/mail.module';
 import { UserModule } from 'src/user/user.module';
 import { ProductModule } from 'src/product/product.module';
 import { OrderProduct } from './infraestructure/typeorm/order-product';
+import { OrderCombo } from './infraestructure/typeorm/order-combo';
+import { ComboModule } from 'src/combo/combo.module';
 
 @Module({
-  imports: [ TypeOrmModule.forFeature([OrderEntity, OrderProduct]), PaymentMethodModule, UserModule, RabbitmqModule, MailModule, ProductModule ],
+  imports: [ TypeOrmModule.forFeature([OrderEntity, OrderProduct, OrderCombo]), PaymentMethodModule, UserModule, RabbitmqModule, MailModule, ProductModule, ComboModule ],
   controllers: [ OrderController ],
   providers: [ OrderService, OrderRepository ],
   exports: [ OrderRepository ]

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, ManyToOne, OneToMany } from "typeorm";
 import { Product } from "src/product/infrastructure/typeorm/product-entity";
 import { ComboName } from "src/combo/domain/value-objects/combo-name.vo";
 import { ComboDescription } from "src/combo/domain/value-objects/combo-description.vo";
@@ -7,6 +7,7 @@ import { ComboCurrency } from "src/combo/domain/value-objects/combo-currency.vo"
 import { ComboStock } from "src/combo/domain/value-objects/combo-stock.vo";
 import { Discount } from "src/discount/infraestructure/typeorm/discount.entity";
 import { CategoryEntity } from "src/category/infrastructure/typeorm/category-entity";
+import { OrderCombo } from "src/order/infraestructure/typeorm/order-combo";
 
 @Entity()
 export class Combo {
@@ -76,4 +77,7 @@ export class Combo {
 
     @ManyToOne(() => Discount, (discount) => discount.combos, { nullable: true })
     discount: Discount;
+
+    @OneToMany(() => OrderCombo, orderCombo => orderCombo.combo)
+    orders: OrderCombo[];
 }
