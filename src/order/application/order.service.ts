@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { PaymentMethodRepository } from 'src/payment-method/infrastructure/typeorm/payment-method.repository';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -7,12 +7,14 @@ import { Order } from '../domain/order-aggregate';
 import { OrderMapper } from '../infraestructure/mappers/order.mapper';
 import { ResponseOrderDTO } from './dto/response-order.dto';
 import { OrderStatus } from '../domain/enums/order-status.enum';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class OrderService {
     constructor(
         private readonly orderRepository: OrderRepository,
         private readonly paymentMethodRepository: PaymentMethodRepository,
+        @Inject('RABBITMQ_SERVICE') private readonly client: ClientProxy,
     ) {}
 
     async createOrder(dto: CreateOrderDto, user_id: string): Promise<ResponseOrderDTO> {
@@ -30,6 +32,13 @@ export class OrderService {
         );
         
         await this.orderRepository.save(order);
+
+        this.client.send('order_notification', {
+            orderAddress: dto.address,
+            orderTotal: dto.total,
+            orderCurrency: dto.currency,
+            message: 'You order is ready to be served',
+        }).subscribe();
 
         return OrderMapper.toDTO(order);
     }
