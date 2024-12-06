@@ -5,9 +5,15 @@ import { OrderService } from './application/order.service';
 import { OrderEntity } from './infraestructure/typeorm/order-entity';
 import { OrderRepository } from './infraestructure/typeorm/order-repository';
 import { PaymentMethodModule } from 'src/payment-method/payment-method.module';
+import { RabbitmqModule } from './infraestructure/rabbitmq/rabbitmq.module';
+import { MailModule } from './infraestructure/mail/mail.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([OrderEntity]), PaymentMethodModule],
+  imports: [TypeOrmModule.forFeature([OrderEntity]), 
+  PaymentMethodModule,
+  RabbitmqModule,
+  MailModule,
+  ],
   controllers: [OrderController],
   providers: [OrderService, OrderRepository],
   exports: [OrderRepository]

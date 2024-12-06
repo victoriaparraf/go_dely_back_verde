@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductModule } from './product/product.module';
 import { ComboModule } from './combo/combo.module';
 import { CommonModule } from './common/common.module';
-import { RabbitmqModule } from './product/infrastructure/rabbitmq/rabbitmq.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AuthModule } from './auth/auth.module';
 import { DiscountModule } from './discount/discount.module';
@@ -41,8 +40,6 @@ import { PaymentMethodModule } from './payment-method/payment-method.module';
     CategoryModule,
 
     PaymentMethodModule,
-
-    RabbitmqModule,
 
     AuthModule,
 
