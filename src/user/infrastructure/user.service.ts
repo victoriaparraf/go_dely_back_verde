@@ -9,12 +9,14 @@ import { Address } from './Typeorm/address.entity';
 import * as bcrypt from 'bcrypt';
 import { ResponseUserDto } from '../application/dto/response-user.dto';
 import { UserMapper } from './mappers/user.mapper';
+import { AddressMapper } from './mappers/address.mapper';
+import { CloudinaryService } from 'src/product/infrastructure/cloudinary/cloudinary.service';
 
 
 @Injectable()
 export class UserService {
   private readonly logger = new Logger('UserService');
-  cloudinaryService: any;
+ 
 
   constructor(
      @InjectRepository(User) 
@@ -22,25 +24,16 @@ export class UserService {
      
      @InjectRepository(Address)
      private readonly addressRepository: Repository<Address>,
-     
+    
+     private readonly cloudinaryService: CloudinaryService,
     ) {}
-
-  private mapAddresssToResponse( address: Address){
-    return{
-      address_id: address.address_id,
-      name: address.name,
-      latitude: address.latitude,
-      longitude: address.longitude,
-      user: address.user
-    }
-  }
 
   async updateProfile(id: string, updateUserDto: UpdateUserDto) {
     try {
       const { user_image, user_password, ...userDetails }= updateUserDto;
       const user = await this.findUserById(id);
       if (!user) {
-        throw new Error('User not found');
+        throw new NotFoundException(`User with ID ${id} not found`);
       }
 
       if (user_image && user_image !== user.user_image) {
@@ -59,8 +52,8 @@ export class UserService {
       }
 
       Object.assign(user, userDetails);
-      await this.userRepository.save(user);
-
+      const updatedUser = await this.userRepository.save(user);
+      return UserMapper.toDTO(updatedUser);
     } catch (error) {
       console.error('Error updating user profile:', error)
       this.handleDBExceptions(error);
@@ -71,7 +64,7 @@ export class UserService {
     try {
       const user = await this.findUserById(id);
       if (!user) {
-        throw new Error('User not found');
+        throw new NotFoundException(`User with ID ${id} not found`);
       }
 
       const addresses = addAddressDto.map(dto => {
@@ -84,20 +77,20 @@ export class UserService {
       });
 
       await this.addressRepository.save(addresses);
-      return addresses.map(address => this.mapAddresssToResponse(address));;
+      return addresses.map(address => AddressMapper.toDtoAddres(address));;
     } catch (error) {
       console.error('Error adding address:', error)
       this.handleDBExceptions(error);
     }
   }
 
-  async updateAddress(delUpdateAddressDto: UpdateAddressDto[]){
+  async updateAddress(UpdateAddressDto: UpdateAddressDto[]){
     try {
       const addresses = await Promise.all(
-        delUpdateAddressDto.map(async dto => {
+          UpdateAddressDto.map(async dto => {
           const address = await this.findAddressById(dto.id);
           if (!address) {
-            throw new Error(`Address with ID ${dto.id} not found`);
+            throw new NotFoundException(`Address with ID ${dto.id} not found`);
           }
           Object.assign(address, dto);
           return address;
@@ -105,7 +98,7 @@ export class UserService {
       );
 
       await this.addressRepository.save(addresses);
-      return addresses.map(address => this.mapAddresssToResponse(address));
+      return addresses.map(address => AddressMapper.toDtoAddres(address));
     } catch (error) {
       console.error('Error updating address:', error);
       this.handleDBExceptions(error);
@@ -116,7 +109,7 @@ export class UserService {
     try {
       const address = await this.findAddressById(id);
       if (!address) {
-        throw new Error('Address not found');
+        throw new NotFoundException('Address not found');
       }
       await this.addressRepository.remove(address);
       return `Address with ID ${id} deleted successfully`;
@@ -133,7 +126,7 @@ export class UserService {
       if (!user) {
         throw new Error('User not found');
       }
-      return user.addresses.map(address => this.mapAddresssToResponse(address));;
+      return user.addresses.map(address => AddressMapper.toDtoAddres(address));;
     } catch (error) {
       console.error('Error getting addresses:', error);
       this.handleDBExceptions(error);
@@ -167,30 +160,28 @@ export class UserService {
   }
 
   async findOne(id: string): Promise<ResponseUserDto> {
-    const user = await this.userRepository.findOne({ where: { user_id: id } });
+    const user = await this.userRepository.findOne({ where: { user_id: id } , relations: ['addresses'] });
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
     return UserMapper.toDTO(user);
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<ResponseUserDto> {
-    const user = await this.userRepository.findOne({ where: { user_id: id } });
-    if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
-    }
-
-    Object.assign(user, updateUserDto);
-    const updatedUser = await this.userRepository.save(user);
-    return UserMapper.toDTO(updatedUser);
-  }
 
   async remove(id: string): Promise<void> {
-    const user = await this.userRepository.findOne({ where: { user_id: id } });
+    const user = await this.userRepository.findOne({ where: { user_id: id }, relations: ['addresses'] });
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
+  
+    // Eliminar las direcciones asociadas
+    if (user.addresses && user.addresses.length > 0) {
+      await this.addressRepository.remove(user.addresses);
+    }
+  
+    // Eliminar el usuario
     await this.userRepository.remove(user);
   }
+  
 
 }

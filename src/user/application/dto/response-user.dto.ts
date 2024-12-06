@@ -1,3 +1,5 @@
+
+
 export class ResponseUserDto {
     user_id: string;
     user_email: string;
@@ -6,6 +8,7 @@ export class ResponseUserDto {
     user_type: string;
     user_status: string;
     user_image: string | null;
+    addresses: string[] | null;
   
     constructor(
       user_id: string,
@@ -15,6 +18,7 @@ export class ResponseUserDto {
       user_type: string,
       user_status: string,
       user_image: string | null,
+      addresses: string[]  | null,
     ) {
       this.user_id = user_id;
       this.user_email = user_email;
@@ -23,5 +27,6 @@ export class ResponseUserDto {
       this.user_type = user_type;
       this.user_status = user_status;
       this.user_image = user_image;
+      this.addresses = addresses;
     }
   }
