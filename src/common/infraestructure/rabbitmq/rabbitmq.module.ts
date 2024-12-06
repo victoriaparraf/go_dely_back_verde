@@ -3,6 +3,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigService, ConfigModule } from '@nestjs/config';
 import { MessagingService } from './message.service';
 import { RabbitMQConsumerService } from './consumer.service';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
     imports: [
@@ -23,6 +24,7 @@ import { RabbitMQConsumerService } from './consumer.service';
             inject: [ConfigService],
         },
         ]),
+        MailModule,
     ],
     exports: [ClientsModule, MessagingService],
     providers: [MessagingService],
