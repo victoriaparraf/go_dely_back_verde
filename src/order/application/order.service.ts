@@ -31,6 +31,8 @@ export class OrderService {
             user_id,
         );
         
+        //aqui van los productos
+
         await this.orderRepository.save(order);
 
         this.client.send('order_notification', {
