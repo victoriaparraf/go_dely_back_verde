@@ -1,5 +1,5 @@
 import { ResponseUserDto } from 'src/user/application/dto/response-user.dto';
-import { User } from 'src/user/infrastructure/typeorm/user.entity';
+import { User } from '../typeorm/user.entity';
 
 export class UserMapper {
   static toDTO(user: User): ResponseUserDto {
