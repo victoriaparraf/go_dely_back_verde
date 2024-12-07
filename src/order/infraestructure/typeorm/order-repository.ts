@@ -18,12 +18,13 @@ export class OrderRepository {
     ) {}
 
     async findAll(): Promise<Order[]> {
-        const entities = await this.repository.find({ relations: ['user'] });
-        return entities.map(OrderMapper.toDomain);
+        const entities = await this.repository.find({ relations: ['user', 'order_products', 'order_combos'] });
+        const orders = await Promise.all(entities.map(OrderMapper.toDomain));
+        return orders;
     }
 
     async findById(orderId: string): Promise<Order | null> {
-        const entity = await this.repository.findOne({ where: { order_id: orderId }, relations: ['user'] });
+        const entity = await this.repository.findOne({ where: { order_id: orderId }, relations: ['user',  'order_products', 'order_combos'] });
         return entity ? OrderMapper.toDomain(entity) : null;
     }
 

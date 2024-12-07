@@ -5,7 +5,7 @@ import { Combo } from 'src/combo/infrastructure/typeorm/combo-entity';
 @Entity('order_combo')
 export class OrderCombo {
 
-    @ManyToOne(() => OrderEntity, order => order.order_products, { eager: true })
+    @ManyToOne(() => OrderEntity, order => order.order_products, { eager: true, lazy: true })
     @JoinColumn({ name: 'order_id' })
     order: OrderEntity;
 
