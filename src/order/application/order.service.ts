@@ -87,6 +87,7 @@ export class OrderService {
     
                     const orderCombo = new OrderCombo();
                     orderCombo.order_id = order.getId().toString();
+                    orderCombo.combo = combo;
                     orderCombo.combo_id = combo.combo_id;
                     orderCombo.quantity = comboData.quantity;
                     orderCombo.combo_price = comboData.combo_price;
