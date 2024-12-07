@@ -104,8 +104,8 @@ export class Order extends AggregateRoot<OrderID> {
         return this.currency;
     }
 
-    getTotal(): OrderTotal {
-        return this.total;
+    getTotal(): number {
+        return this.total.value;
     }
 
     getPaymentMethodId(): PaymentMethodId {
