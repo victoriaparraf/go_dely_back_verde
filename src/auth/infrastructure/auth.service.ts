@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, InternalServerErrorException, Unauthor
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../../user/infrastructure/typeorm/user.entity';
+import { User } from '../../user/infrastructure/typeorm/user-entity';
 import * as bcrypt from 'bcrypt';
 import { LoginUserDto } from './dto/login-user.dto';
 import { IJwtPayload } from './jwt/interfaces/jwt-payload.interface.strategy';

@@ -1,9 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinTable, ManyToMany } from 'typeorm';
 import { Product } from 'src/product/infrastructure/typeorm/product-entity';
 import { OrderStatus } from 'src/order/domain/enums/order-status.enum';
-import { User } from 'src/user/infrastructure/typeorm/user.entity';
+import { User } from 'src/user/infrastructure/typeorm/user-entity';
 import { OrderProduct } from './order-product';
 import { OrderCombo } from './order-combo';
+import { Address } from 'src/user/infrastructure/typeorm/address-entity';
 
 @Entity('orders')
 export class OrderEntity {
@@ -11,7 +12,7 @@ export class OrderEntity {
     order_id: string;
 
     @Column({ type: 'varchar', length: 255 })
-    address: string;
+    address: Address;
 
     @Column({ type: 'varchar', length: 10 })
     currency: string;

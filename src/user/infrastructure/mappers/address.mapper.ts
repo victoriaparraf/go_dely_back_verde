@@ -1,5 +1,5 @@
 import { ResponseAddressDto } from "src/user/application/dto/response-addres.dto";
-import { Address } from "../typeorm/address.entity";
+import { Address } from "../typeorm/address-entity";
 import { UserMapper } from "./user.mapper";
 
 

@@ -3,7 +3,7 @@ import { IsNumber, IsString, Min, MinLength } from "class-validator";
 export class UpdateOrderDto {
     @IsString()
     @MinLength(6)
-    address: string;
+    address_id: string;
 
     @IsString()
     @MinLength(6)

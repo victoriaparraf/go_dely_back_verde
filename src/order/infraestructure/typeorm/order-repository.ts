@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Order } from 'src/order/domain/order-aggregate';
 import { OrderEntity } from '../typeorm/order-entity';
 import { OrderMapper } from '../mappers/order.mapper';
-import { User } from 'src/user/infrastructure/typeorm/user.entity';
+import { User } from 'src/user/infrastructure/typeorm/user-entity';
 
 @Injectable()
 export class OrderRepository {

@@ -1,6 +1,6 @@
 
 import {Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Address } from "./address.entity";
+import { Address } from "./address-entity";
 import { UserName } from "src/user/domain/value-object/user-name";
 import { UserPhone } from "src/user/domain/value-object/user-phone";
 import { UserEmail } from "src/user/domain/value-object/user-email";

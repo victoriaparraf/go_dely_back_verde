@@ -2,10 +2,10 @@ import { BadRequestException, Injectable, InternalServerErrorException, Logger, 
 import { UpdateUserDto } from '../application/dto/update-user.dto';
 import { UpdateAddressDto } from '../application/dto/address-update.dto';
 import { AddAddressDto } from '../application/dto/address-add.dto';
-import { User } from './Typeorm/user.entity';
+import { User } from './typeorm/user-entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Address } from './Typeorm/address.entity';
+import { Address } from './typeorm/address-entity';
 import * as bcrypt from 'bcrypt';
 import { ResponseUserDto } from '../application/dto/response-user.dto';
 import { UserMapper } from './mappers/user.mapper';
