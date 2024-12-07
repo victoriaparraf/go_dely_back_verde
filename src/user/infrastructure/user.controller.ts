@@ -15,13 +15,13 @@ export class UserController {
   }
 
   @Post(':id/address')
-  addAddress(@Param('id') id: string, @Body() addAddressDto: AddAddressDto[]) {
+  addAddress(@Param('id') id: string, @Body() addAddressDto: AddAddressDto) {
     return this.userService.addAddress(id, addAddressDto);
   }
 
   @Patch('address')
-  updateAddress( @Body() delUpdateAddressDto: UpdateAddressDto[]) {
-    return this.userService.updateAddress(delUpdateAddressDto);
+  updateAddress( @Body() updateAddressDto: UpdateAddressDto) {
+    return this.userService.updateAddress(updateAddressDto);
   }
 
   @Delete('address/:id')

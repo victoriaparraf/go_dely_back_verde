@@ -60,45 +60,41 @@ export class UserService {
     }
   }
 
-  async addAddress(id: string, addAddressDto: AddAddressDto[]) {
+  async addAddress(id: string, addAddressDto: AddAddressDto) {
     try {
       const user = await this.findUserById(id);
       if (!user) {
         throw new NotFoundException(`User with ID ${id} not found`);
       }
 
-      const addresses = addAddressDto.map(dto => {
+      
         const address = new Address();
-        address.name = dto.name;
-        address.latitude = dto.latitude;
-        address.longitude = dto.longitude;
+        address.name = addAddressDto.name;
+        address.latitude = addAddressDto.latitude;
+        address.longitude = addAddressDto.longitude;
         address.user = user;
-        return address
-      });
+      
 
-      await this.addressRepository.save(addresses);
-      return addresses.map(address => AddressMapper.toDtoAddres(address));;
+      await this.addressRepository.save(address);
+      return  AddressMapper.toDtoAddres(address);;
     } catch (error) {
       console.error('Error adding address:', error)
       this.handleDBExceptions(error);
     }
   }
 
-  async updateAddress(UpdateAddressDto: UpdateAddressDto[]){
+  async updateAddress(UpdateAddressDto: UpdateAddressDto){
     try {
-      const addresses = await Promise.all(
-          UpdateAddressDto.map(async dto => {
-          const address = await this.findAddressById(dto.id);
-          if (!address) {
-            throw new NotFoundException(`Address with ID ${dto.id} not found`);
-          }
-          Object.assign(address, dto);
-          return address;
-        })
-      );
+  
+      const address = await this.findAddressById(UpdateAddressDto.id);
+      if (!address) {
+        throw new NotFoundException(`Address with ID ${UpdateAddressDto.id} not found`);
+      }
+      Object.assign(address, UpdateAddressDto);
+        
 
-      await this.addressRepository.save(addresses);
-      return addresses.map(address => AddressMapper.toDtoAddres(address));
+      await this.addressRepository.save(address);
+      return AddressMapper.toDtoAddres(address);
     } catch (error) {
       console.error('Error updating address:', error);
       this.handleDBExceptions(error);
