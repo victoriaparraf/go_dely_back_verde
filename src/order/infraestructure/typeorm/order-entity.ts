@@ -11,7 +11,7 @@ export class OrderEntity {
     @PrimaryGeneratedColumn('uuid')
     order_id: string;
 
-    @Column({ type: 'varchar', length: 255 })
+    @ManyToOne(() => Address, address => address.orders)
     address: Address;
 
     @Column({ type: 'varchar', length: 10 })
