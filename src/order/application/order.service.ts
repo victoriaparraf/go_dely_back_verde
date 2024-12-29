@@ -71,10 +71,11 @@ export class OrderService {
                     const orderProduct = new OrderProduct();
                     orderProduct.order_id = order.getId().toString();
                     orderProduct.product_id = product.product_id;
+                    orderProduct.product = product;
                     orderProduct.quantity = productData.quantity;
                     orderProduct.product_price = productData.product_price;
                     orderProduct.total_price = productData.quantity * productData.product_price;
-                    orderProduct.order = null; // Se asignará más adelante
+                    orderProduct.order = null;
     
                     total += orderProduct.total_price;
                     orderProducts.push(orderProduct);
@@ -97,11 +98,12 @@ export class OrderService {
     
                     const orderCombo = new OrderCombo();
                     orderCombo.order_id = order.getId().toString();
+                    orderCombo.combo = combo;
                     orderCombo.combo_id = combo.combo_id;
                     orderCombo.quantity = comboData.quantity;
                     orderCombo.combo_price = comboData.combo_price;
                     orderCombo.total_price = comboData.quantity * comboData.combo_price;
-                    orderCombo.order = null; // Se asignará más adelante
+                    orderCombo.order = null;
     
                     total += orderCombo.total_price;
                     orderCombos.push(orderCombo);
@@ -110,13 +112,15 @@ export class OrderService {
                 orderCombos.forEach(oc => order.addOrderCombo(oc));
             }
     
+            console.log("Total before update:", total);
             order.updateTotal(total);
     
             const orderEntity = new OrderEntity();
-            orderEntity.order_id = order.getId().toString();
-            orderEntity.address = order.getAddress();
-            orderEntity.currency = order.getCurrency().toString();
-            orderEntity.total = order.getTotal().getValue();
+            orderEntity.order_id = order.getId().getValue();
+            orderEntity.address = order.getAddress().value;
+            orderEntity.currency = order.getCurrency().value;
+            orderEntity.total = order.getTotal();
+            console.log("Total in OrderEntity:", orderEntity.total);
             orderEntity.paymentMethodId = order.getPaymentMethodId().toString();
             orderEntity.status = order.getStatus();
             orderEntity.order_products = orderProducts;
@@ -125,6 +129,7 @@ export class OrderService {
             orderProducts.forEach(op => op.order = orderEntity);
             orderCombos.forEach(oc => oc.order = orderEntity);
     
+            console.log("Order to be saved:", order); 
             await this.orderRepository.save(order);
             await this.orderProductRepository.save(orderProducts);
             await this.orderComboRepository.save(orderCombos);
@@ -147,13 +152,33 @@ export class OrderService {
     async findAll(): Promise<ResponseOrderDTO[]> {
         const orders = await this.orderRepository.findAll();
 
-        return orders.map(order => OrderMapper.toDTO(order));
+        const orderDTOs = await Promise.all(orders.map(order => {
+            const orderEntity = new OrderEntity();
+            orderEntity.order_id = order.getId().toString();
+            orderEntity.address = order.getAddress();
+            orderEntity.currency = order.getCurrency().toString();
+            orderEntity.total = order.getTotal();
+            orderEntity.paymentMethodId = order.getPaymentMethodId().toString();
+            orderEntity.status = order.getStatus();
+            return OrderMapper.toDTO(order);
+        }));
+        return orderDTOs;
     }
 
     async getOrderById(orderId: string): Promise<ResponseOrderDTO | null> {
         const order = await this.orderRepository.findById(orderId);
 
-        return order ? OrderMapper.toDTO(order) : null;
+        if (!order) {
+            return null;
+        }
+        const orderEntity = new OrderEntity();
+        orderEntity.order_id = order.getId().toString();
+        orderEntity.address = order.getAddress();
+        orderEntity.currency = order.getCurrency().toString();
+        orderEntity.total = order.getTotal();
+        orderEntity.paymentMethodId = order.getPaymentMethodId().toString();
+        orderEntity.status = order.getStatus();
+        return OrderMapper.toDTO(order);
     }
 
     async updateOrder(orderId: string, dto: UpdateOrderDto): Promise<void> {
