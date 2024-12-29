@@ -1,17 +1,18 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from 'typeorm';
 import { OrderStatus } from 'src/order/domain/enums/order-status.enum';
-import { User } from 'src/user/infrastructure/typeorm/user.entity';
+import { User } from 'src/user/infrastructure/typeorm/user-entity';
 import { OrderProduct } from './order-product';
 import { OrderCombo } from './order-combo';
 import { Exclude } from 'class-transformer';
+import { Address } from 'src/user/infrastructure/typeorm/address-entity';
 
 @Entity('orders')
 export class OrderEntity {
     @PrimaryGeneratedColumn('uuid')
     order_id: string;
 
-    @Column({ type: 'varchar', length: 255 })
-    address: string;
+    @ManyToOne(() => Address, address => address.orders)
+    address: Address;
 
     @Column({ type: 'varchar', length: 3, nullable: false })
     currency: string;

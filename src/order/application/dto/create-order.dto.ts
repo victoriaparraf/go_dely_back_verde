@@ -30,7 +30,7 @@ class ComboDto {
 export class CreateOrderDto{
     @IsString()
     @MinLength(6)
-    address: string;
+    address_id: string;
 
     @IsString()
     @MinLength(6)

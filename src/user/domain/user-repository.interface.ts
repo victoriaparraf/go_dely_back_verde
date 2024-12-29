@@ -1,4 +1,4 @@
-import { User } from "../infrastructure/typeorm/user.entity";
+import { User } from "../infrastructure/typeorm/user-entity";
 
 export interface UserRepositoryInterface {
   findAll(): Promise<User[]>;

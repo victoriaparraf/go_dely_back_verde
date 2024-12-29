@@ -1,13 +1,13 @@
 import { UserId } from "src/user/domain/value-object/user-id";
-import { OrderAddress } from "../value-objects/order-address.vo";
 import { OrderCurrency } from "../value-objects/order-currency.vo";
 import { OrderTotal } from "../value-objects/order-total.vo";
 import { OrderStatus } from "../enums/order-status.enum";
 import { PaymentMethodId } from "src/payment-method/domain/value-objects/payment-method-id.vo";
+import { Address } from "src/user/infrastructure/typeorm/address-entity";
 
 export class OrderEntity {
     order_id: string;
-    address: OrderAddress;
+    address: Address;
     currency: OrderCurrency;
     total: OrderTotal;
     paymentMethodId: PaymentMethodId;
@@ -16,7 +16,7 @@ export class OrderEntity {
 
     constructor(
         id: string,
-        address: string,
+        address: Address,
         currency: string,
         total: number,
         paymentMethodId: string,
@@ -24,7 +24,7 @@ export class OrderEntity {
         status: OrderStatus
     ) {
         this.order_id = id;
-        this.address = new OrderAddress(address);
+        this.address = address;
         this.currency = new OrderCurrency(currency);
         this.total = new OrderTotal(total);
         this.paymentMethodId = new PaymentMethodId(paymentMethodId);

@@ -1,5 +1,6 @@
 import { ResponseUserDto } from 'src/user/application/dto/response-user.dto';
-import { User } from '../typeorm/user.entity';
+import { User } from '../typeorm/user-entity';
+import { AddressMapper } from './address.mapper';
 
 export class UserMapper {
   static toDTO(user: User): ResponseUserDto {
@@ -11,6 +12,7 @@ export class UserMapper {
         user.user_type,
         user.user_status,
         user.user_image,
+        user.addresses.map(address => AddressMapper.toDtoAddres(address).address_id),
     );
   }
 }

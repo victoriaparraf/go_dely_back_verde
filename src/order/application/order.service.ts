@@ -15,6 +15,8 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ComboRepository } from 'src/combo/infrastructure/typeorm/combo-repository';
 import { OrderCombo } from '../infraestructure/typeorm/order-combo';
+import { Address } from 'src/user/infrastructure/typeorm/address-entity';
+import { AddressMapper } from '../../user/infrastructure/mappers/address.mapper';
 
 @Injectable()
 export class OrderService {
@@ -25,7 +27,8 @@ export class OrderService {
         private readonly productRepository: ProductRepository,
         private readonly comboRepository: ComboRepository,
         @InjectRepository(OrderProduct) private readonly orderProductRepository: Repository<OrderProduct>,
-        @InjectRepository(OrderCombo) private readonly orderComboRepository: Repository<OrderCombo>
+        @InjectRepository(OrderCombo) private readonly orderComboRepository: Repository<OrderCombo>,
+        @InjectRepository(Address) private readonly addressRepository: Repository<Address>
     ) {}
 
     async createOrder(dto: CreateOrderDto, user_id: string): Promise<ResponseOrderDTO> {
@@ -34,12 +37,20 @@ export class OrderService {
             if (!paymentMethod) {
                 throw new Error(`Payment method with ID ${dto.paymentMethodId} not found`);
             }
+
+            const address= await this.addressRepository.findOne({
+                where: {
+                  address_id: dto.address_id,
+                  user: { user_id: user_id },
+                },
+                relations: ['user'],
+            });
     
             if ((!dto.order_products || dto.order_products.length === 0) && (!dto.order_combos || dto.order_combos.length === 0)) {
                 throw new Error('At least one product or combo must be included in the order');
             }
     
-            const order = Order.create(dto.address, dto.currency, 0, dto.paymentMethodId, user_id);
+            const order = Order.create(address, dto.currency, 0, dto.paymentMethodId, user_id);
     
             let total = 0;
             const orderProducts = [];
@@ -106,7 +117,7 @@ export class OrderService {
     
             const orderEntity = new OrderEntity();
             orderEntity.order_id = order.getId().getValue();
-            orderEntity.address = order.getAddress().value;
+            orderEntity.address = order.getAddress();
             orderEntity.currency = order.getCurrency().value;
             orderEntity.total = order.getTotal();
             console.log("Total in OrderEntity:", orderEntity.total);
@@ -125,7 +136,7 @@ export class OrderService {
     
             // Enviar la notificación de la orden
             this.client.send('order_notification', {
-                orderAddress: dto.address,
+                orderAddress: AddressMapper.toDtoAddres(address).name,
                 orderTotal: total,
                 orderCurrency: dto.currency,
                 message: 'Your order is ready to be served',
@@ -144,7 +155,7 @@ export class OrderService {
         const orderDTOs = await Promise.all(orders.map(order => {
             const orderEntity = new OrderEntity();
             orderEntity.order_id = order.getId().toString();
-            orderEntity.address = order.getAddress().toString();
+            orderEntity.address = order.getAddress();
             orderEntity.currency = order.getCurrency().toString();
             orderEntity.total = order.getTotal();
             orderEntity.paymentMethodId = order.getPaymentMethodId().toString();
@@ -162,7 +173,7 @@ export class OrderService {
         }
         const orderEntity = new OrderEntity();
         orderEntity.order_id = order.getId().toString();
-        orderEntity.address = order.getAddress().toString();
+        orderEntity.address = order.getAddress();
         orderEntity.currency = order.getCurrency().toString();
         orderEntity.total = order.getTotal();
         orderEntity.paymentMethodId = order.getPaymentMethodId().toString();
@@ -184,8 +195,12 @@ export class OrderService {
             order.updatePaymentMethodId(dto.paymentMethodId);
         }
 
-        if (dto.address) {
-            order.updateAddress(dto.address);
+        if (dto.address_id) {
+            const address = await this.addressRepository.findOne({ where: { address_id: dto.address_id } }); 
+            if (!address) {
+                throw new Error(`Address with ID ${dto.address_id} not found`);
+            }
+            order.updateAddress(address);
         }
 
         if (dto.total !== undefined) {

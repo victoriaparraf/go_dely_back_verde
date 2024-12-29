@@ -4,7 +4,7 @@ import { CreateUserDto } from '../infrastructure/dto/create-user.dto';
 import { LoginUserDto } from '../infrastructure/dto/login-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from './get-user.decorator';
-import { User } from 'src/user/infrastructure/typeorm/user.entity';
+import { User } from 'src/user/infrastructure/typeorm/user-entity';
 import { UserMapper } from 'src/user/infrastructure/mappers/user.mapper';
 
 @Controller('auth')
