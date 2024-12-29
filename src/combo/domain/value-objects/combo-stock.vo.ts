@@ -1,16 +1,19 @@
+import { ValueObject } from "src/common/domain/value.object";
 import { unvalidStockComboException } from "../exceptions/unvalid-stock-combo";
 
-export class ComboStock {
+export class ComboStock extends ValueObject<number> {
 
-    protected readonly value: number;
+    public readonly value: number;
 
     constructor(value: number) {
+        super(value);
+        this.validate(value);        
+    }
 
+    protected validate(value: number): void {
         if (value < 0) {
             throw new unvalidStockComboException(`Stock '${value}' must be a non-negative number`);
         }
-        this.value = value;
-        
     }
 
     public getValue(): number {

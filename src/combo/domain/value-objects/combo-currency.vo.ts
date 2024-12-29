@@ -1,16 +1,19 @@
+import { ValueObject } from "src/common/domain/value.object";
 import { unvalidCurrencyComboException } from "../exceptions/unvalid-currency-combo";
 
-export class ComboCurrency {
+export class ComboCurrency extends ValueObject<string> { 
 
-    protected readonly value: string;
+    public readonly value: string;
   
     constructor( value: string ) {
+      super(value);
+      this.validate(value);
+    }
 
+    protected validate(value: string): void {
       if ( !this.isValidCurrency(value) ) {
         throw new unvalidCurrencyComboException(`The currency '${value}' is not valid`);
       }
-      this.value = value;
-
     }
   
     private isValidCurrency(value: string): boolean {
