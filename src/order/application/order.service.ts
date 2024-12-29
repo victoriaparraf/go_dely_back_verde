@@ -117,7 +117,7 @@ export class OrderService {
     
             const orderEntity = new OrderEntity();
             orderEntity.order_id = order.getId().getValue();
-            orderEntity.address = order.getAddress().value;
+            orderEntity.address = order.getAddress();
             orderEntity.currency = order.getCurrency().value;
             orderEntity.total = order.getTotal();
             console.log("Total in OrderEntity:", orderEntity.total);
