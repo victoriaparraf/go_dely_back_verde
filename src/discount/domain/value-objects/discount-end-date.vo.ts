@@ -1,11 +1,14 @@
+import { unvalidEndDateDiscountException } from "../exceptions/unvalid-end-date-discount";
+
 export class DiscountEndDate {
     protected readonly value: Date;
 
-    constructor(value: Date | string) {        
+    constructor(value: Date | string) {
+
         if(value){
             const dateValue = new Date(value);
             if (!this.isValidDate(dateValue)) {
-                throw new Error('Invalid discount start date.');
+                throw new unvalidEndDateDiscountException('Invalid discount start date.');
             }
             this.value = dateValue;
         }
