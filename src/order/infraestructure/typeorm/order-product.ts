@@ -1,12 +1,14 @@
 import { Entity, ManyToOne, Column, PrimaryColumn, JoinColumn } from 'typeorm';
 import { Product } from 'src/product/infrastructure/typeorm/product-entity';
 import { OrderEntity } from './order-entity';
+import { Exclude } from 'class-transformer';
 
 @Entity('order_product')
 export class OrderProduct {
 
-    @ManyToOne(() => OrderEntity, order => order.order_products, { eager: true })
+    @ManyToOne(() => OrderEntity, order => order.order_products, { eager: true, lazy: true })
     @JoinColumn({ name: 'order_id' })
+    @Exclude()
     order: OrderEntity;
 
     @ManyToOne(() => Product, product => product.orders, { eager: true })

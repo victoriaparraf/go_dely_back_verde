@@ -1,12 +1,14 @@
 import { Entity, ManyToOne, Column, PrimaryColumn, JoinColumn } from 'typeorm';
 import { OrderEntity } from './order-entity';
 import { Combo } from 'src/combo/infrastructure/typeorm/combo-entity';
+import { Exclude } from 'class-transformer';
 
 @Entity('order_combo')
 export class OrderCombo {
 
-    @ManyToOne(() => OrderEntity, order => order.order_products, { eager: true })
+    @ManyToOne(() => OrderEntity, order => order.order_products, { eager: true, lazy: true })
     @JoinColumn({ name: 'order_id' })
+    @Exclude()
     order: OrderEntity;
 
     @ManyToOne(() => Combo, combo => combo.orders, { eager: true })

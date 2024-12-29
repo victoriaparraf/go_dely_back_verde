@@ -9,9 +9,33 @@ export class OrderMapper {
     return {
         order_id: order.getId().value,
         currency: order.getCurrency().value,
-        total: order.getTotal().value,
+        total: order.getTotal(),
         paymentMethodId: order.getPaymentMethodId().value,
-        status: order.getStatus()
+        status: order.getStatus(),
+        order_products: order.getOrderProducts().map(product => ({
+            order_id: product.order_id,
+            product_id: product.product_id,
+            quantity: product.quantity,
+            product_price: product.product_price,
+            total_price: product.total_price,
+            product: product.product
+        })),
+        order_combos: order.getOrderCombos().map(combo => {
+            if (!combo.combo) {
+                throw new Error(`Combo with ID ${combo.combo_id} not found`);
+            }
+            return {
+                order_id: combo.order_id,
+                combo_id: combo.combo_id,
+                quantity: combo.quantity,
+                combo_price: combo.combo_price,
+                total_price: combo.total_price,
+                combo_name: combo.combo.combo_name.getValue(),
+                combo_description: combo.combo.combo_description.getValue(),
+                combo_currency: combo.combo.combo_currency.getValue(),
+                combo_stock: combo.combo.combo_stock.getValue()
+            };
+        })
     };
   }
 
@@ -23,7 +47,9 @@ export class OrderMapper {
       entity.total,
       entity.paymentMethodId,
       entity.user.user_id,
-      entity.status
+      entity.status,
+      entity.order_products,
+      entity.order_combos,
     );
   }
 
@@ -32,10 +58,35 @@ export class OrderMapper {
         order_id: order.getId().value,
         address: AddressMapper.toDtoAddres(order.getAddress()).name,
         currency: order.getCurrency().value,
-        total: order.getTotal().getValue(),
+        total: order.getTotal(),
         paymentMethodId: order.getPaymentMethodId().value,
         user_id: order.getUserId().value,
         status: order.getStatus(),
+        order_products: order.getOrderProducts().map(product => ({
+            order_id: product.order_id,
+            product_id: product.product_id,
+            quantity: product.quantity,
+            product_price: product.product_price,
+            total_price: product.total_price,
+            product_name: product.product.product_name.getValue(),
+            product_description: product.product.product_description.getValue(),
+            product_currency: product.product.product_currency.getValue(),
+            product_weight: product.product.product_weight.getValue(),
+            product_measurement: product.product.product_measurement.getValue(),
+            product_stock: product.product.product_stock.getValue()
+        })),
+        order_combos: order.getOrderCombos().map(combo => ({
+            order_id: combo.order_id,
+            combo_id: combo.combo_id,
+            quantity: combo.quantity,
+            combo_price: combo.combo_price,
+            total_price: combo.total_price,
+            combo_name: combo.combo.combo_name.getValue(),
+            combo_description: combo.combo.combo_description.getValue(),
+            combo_currency: combo.combo.combo_currency.getValue(),
+            combo_stock: combo.combo.combo_stock.getValue()
+        }))
     };
   }
+  
 }
