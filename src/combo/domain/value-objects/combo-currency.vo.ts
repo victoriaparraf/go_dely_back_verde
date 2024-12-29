@@ -1,12 +1,16 @@
+import { unvalidCurrencyComboException } from "../exceptions/unvalid-currency-combo";
+
 export class ComboCurrency {
 
     protected readonly value: string;
   
-    constructor(value: string) {
-      if (!this.isValidCurrency(value)) {
-        throw new Error(`Invalid currency format: ${value}`);
+    constructor( value: string ) {
+
+      if ( !this.isValidCurrency(value) ) {
+        throw new unvalidCurrencyComboException(`The currency '${value}' is not valid`);
       }
       this.value = value;
+
     }
   
     private isValidCurrency(value: string): boolean {
