@@ -10,6 +10,7 @@ import { CreateProductService } from '../application/command/create_product_serv
 import { CreateProductServiceEntryDto } from '../application/dto/create-product-entry.dto';
 import { GetProductServicePaginationDto, GetProductServiceEntryDto } from '../application/dto/get-product-entry.dto';
 import { GetProductService } from '../application/query/get-product-service';
+import { GetProductsByCategoryService } from '../application/query/get-products-by-category-service';
 
 @ApiTags('Product')
 @Controller('products')
@@ -19,6 +20,7 @@ export class ProductController {
     private readonly createProductService: CreateProductService,
     private readonly getProductService: GetProductService,
     private readonly cloudinaryService: CloudinaryService,
+    private readonly getProductsByCategoryService: GetProductsByCategoryService,
   ) {}
 
   @Post('create')
@@ -60,6 +62,11 @@ export class ProductController {
   async findOne(@Param('term') term: string) {
     const getProductServiceEntryDto: GetProductServiceEntryDto = { term };
     return this.getProductService.execute(getProductServiceEntryDto);
+  }
+
+  @Get('category/:categoryId')
+  async findByCategory(@Param('categoryId') categoryId: string) {
+    return this.getProductsByCategoryService.execute(categoryId);
   }
 
   //@Patch(':product_id')
