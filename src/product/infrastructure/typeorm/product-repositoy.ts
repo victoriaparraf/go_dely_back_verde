@@ -55,6 +55,13 @@ export class ProductRepository implements IProductRepository {
     return product;
   }
 
+  async findByCategory(categoryId: string): Promise<Product[]> {
+    return this.productRepository.find({
+      where: { product_category: { category_id: categoryId } },
+      relations: ['product_category', 'images', 'discount'],
+    });
+  }
+
   async updateProduct(product: Product) {
     return this.productRepository.save(product);
   }

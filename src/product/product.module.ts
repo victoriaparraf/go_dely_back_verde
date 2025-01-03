@@ -11,16 +11,17 @@ import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-ent
 import { ProductRepository } from './infrastructure/typeorm/product-repositoy';
 import { CreateProductService } from './application/command/create_product_service';
 import { GetProductService } from './application/query/get-product-service';
+import { GetProductsByCategoryService } from './application/query/get-products-by-category-service';
 
 @Module({
   controllers: [ProductController],
-  providers: [CreateProductService, GetProductService, ProductRepository],
+  providers: [CreateProductService, GetProductService, GetProductsByCategoryService, ProductRepository],
   imports:[
     TypeOrmModule.forFeature([ Product, Image, Combo, CategoryEntity ]),
     CloudinaryModule,
     RabbitmqModule,
     MailModule
   ],
-  exports: [ProductRepository, CreateProductService, GetProductService],
+  exports: [ProductRepository, CreateProductService, GetProductService, GetProductsByCategoryService],
 })
 export class ProductModule {}
