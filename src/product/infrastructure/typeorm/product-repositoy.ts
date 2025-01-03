@@ -5,9 +5,10 @@ import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-ent
 import { isUUID } from 'class-validator';
 import { Image } from './image-entity';
 import { Product } from './product-entity';
+import { IProductRepository } from 'src/product/domain/repositories/product-repository-interface';
 
 @Injectable()
-export class ProductRepository {
+export class ProductRepository implements IProductRepository {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
@@ -62,7 +63,7 @@ export class ProductRepository {
     return this.productRepository.remove(product);
   }
 
-  async deleteImagesByProduct(productId: string) {
-    return this.imageRepository.delete({ product: { product_id: productId } });
+  async deleteImagesByProduct(productId: string): Promise<void> {
+    await this.imageRepository.delete({ product: { product_id: productId } });
   }
 }

@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { ProductService } from './infrastructure/product.service';
 import { ProductController } from './infrastructure/product.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './infrastructure/typeorm/product-entity'; 
@@ -10,16 +9,18 @@ import { MailModule } from './infrastructure/mail/mail.module';
 import { Combo } from 'src/combo/infrastructure/typeorm/combo-entity';
 import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
 import { ProductRepository } from './infrastructure/typeorm/product-repositoy';
+import { CreateProductService } from './application/command/create_product_service';
+import { GetProductService } from './application/query/get-product-service';
 
 @Module({
   controllers: [ProductController],
-  providers: [ProductService, ProductRepository],
+  providers: [CreateProductService, GetProductService, ProductRepository],
   imports:[
     TypeOrmModule.forFeature([ Product, Image, Combo, CategoryEntity ]),
     CloudinaryModule,
     RabbitmqModule,
     MailModule
   ],
-  exports: [ProductService, ProductRepository],
+  exports: [ProductRepository, CreateProductService, GetProductService],
 })
 export class ProductModule {}
