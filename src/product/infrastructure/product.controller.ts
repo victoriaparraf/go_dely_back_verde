@@ -1,16 +1,17 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query, UseInterceptors, UploadedFiles, Inject } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
-import { ProductService } from './product.service';
-import { CreateProductDto } from '../application/dto/create-product.dto';
-import { UpdateProductDto } from '../application/dto/update-product.dto';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { ApiTags } from '@nestjs/swagger';
-import { CreateProductService } from '../application/command/create_product_service';
-import { CreateProductServiceEntryDto } from '../application/dto/create-product-entry.dto';
-import { GetProductServicePaginationDto, GetProductServiceEntryDto } from '../application/dto/get-product-entry.dto';
+import { CreateProductService } from '../application/command/create-product-service';
+import { CreateProductServiceEntryDto } from '../application/dto/entry/create-product-entry.dto';
+import { GetProductServicePaginationDto, GetProductServiceEntryDto } from '../application/dto/entry/get-product-entry.dto';
 import { GetProductService } from '../application/query/get-product-service';
 import { GetProductsByCategoryService } from '../application/query/get-products-by-category-service';
+import { UpdateProductServiceEntryDto } from '../application/dto/entry/update-product-service-entry.dto';
+import { UpdateProductService } from '../application/command/update-product-service';
+import { CreateProductDto } from './dtos/create-product.dto';
+import { UpdateProductDto } from './dtos/update-product.dto';
 
 @ApiTags('Product')
 @Controller('products')
@@ -21,6 +22,7 @@ export class ProductController {
     private readonly getProductService: GetProductService,
     private readonly cloudinaryService: CloudinaryService,
     private readonly getProductsByCategoryService: GetProductsByCategoryService,
+    private readonly updateProductService: UpdateProductService,
   ) {}
 
   @Post('create')
@@ -69,10 +71,32 @@ export class ProductController {
     return this.getProductsByCategoryService.execute(categoryId);
   }
 
-  //@Patch(':product_id')
- //update(@Param('product_id', ParseUUIDPipe ) product_id: string, @Body() updateProductDto: UpdateProductDto) {
-    //return this.productService.update(product_id, updateProductDto);
-  //}
+  @Patch(':product_id')
+  @UseInterceptors(FilesInterceptor('files'))
+  async update(
+    @Param('product_id', ParseUUIDPipe) product_id: string,
+    @Body() updateProductDto: UpdateProductDto,
+    @UploadedFiles() files: Express.Multer.File[]
+  ) {
+    const imageUrls = [];
+    // Cargar cada archivo en Cloudinary y guardar las URLs
+    if (files && files.length) {
+      for (const file of files) {
+        const imageUrl = await this.cloudinaryService.uploadImage(file.path, 'products');
+        imageUrls.push(imageUrl);
+      }
+    }
+
+    const updateProductServiceEntryDto: UpdateProductServiceEntryDto = {
+      ...updateProductDto,
+      product_id,
+      images: imageUrls.length ? imageUrls : undefined,
+      product_weight: updateProductDto.product_weight ? Number(updateProductDto.product_weight) : undefined,
+    };
+
+    await this.updateProductService.execute(updateProductServiceEntryDto);
+    return { message: 'Product updated successfully' };
+  }
 
 
   //@Delete(':product_id')

@@ -1,4 +1,4 @@
-import { GetProductServiceResponseDto } from 'src/product/application/dto/get-product-response.dto';
+import { GetProductServiceResponseDto } from 'src/product/application/dto/response/get-product-response.dto';
 import { Product } from 'src/product/infrastructure/typeorm/product-entity';
 
 export class ProductMapper {

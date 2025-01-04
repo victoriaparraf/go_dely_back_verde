@@ -12,11 +12,12 @@ import { ProductName } from 'src/product/domain/value-objects/product-name.vo';
 import { ProductPrice } from 'src/product/domain/value-objects/product-price.vo';
 import { ProductStock } from 'src/product/domain/value-objects/product-stock.vo';
 import { ProductWeight } from 'src/product/domain/value-objects/product-weight.vo';
-import { CreateProductServiceEntryDto } from '../dto/create-product-entry.dto';
-import { CreateProductServiceResponseDto } from '../dto/create-product-response.dto';
+import { CreateProductServiceEntryDto } from '../dto/entry/create-product-entry.dto';
+import { CreateProductServiceResponseDto } from '../dto/response/create-product-response.dto';
 import { ProductRepository } from 'src/product/infrastructure/typeorm/product-repositoy';
 import { CloudinaryService } from 'src/product/infrastructure/cloudinary/cloudinary.service';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ProductMapper } from 'src/product/infrastructure/mappers/product-mapper';
 
 @Injectable()
 export class CreateProductService implements IApplicationService<CreateProductServiceEntryDto, CreateProductServiceResponseDto> {
@@ -44,15 +45,6 @@ export class CreateProductService implements IApplicationService<CreateProductSe
       const productMeasurement = new ProductMeasurement(productDetails.product_measurement);
       const productStock = new ProductStock(productDetails.product_stock);
 
-      const imageEntities = await Promise.all(
-        images.map(async (imagePath) => {
-          const imageUrl = await this.cloudinaryService.uploadImage(imagePath, 'products');
-          const image = new Image();
-          image.image_url = imageUrl;
-          return image;
-        }),
-      );
-
       const product = new Product();
       product.product_name = productName;
       product.product_description = productDescription;
@@ -62,10 +54,21 @@ export class CreateProductService implements IApplicationService<CreateProductSe
       product.product_measurement = productMeasurement;
       product.product_stock = productStock;
       product.product_category = category;
+
+      const imageEntities = await Promise.all(
+        images.map(async (imagePath) => {
+          const imageUrl = await this.cloudinaryService.uploadImage(imagePath, 'products');
+          console.log('Uploaded image URL:', imageUrl);
+          const image = new Image();
+          image.image_url = imageUrl;
+          image.product = product; // Asociar la imagen con el producto
+          return image;
+        }),
+      );
+
       product.images = imageEntities;
 
-      const productEntity = this.productRepository.createProduct(product);
-      await this.productRepository.saveProduct(await productEntity);
+      await this.productRepository.saveProduct(product);
 
       this.client.send('product_notification', {
         productImages: createProductDto.images,
@@ -77,27 +80,11 @@ export class CreateProductService implements IApplicationService<CreateProductSe
         message: 'Check out our new products and their offers!',
       }).subscribe();
 
-      return this.mapProductToResponse(product);
+      return ProductMapper.mapProductToResponse(product);
     } catch (error) {
       console.error('Error creating product:', error);
       this.handleDBExceptions(error);
     }
-  }
-
-  private mapProductToResponse(product: Product): CreateProductServiceResponseDto {
-    return {
-      product_id: product.product_id,
-      product_name: product.product_name.getValue(),
-      product_description: product.product_description.getValue(),
-      product_price: product.product_price.getValue(),
-      product_currency: product.product_currency.getValue(),
-      product_weight: Number(product.product_weight.getValue()),
-      product_measurement: product.product_measurement.getValue(),
-      product_stock: product.product_stock.getValue(),
-      product_category: product.product_category?.category_name,
-      images: product.images.map((img) => img.image_url),
-      discount: product.discount ? product.discount.discount_percentage.getValue() : null,
-    };
   }
 
   private handleDBExceptions(error: any): void {
