@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
 import { CloudinaryService } from 'src/product/infrastructure/cloudinary/cloudinary.service';
-import { UpdateProductServiceEntryDto } from '../dto/update-product-service-entry.dto';
+import { UpdateProductServiceEntryDto } from '../dto/entry/update-product-service-entry.dto';
 import { Image } from 'src/product/infrastructure/typeorm/image-entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';

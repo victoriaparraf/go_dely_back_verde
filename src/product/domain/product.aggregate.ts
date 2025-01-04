@@ -8,7 +8,7 @@ import { ProductID } from "./value-objects/product-id.vo";
 import { Combo } from "src/combo/domain/entities/combo.entity";
 import { Category } from "src/category/domain/category.entity";
 import { Discount } from "src/discount/infraestructure/typeorm/discount.entity";
-import { Image } from "../domain/entities/image.entity"; 
+import { ImageEntity } from "../domain/entities/image.entity"; 
 import { ProductStock } from "./value-objects/product-stock.vo";
 import { ProductCurrency } from "./value-objects/poduct-currency.vo";
 
@@ -20,7 +20,7 @@ export class Product extends AggregateRoot<ProductID> {
     private product_measurement: ProductMeasurement;
     private product_weight: ProductWeight;
     private product_stock: ProductStock;
-    private images: Image[];
+    private images: ImageEntity[];
     private product_category: Category;
     private combos: Combo[];
     private discount?: Discount;
@@ -35,7 +35,7 @@ export class Product extends AggregateRoot<ProductID> {
         weight: ProductWeight,
         stock: ProductStock,
         category: Category,
-        images: Image[],
+        images: ImageEntity[],
         combos: Combo[] = [],
         discount?: Discount
     ) {
@@ -61,7 +61,7 @@ export class Product extends AggregateRoot<ProductID> {
         return this.product_description;
     }
 
-    get imagesList(): Image[] {
+    get imagesList(): ImageEntity[] {
         return this.images;
     }
 

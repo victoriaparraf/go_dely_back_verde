@@ -1,18 +1,17 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query, UseInterceptors, UploadedFiles, Inject } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
-import { ProductService } from './product.service';
-import { CreateProductDto } from '../application/dto/create-product.dto';
-import { UpdateProductDto } from '../application/dto/update-product.dto';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { ApiTags } from '@nestjs/swagger';
-import { CreateProductService } from '../application/command/create_product_service';
-import { CreateProductServiceEntryDto } from '../application/dto/create-product-entry.dto';
-import { GetProductServicePaginationDto, GetProductServiceEntryDto } from '../application/dto/get-product-entry.dto';
+import { CreateProductService } from '../application/command/create-product-service';
+import { CreateProductServiceEntryDto } from '../application/dto/entry/create-product-entry.dto';
+import { GetProductServicePaginationDto, GetProductServiceEntryDto } from '../application/dto/entry/get-product-entry.dto';
 import { GetProductService } from '../application/query/get-product-service';
 import { GetProductsByCategoryService } from '../application/query/get-products-by-category-service';
-import { UpdateProductServiceEntryDto } from '../application/dto/update-product-service-entry.dto';
+import { UpdateProductServiceEntryDto } from '../application/dto/entry/update-product-service-entry.dto';
 import { UpdateProductService } from '../application/command/update-product-service';
+import { CreateProductDto } from './dtos/create-product.dto';
+import { UpdateProductDto } from './dtos/update-product.dto';
 
 @ApiTags('Product')
 @Controller('products')
