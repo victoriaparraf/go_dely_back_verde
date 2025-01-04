@@ -12,6 +12,7 @@ import { UpdateProductServiceEntryDto } from '../application/dto/entry/update-pr
 import { UpdateProductService } from '../application/command/update-product-service';
 import { CreateProductDto } from './dtos/create-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
+import { DeleteProductService } from '../application/command/delete-product-service';
 
 @ApiTags('Product')
 @Controller('products')
@@ -22,6 +23,7 @@ export class ProductController {
     private readonly getProductService: GetProductService,
     private readonly cloudinaryService: CloudinaryService,
     private readonly getProductsByCategoryService: GetProductsByCategoryService,
+    private readonly deleteProductService: DeleteProductService,
     private readonly updateProductService: UpdateProductService,
   ) {}
 
@@ -99,8 +101,9 @@ export class ProductController {
   }
 
 
-  //@Delete(':product_id')
-  //remove(@Param('product_id', ParseUUIDPipe) product_id: string) {
-   // return this.productService.remove(product_id);
-  //}
+  @Delete(':product_id')
+  async remove(@Param('product_id', ParseUUIDPipe) product_id: string) {
+    await this.deleteProductService.execute(product_id);
+    return { message: 'Product deleted successfully' };
+  }
 }

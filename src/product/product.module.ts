@@ -13,16 +13,17 @@ import { CreateProductService } from './application/command/create-product-servi
 import { GetProductService } from './application/query/get-product-service';
 import { GetProductsByCategoryService } from './application/query/get-products-by-category-service';
 import { UpdateProductService } from './application/command/update-product-service';
+import { DeleteProductService } from './application/command/delete-product-service';
 
 @Module({
   controllers: [ProductController],
-  providers: [CreateProductService, GetProductService, GetProductsByCategoryService, UpdateProductService, ProductRepository],
+  providers: [CreateProductService, GetProductService, GetProductsByCategoryService, UpdateProductService, DeleteProductService, ProductRepository],
   imports:[
     TypeOrmModule.forFeature([ Product, Image, Combo, CategoryEntity ]),
     CloudinaryModule,
     RabbitmqModule,
     MailModule
   ],
-  exports: [ProductRepository, CreateProductService, GetProductService, GetProductsByCategoryService, UpdateProductService],
+  exports: [ProductRepository, CreateProductService, GetProductService, GetProductsByCategoryService, DeleteProductService, UpdateProductService],
 })
 export class ProductModule {}
