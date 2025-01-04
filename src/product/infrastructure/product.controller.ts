@@ -4,7 +4,6 @@ import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateProductService } from '../application/command/create-product-service';
-import { CreateProductServiceEntryDto } from '../application/dto/entry/create-product-entry.dto';
 import { GetProductServicePaginationDto, GetProductServiceEntryDto } from '../application/dto/entry/get-product-entry.dto';
 import { GetProductService } from '../application/query/get-product-service';
 import { GetProductsByCategoryService } from '../application/query/get-products-by-category-service';
@@ -12,6 +11,8 @@ import { UpdateProductServiceEntryDto } from '../application/dto/entry/update-pr
 import { UpdateProductService } from '../application/command/update-product-service';
 import { CreateProductDto } from './dtos/create-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
+import { DeleteProductService } from '../application/command/delete-product-service';
+import { GetProductsCombosSummaryService } from '../application/query/get-products-combos-service';
 
 @ApiTags('Product')
 @Controller('products')
@@ -22,33 +23,32 @@ export class ProductController {
     private readonly getProductService: GetProductService,
     private readonly cloudinaryService: CloudinaryService,
     private readonly getProductsByCategoryService: GetProductsByCategoryService,
+    private readonly deleteProductService: DeleteProductService,
+    private readonly getProductsCombosSummaryService: GetProductsCombosSummaryService,
     private readonly updateProductService: UpdateProductService,
   ) {}
 
   @Post('create')
-  @UseInterceptors(FilesInterceptor('files'))
-  async create(
-    @Body() createProductDto: CreateProductDto,
-    @UploadedFiles() files: Express.Multer.File[]
-  ) {
-    const imageUrls = [];
-    // Cargar cada archivo en Cloudinary y guardar las URLs
-    if (files && files.length) {
-      for (const file of files) {
-        const imageUrl = await this.cloudinaryService.uploadImage(file.path, 'products');
-        imageUrls.push(imageUrl);
-      }
-    }
+  async create(@Body() createProductDto: CreateProductDto) {
 
-    const createProductServiceEntryDto: CreateProductServiceEntryDto = {
+    const createProductServiceEntryDto = {
       ...createProductDto,
-      images: imageUrls,
       product_weight: Number(createProductDto.product_weight),
       product_stock: createProductDto.product_stock ?? 0,
     };
 
     const product = await this.createProductService.execute(createProductServiceEntryDto);
+    
+    //TESTING
+    console.log('Created product response:', product);
+    /////////
+
     return product;
+  }
+
+  @Get('summary')
+  async getProductsCombosSummary() {
+    return this.getProductsCombosSummaryService.execute();
   }
 
   @Get()
@@ -99,8 +99,9 @@ export class ProductController {
   }
 
 
-  //@Delete(':product_id')
-  //remove(@Param('product_id', ParseUUIDPipe) product_id: string) {
-   // return this.productService.remove(product_id);
-  //}
+  @Delete(':product_id')
+  async remove(@Param('product_id', ParseUUIDPipe) product_id: string) {
+    await this.deleteProductService.execute(product_id);
+    return { message: 'Product deleted successfully' };
+  }
 }

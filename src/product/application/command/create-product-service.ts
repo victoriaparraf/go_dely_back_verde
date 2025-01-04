@@ -14,10 +14,10 @@ import { ProductStock } from 'src/product/domain/value-objects/product-stock.vo'
 import { ProductWeight } from 'src/product/domain/value-objects/product-weight.vo';
 import { CreateProductServiceEntryDto } from '../dto/entry/create-product-entry.dto';
 import { CreateProductServiceResponseDto } from '../dto/response/create-product-response.dto';
-import { ProductRepository } from 'src/product/infrastructure/typeorm/product-repositoy';
 import { CloudinaryService } from 'src/product/infrastructure/cloudinary/cloudinary.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductMapper } from 'src/product/infrastructure/mappers/product-mapper';
+import { ProductRepository } from 'src/product/infrastructure/repositories/product-repositoy';
 
 @Injectable()
 export class CreateProductService implements IApplicationService<CreateProductServiceEntryDto, CreateProductServiceResponseDto> {
@@ -58,10 +58,9 @@ export class CreateProductService implements IApplicationService<CreateProductSe
       const imageEntities = await Promise.all(
         images.map(async (imagePath) => {
           const imageUrl = await this.cloudinaryService.uploadImage(imagePath, 'products');
-          console.log('Uploaded image URL:', imageUrl);
           const image = new Image();
           image.image_url = imageUrl;
-          image.product = product; // Asociar la imagen con el producto
+          image.product = product;
           return image;
         }),
       );
