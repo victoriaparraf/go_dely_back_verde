@@ -12,7 +12,7 @@ import { ProductName } from 'src/product/domain/value-objects/product-name.vo';
 import { ProductPrice } from 'src/product/domain/value-objects/product-price.vo';
 import { ProductStock } from 'src/product/domain/value-objects/product-stock.vo';
 import { ProductWeight } from 'src/product/domain/value-objects/product-weight.vo';
-import { ProductRepository } from 'src/product/infrastructure/typeorm/product-repositoy';
+import { ProductRepository } from 'src/product/infrastructure/repositories/product-repositoy';
 
 @Injectable()
 export class UpdateProductService {

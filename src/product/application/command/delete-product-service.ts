@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
-import { ProductRepository } from 'src/product/infrastructure/typeorm/product-repositoy';
+import { ProductRepository } from 'src/product/infrastructure/repositories/product-repositoy';
 
 @Injectable()
 export class DeleteProductService {

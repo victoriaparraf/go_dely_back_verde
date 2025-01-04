@@ -4,7 +4,6 @@ import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateProductService } from '../application/command/create-product-service';
-import { CreateProductServiceEntryDto } from '../application/dto/entry/create-product-entry.dto';
 import { GetProductServicePaginationDto, GetProductServiceEntryDto } from '../application/dto/entry/get-product-entry.dto';
 import { GetProductService } from '../application/query/get-product-service';
 import { GetProductsByCategoryService } from '../application/query/get-products-by-category-service';
@@ -13,6 +12,7 @@ import { UpdateProductService } from '../application/command/update-product-serv
 import { CreateProductDto } from './dtos/create-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
 import { DeleteProductService } from '../application/command/delete-product-service';
+import { GetProductsCombosSummaryService } from '../application/query/get-products-combos-service';
 
 @ApiTags('Product')
 @Controller('products')
@@ -24,6 +24,7 @@ export class ProductController {
     private readonly cloudinaryService: CloudinaryService,
     private readonly getProductsByCategoryService: GetProductsByCategoryService,
     private readonly deleteProductService: DeleteProductService,
+    private readonly getProductsCombosSummaryService: GetProductsCombosSummaryService,
     private readonly updateProductService: UpdateProductService,
   ) {}
 
@@ -43,6 +44,11 @@ export class ProductController {
     /////////
 
     return product;
+  }
+
+  @Get('summary')
+  async getProductsCombosSummary() {
+    return this.getProductsCombosSummaryService.execute();
   }
 
   @Get()

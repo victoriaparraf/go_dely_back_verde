@@ -8,7 +8,6 @@ import { OrderMapper } from '../infraestructure/mappers/order.mapper';
 import { ResponseOrderDTO } from './dto/response-order.dto';
 import { OrderStatus } from '../domain/enums/order-status.enum';
 import { ClientProxy } from '@nestjs/microservices';
-import { ProductRepository } from 'src/product/infrastructure/typeorm/product-repositoy';
 import { OrderProduct } from '../infraestructure/typeorm/order-product';
 import { OrderEntity } from '../infraestructure/typeorm/order-entity';
 import { Repository } from 'typeorm';
@@ -17,6 +16,7 @@ import { ComboRepository } from 'src/combo/infrastructure/typeorm/combo-reposito
 import { OrderCombo } from '../infraestructure/typeorm/order-combo';
 import { Address } from 'src/user/infrastructure/typeorm/address-entity';
 import { AddressMapper } from '../../user/infrastructure/mappers/address.mapper';
+import { ProductRepository } from 'src/product/infrastructure/repositories/product-repositoy';
 
 @Injectable()
 export class OrderService {
