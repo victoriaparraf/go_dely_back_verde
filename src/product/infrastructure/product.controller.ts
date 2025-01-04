@@ -28,28 +28,20 @@ export class ProductController {
   ) {}
 
   @Post('create')
-  @UseInterceptors(FilesInterceptor('files'))
-  async create(
-    @Body() createProductDto: CreateProductDto,
-    @UploadedFiles() files: Express.Multer.File[]
-  ) {
-    const imageUrls = [];
-    // Cargar cada archivo en Cloudinary y guardar las URLs
-    if (files && files.length) {
-      for (const file of files) {
-        const imageUrl = await this.cloudinaryService.uploadImage(file.path, 'products');
-        imageUrls.push(imageUrl);
-      }
-    }
+  async create(@Body() createProductDto: CreateProductDto) {
 
-    const createProductServiceEntryDto: CreateProductServiceEntryDto = {
+    const createProductServiceEntryDto = {
       ...createProductDto,
-      images: imageUrls,
       product_weight: Number(createProductDto.product_weight),
       product_stock: createProductDto.product_stock ?? 0,
     };
 
     const product = await this.createProductService.execute(createProductServiceEntryDto);
+    
+    //TESTING
+    console.log('Created product response:', product);
+    /////////
+
     return product;
   }
 

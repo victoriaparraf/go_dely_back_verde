@@ -58,10 +58,9 @@ export class CreateProductService implements IApplicationService<CreateProductSe
       const imageEntities = await Promise.all(
         images.map(async (imagePath) => {
           const imageUrl = await this.cloudinaryService.uploadImage(imagePath, 'products');
-          console.log('Uploaded image URL:', imageUrl);
           const image = new Image();
           image.image_url = imageUrl;
-          image.product = product; // Asociar la imagen con el producto
+          image.product = product;
           return image;
         }),
       );
