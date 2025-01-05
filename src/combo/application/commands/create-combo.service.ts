@@ -2,32 +2,38 @@ import { Injectable, NotFoundException, InternalServerErrorException } from '@ne
 import { IApplicationService } from 'src/common/application/application-service.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Combo } from '../infrastructure/typeorm/combo-entity';
+import { Combo } from 'src/combo/infrastructure/typeorm/combo-entity';
 import { Product } from 'src/product/infrastructure/typeorm/product-entity';
 import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
 import { CreateComboServiceEntryDto } from '../dto/entry/create-combo-entry.dto';
 import { CreateComboServiceResponseDto } from '../dto/response/create-combo-response.dto';
+import { ComboRepository } from 'src/combo/infrastructure/repositories/combo-repository';
+import { ComboName } from 'src/combo/domain/value-objects/combo-name.vo';
+import { ComboDescription } from '../../domain/value-objects/combo-description.vo';
+import { ComboCurrency } from 'src/combo/domain/value-objects/combo-currency.vo';
+import { ComboPrice } from 'src/combo/domain/value-objects/combo-price.vo';
+import { ComboImage } from '../../domain/value-objects/combo-image.vo';
+import { ComboStock } from 'src/combo/domain/value-objects/combo-stock.vo';
+import { ComboMapper } from 'src/combo/infrastructure/mappers/combo-mapper';
 
 @Injectable()
 export class CreateComboService implements IApplicationService<CreateComboServiceEntryDto, CreateComboServiceResponseDto> {
 
   constructor(
-    rivate readonly comboRepository: ComboRepository, 
+    private readonly comboRepository: ComboRepository, 
     @InjectRepository(Product) private readonly productRepository: Repository<Product>,
     @InjectRepository(CategoryEntity) private readonly categoryRepository: Repository<CategoryEntity>,
   ) {}
 
   async execute(entryDto: CreateComboServiceEntryDto): Promise<CreateComboServiceResponseDto> {
     try {
-      const { category, products, image, discount, ...comboDetails } = entryDto;
-      
-      // Validate category
-      const category = await this.categoryRepository.findOne({ where: { category_id: combo_category } });
-      if (!category) {
-        throw new NotFoundException(`Category with ID ${combo_category} not found`);
-      }
+      const { category, products, ...comboDetails } = entryDto;
 
-      // Validate products
+      const categoryEntity = await this.categoryRepository.findOne({ where: { category_id: category } });
+      if (!categoryEntity) {
+        throw new NotFoundException(`Category with ID ${category} not found`);
+      }
+      
       const productEntities = await Promise.all(
         products.map(async (productId) => {
           const product = await this.productRepository.findOne({ where: { product_id: productId } });
@@ -38,41 +44,29 @@ export class CreateComboService implements IApplicationService<CreateComboServic
         }),
       );
 
-      // Create the combo entity
+      const comboName = new ComboName(comboDetails.name);
+      const comboDescription = new ComboDescription(comboDetails.description);
+      const comboCurrency = new ComboCurrency(comboDetails.currency);
+      const comboPrice = new ComboPrice(comboDetails.price);
+      const comboImage = new ComboImage(comboDetails.image);
+      const comboStock = new ComboStock(comboDetails.stock);
+
       const combo = new Combo();
-      combo.combo_name = combo_name;
-      combo.combo_description = combo_description;
-      combo.combo_price = combo_price;
-      combo.combo_stock = combo_stock;
-      combo.combo_category = category;
+      combo.combo_name = comboName;
+      combo.combo_description = comboDescription;
+      combo.combo_price = comboPrice;
+      combo.combo_stock = comboStock;
+      combo.combo_image = comboImage.getValue();
+      combo.combo_currency = comboCurrency;
+      combo.combo_category = categoryEntity;
       combo.products = productEntities;
 
-      // Save the combo to the database
-      const savedCombo = await this.comboRepository.save(combo);
+      await this.comboRepository.saveCombo(combo);
 
       // Update products with the combo reference
-      productEntities.forEach(async (product) => {
-        product.combos = [...(product.combos || []), savedCombo];
-        await this.productRepository.save(product);
-      });
 
-      // Prepare and return the response
-      const responseDto = new CreateComboServiceResponseDto();
-      responseDto.combo_id = savedCombo.combo_id;
-      responseDto.combo_name = savedCombo.combo_name;
-      responseDto.combo_description = savedCombo.combo_description;
-      responseDto.combo_price = savedCombo.combo_price;
-      responseDto.combo_stock = savedCombo.combo_stock;
-      responseDto.combo_category = {
-        category_id: category.category_id,
-        category_name: category.category_name,
-      };
-      responseDto.products = productEntities.map((product) => ({
-        product_id: product.product_id,
-        product_name: product.product_name,
-      }));
-
-      return responseDto;
+      return ComboMapper.mapComboToResponse(combo);
+      
     } catch (error) {
       console.error('Error creating combo:', error);
       this.handleDBExceptions(error);
