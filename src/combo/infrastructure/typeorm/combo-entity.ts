@@ -8,6 +8,7 @@ import { ComboStock } from "src/combo/domain/value-objects/combo-stock.vo";
 import { Discount } from "src/discount/infraestructure/typeorm/discount.entity";
 import { CategoryEntity } from "src/category/infrastructure/typeorm/category-entity";
 import { OrderCombo } from "src/order/infraestructure/typeorm/order-combo";
+import { Currency } from "src/common/domain/enums/currency.enum";
 
 @Entity()
 export class Combo {
@@ -46,7 +47,7 @@ export class Combo {
         type: 'varchar',
         transformer: {
         to: (value: ComboCurrency) => value.getValue(),
-        from: (value: string) => value ? new ComboCurrency(value) : new ComboCurrency('USD'),
+        from: (value: string) => value ? new ComboCurrency(value as Currency) : new ComboCurrency('USD' as Currency),
         },
     })
     combo_currency: ComboCurrency;

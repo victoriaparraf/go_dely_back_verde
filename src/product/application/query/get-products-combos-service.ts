@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ComboRepository } from 'src/combo/infrastructure/typeorm/combo-repository';
+import { ComboRepository } from 'src/combo/infrastructure/repositories/combo-repository';
 import { ProductComboSummaryDto } from '../dto/response/product-combo-summary.dto';
 import { ProductRepository } from 'src/product/infrastructure/repositories/product-repositoy';
 

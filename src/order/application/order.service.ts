@@ -12,7 +12,7 @@ import { OrderProduct } from '../infraestructure/typeorm/order-product';
 import { OrderEntity } from '../infraestructure/typeorm/order-entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ComboRepository } from 'src/combo/infrastructure/typeorm/combo-repository';
+import { ComboRepository } from 'src/combo/infrastructure/repositories/combo-repository';
 import { OrderCombo } from '../infraestructure/typeorm/order-combo';
 import { Address } from 'src/user/infrastructure/typeorm/address-entity';
 import { AddressMapper } from '../../user/infrastructure/mappers/address.mapper';

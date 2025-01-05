@@ -5,7 +5,7 @@ import { CloudinaryService } from 'src/product/infrastructure/cloudinary/cloudin
 import { isUUID } from 'class-validator';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { Product } from 'src/product/infrastructure/typeorm/product-entity';
-import { ComboRepository } from './typeorm/combo-repository';
+import { ComboRepository } from './repositories/combo-repository';
 import { Combo } from './typeorm/combo-entity';
 import { ComboCurrency } from '../domain/value-objects/combo-currency.vo';
 import { ComboDescription } from '../domain/value-objects/combo-description.vo';
