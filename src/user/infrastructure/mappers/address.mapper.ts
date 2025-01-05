@@ -11,6 +11,7 @@ export class AddressMapper {
             address.latitude,
             address.longitude,
             address.name,
+            address.favorite,
             UserMapper.toDTO(address.user).user_id
         )
     }
