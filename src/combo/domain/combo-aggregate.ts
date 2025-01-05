@@ -10,6 +10,7 @@ import { DiscountID } from "src/discount/domain/value-objects/discount-id.vo";
 import { ProductID } from "src/product/domain/value-objects/product-id.vo";
 import { ComboCreatedEvent } from "./events/combo-created.event";
 import { unvalidComboException } from "./exceptions/unvalid-combo";
+import { ComboImage } from "./value-objects/combo-image.vo";
 
 export class Combo extends AggregateRoot<ComboID> {
     
@@ -18,9 +19,10 @@ export class Combo extends AggregateRoot<ComboID> {
     private price: ComboPrice;
     private currency: ComboCurrency;
     private stock: ComboStock;
+    private products: ProductID[];
+    private image: ComboImage;
     private category: CategoryID;
     private discount?: DiscountID;
-    private products: ProductID[];
 
     get Name(): ComboName {
         return this.name;
@@ -54,6 +56,10 @@ export class Combo extends AggregateRoot<ComboID> {
         return this.products;
     }
 
+    get Image(): ComboImage {
+        return this.image;
+    }
+
     constructor(
 
         id: ComboID, 
@@ -63,17 +69,18 @@ export class Combo extends AggregateRoot<ComboID> {
         currency: ComboCurrency, 
         stock: ComboStock,
         category: CategoryID,
-        discount?: DiscountID,
-        products: ProductID[]=[]
+        products: ProductID[]=[],
+        image: ComboImage,
+        discount?: DiscountID
 
     ) {
-        const createdCombo = ComboCreatedEvent.create(id, name, description, price, currency, stock, category, products, discount);
+        const createdCombo = ComboCreatedEvent.create(id, name, description, price, currency, stock, category, image, products, discount);
         super(id);
         super.addDomainEvent(createdCombo);
     }
 
     protected isValidCombo(): void{
-        if(!this.name || !this.description || !this.price || !this.currency || !this.stock || !this.category){
+        if( !this.name || !this.description || !this.price || !this.currency || !this.stock || !this.category || !this.image || !this.products ){
             throw new unvalidComboException('Not valid Combo');
         }
     }
