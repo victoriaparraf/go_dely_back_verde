@@ -1,26 +1,27 @@
 import { ValueObject } from "src/common/domain/value.object";
 import { unvalidCurrencyComboException } from "../exceptions/unvalid-currency-combo";
+import { Currency } from "src/common/domain/enums/currency.enum";
 
-export class ComboCurrency extends ValueObject<string> { 
+export class ComboCurrency extends ValueObject<Currency> { 
 
-    public readonly value: string;
+    public readonly value: Currency;
   
-    constructor( value: string ) {
+    constructor( value: Currency ) {
       super(value);
       this.validate(value);
     }
 
-    protected validate(value: string): void {
+    protected validate(value: Currency): void {
       if ( !this.isValidCurrency(value) ) {
         throw new unvalidCurrencyComboException(`The currency '${value}' is not valid`);
       }
     }
   
-    private isValidCurrency(value: string): boolean {
-      return /^[A-Za-z]{3}$/.test(value);
+    private isValidCurrency(value: Currency): boolean {
+      return Object.values(Currency).includes(value);
     }
   
-    public getValue(): string {
+    public getValue(): Currency {
       return this.value;
     }
 }
