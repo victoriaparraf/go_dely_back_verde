@@ -5,6 +5,7 @@ import { ComboDescription } from "../value-objects/combo-description.vo";
 import { ComboCurrency } from "../value-objects/combo-currency.vo";
 import { ComboStock } from "../value-objects/combo-stock.vo";
 import { Category } from "src/category/domain/category-aggregate";
+import { Currency } from "src/common/domain/enums/currency.enum";
 
 export class Combo {
 
@@ -24,7 +25,7 @@ export class Combo {
         name: string,
         description: string,
         price: number,
-        currency: string,
+        currency: Currency,
         stock: number,
         category: Category,
         image: string,

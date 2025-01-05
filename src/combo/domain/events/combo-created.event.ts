@@ -7,6 +7,7 @@ import { ComboCurrency } from '../value-objects/combo-currency.vo';
 import { ComboStock } from '../value-objects/combo-stock.vo';
 import { CategoryID } from 'src/category/domain/value-objects/category-id.vo';
 import { DiscountID } from 'src/discount/domain/value-objects/discount-id.vo';
+import { ProductID } from 'src/product/domain/value-objects/product-id.vo';
 
 export class ComboCreatedEvent extends DomainEventBase {
 
@@ -18,6 +19,7 @@ export class ComboCreatedEvent extends DomainEventBase {
         public readonly currency: ComboCurrency,
         public readonly stock: ComboStock,
         public readonly category: CategoryID,
+        public readonly products: ProductID[],
         public readonly discount?: DiscountID
     ) {
         super();
@@ -32,10 +34,11 @@ export class ComboCreatedEvent extends DomainEventBase {
         currency: ComboCurrency,
         stock: ComboStock,
         category: CategoryID,
+        products: ProductID[],
         discount?: DiscountID
 
     ): ComboCreatedEvent{
-        return new ComboCreatedEvent(comboId, name, description, price, currency, stock, category, discount);
+        return new ComboCreatedEvent(comboId, name, description, price, currency, stock, category, products, discount);
     }
 
     eventName(): string {
