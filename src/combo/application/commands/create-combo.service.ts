@@ -63,7 +63,10 @@ export class CreateComboService implements IApplicationService<CreateComboServic
 
       await this.comboRepository.saveCombo(combo);
 
-      // Update products with the combo reference
+      // for (const product of productEntities) {
+      //   product.combos.push(combo);
+      //   await this.productRepository.update(product);
+      // } 
 
       return ComboMapper.mapComboToResponse(combo);
       
