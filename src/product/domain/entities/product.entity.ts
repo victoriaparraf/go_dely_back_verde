@@ -1,7 +1,7 @@
 import { Combo } from "src/combo/domain/entities/combo.entity";
 import { Category } from "src/category/domain/category.entity";
 import { Discount } from "src/discount/infraestructure/typeorm/discount.entity";
-import { Image } from "./image.entity"; 
+import { ImageEntity } from "./image.entity"; 
 import { ProductCurrency } from "../value-objects/poduct-currency.vo";
 import { ProductMeasurement } from "../value-objects/product-measurement.vo";
 import { ProductPrice } from "../value-objects/product-price.vo";
@@ -19,7 +19,7 @@ export class Product {
   product_measurement: ProductMeasurement;
   product_weight: ProductWeight;
   product_stock: number;
-  images: Image[];
+  images: ImageEntity[];
   product_category: Category;
   combos: Combo[];
   discount?: Discount;
@@ -34,7 +34,7 @@ export class Product {
     weight: string,
     stock: number,
     category: Category,
-    images: Image[],
+    images: ImageEntity[],
     combos: Combo[] = [],
     discount?: Discount
   ) {

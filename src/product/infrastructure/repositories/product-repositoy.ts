@@ -2,12 +2,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
+import { Image } from '../typeorm/image-entity';
 import { isUUID } from 'class-validator';
-import { Image } from './image-entity';
-import { Product } from './product-entity';
+import { IProductRepository } from 'src/product/domain/repositories/product-repository-interface';
+import { Product } from '../typeorm/product-entity';
 
 @Injectable()
-export class ProductRepository {
+export class ProductRepository implements IProductRepository {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
@@ -20,7 +21,9 @@ export class ProductRepository {
   ) {}
 
   async createProduct(product: Product) {
-    return this.productRepository.create(product);
+    const productEntity = this.productRepository.create(product);
+    productEntity.images = product.images; // Asegúrate de asignar las imágenes aquí
+    return productEntity;
   }
 
   async saveProduct(product: Product) {
@@ -54,6 +57,13 @@ export class ProductRepository {
     return product;
   }
 
+  async findByCategory(categoryId: string): Promise<Product[]> {
+    return this.productRepository.find({
+      where: { product_category: { category_id: categoryId } },
+      relations: ['product_category', 'images', 'discount'],
+    });
+  }
+
   async updateProduct(product: Product) {
     return this.productRepository.save(product);
   }
@@ -62,7 +72,7 @@ export class ProductRepository {
     return this.productRepository.remove(product);
   }
 
-  async deleteImagesByProduct(productId: string) {
-    return this.imageRepository.delete({ product: { product_id: productId } });
+  async deleteImagesByProduct(productId: string): Promise<void> {
+    await this.imageRepository.delete({ product: { product_id: productId } });
   }
 }

@@ -11,7 +11,7 @@ export class ComboDescription extends ValueObject<string>{
     }
 
     protected validate(value: string): void {
-        if (value.length < 10 || value){
+        if (!value || value.length < 10) {
             throw new unvalidDescriptionComboException(`The description is not valid`);
         }
     }
