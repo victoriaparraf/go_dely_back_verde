@@ -10,6 +10,6 @@ export class CreateComboServiceEntryDto {
     category: string;
     image: string;
     products: string[];
-    discount: number | null;
+    //discount: number | undefined;
     
 }

@@ -35,14 +35,14 @@ export class ComboRepository implements IComboRepository {
     if (isUUID(term)) {
         combo = await this.comboRepository.findOne({
             where: { combo_id: term },
-            relations: ['products', 'products.images', 'discount', 'combo_category'],
+            relations: ['products', 'products.images', 'combo_category'],
         });
     } else {
         combo = await this.comboRepository
             .createQueryBuilder('combo')
             .leftJoinAndSelect('combo.products', 'product')
             .leftJoinAndSelect('product.images', 'image')
-            .leftJoinAndSelect('combo.discount', 'discount')
+            // .leftJoinAndSelect('combo.discount', 'discount')
             .leftJoinAndSelect('combo.combo_category', 'category')
             .where('combo.combo_name = :combo_name', { combo_name: term })
             .getOne();
@@ -57,7 +57,7 @@ export class ComboRepository implements IComboRepository {
     return this.comboRepository.find({
       take: perpage,
       skip: (page - 1) * perpage,
-      relations: ['products', 'products.images', 'discount', 'combo_category'],
+      relations: ['products', 'products.images', 'combo_category'],
     });
 
   }

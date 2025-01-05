@@ -18,6 +18,7 @@ export class Combo {
     combo_category: Category;
     combo_image: string;
     products: Product[];
+    // combo_discount: Discount;
 
     constructor(
         
@@ -30,6 +31,7 @@ export class Combo {
         category: Category,
         image: string,
         products: Product[] = []
+        // discount: Discount
     ) {
         this.combo_id = id;
         this.combo_name = new ComboName(name);
@@ -40,6 +42,7 @@ export class Combo {
         this.combo_category = category;
         this.combo_image = image;
         this.products = products;
+        // this.combo_discount = discount;
     }
 
 }

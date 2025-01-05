@@ -11,6 +11,6 @@ export class CreateComboServiceResponseDto {
     image: string;
     products: string[];
     category: string;
-    discount: number | null;
+    // discount: number | null;
 
 }

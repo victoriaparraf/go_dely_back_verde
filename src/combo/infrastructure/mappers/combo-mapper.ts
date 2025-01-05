@@ -15,7 +15,7 @@ export class ComboMapper {
             image: combo.combo_image,
             category: [combo.combo_category.category_name],
             products: combo.products.map(product => product.product_name.getValue()),
-            discount: combo.discount ? Number(combo.discount.discount_percentage) : null,
+            // discount: combo.discount ? Number(combo.discount.discount_percentage) : null,
         }
     }
     

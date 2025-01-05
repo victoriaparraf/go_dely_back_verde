@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
-import { ComboService } from './combo.service';
+import { ComboService } from '../combo.service';
 import { CreateComboDto } from '../application/dto/create-combo.dto';
 import { UpdateComboDto } from '../application/dto/update-combo.dto';
 import { ApiTags } from '@nestjs/swagger';

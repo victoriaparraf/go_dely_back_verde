@@ -76,8 +76,8 @@ export class Combo {
     })
     products: Product[];
 
-    @ManyToOne(() => Discount, (discount) => discount.combos, { nullable: true })
-    discount: Discount;
+    // @ManyToOne(() => Discount, (discount) => discount.combos, { nullable: true })
+    // discount: Discount;
 
     @OneToMany(() => OrderCombo, orderCombo => orderCombo.combo)
     orders: OrderCombo[];

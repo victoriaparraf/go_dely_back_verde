@@ -5,12 +5,12 @@ import { ComboPrice } from "./value-objects/combo-price.vo";
 import { ComboDescription } from "./value-objects/combo-description.vo";
 import { ComboStock } from "./value-objects/combo-stock.vo";
 import { ComboCurrency } from "./value-objects/combo-currency.vo";
-import { CategoryID } from "src/category/domain/value-objects/category-id.vo";
-import { DiscountID } from "src/discount/domain/value-objects/discount-id.vo";
-import { ProductID } from "src/product/domain/value-objects/product-id.vo";
 import { ComboCreatedEvent } from "./events/combo-created.event";
 import { unvalidComboException } from "./exceptions/unvalid-combo";
 import { ComboImage } from "./value-objects/combo-image.vo";
+import { Product } from "src/product/domain/entities/product.entity";
+import { Category } from "src/category/domain/category.entity";
+import { Discount } from "src/discount/domain/entities/discount.entity";
 
 export class Combo extends AggregateRoot<ComboID> {
     
@@ -19,10 +19,10 @@ export class Combo extends AggregateRoot<ComboID> {
     private price: ComboPrice;
     private currency: ComboCurrency;
     private stock: ComboStock;
-    private products: ProductID[];
+    private products: Product[];
     private image: ComboImage;
-    private category: CategoryID;
-    private discount?: DiscountID;
+    private category: Category;
+    //private discount?: Discount;
 
     get Name(): ComboName {
         return this.name;
@@ -44,15 +44,15 @@ export class Combo extends AggregateRoot<ComboID> {
         return this.stock;
     }
 
-    get Category(): CategoryID {
+    get Category(): Category {
         return this.category;
     }
 
-    get Discount(): DiscountID {
-        return this.discount;
-    }
+    // get Discount(): Discount {
+    //     return this.discount;
+    // }
 
-    get Products(): ProductID[] {
+    get Products(): Product[] {
         return this.products;
     }
 
@@ -68,14 +68,15 @@ export class Combo extends AggregateRoot<ComboID> {
         price: ComboPrice, 
         currency: ComboCurrency, 
         stock: ComboStock,
-        category: CategoryID,
-        products: ProductID[]=[],
+        category: Category,
+        products: Product[]=[],
         image: ComboImage,
-        discount?: DiscountID
+        //discount?: Discount
 
     ) {
-        const createdCombo = ComboCreatedEvent.create(id, name, description, price, currency, stock, category, image, products, discount);
+        const createdCombo = ComboCreatedEvent.create(id, name, description, price, currency, stock, category, image, products);
         super(id);
+        this.isValidCombo();
         super.addDomainEvent(createdCombo);
     }
 
