@@ -1,15 +1,16 @@
 import { ValueObject } from "src/common/domain/value.object";
-import { unvalidNameComboException } from "../exceptions/unvalid-name-combo";
+import { unvalidImageComboException } from "../exceptions/unvalid-image";
 
-export class ComboName extends ValueObject<string> {
+
+export class ComboImage extends ValueObject<string> {
     constructor(value: string) {
         super(value);
         this.validate(value);
     }
 
     protected validate(value: string): void {
-        if (!value || value.trim().length === 0) {
-            throw new unvalidNameComboException(`The name is not valid`);
+        if (!value) {
+            throw new unvalidImageComboException(`The image is not valid`);
         }
     }
 

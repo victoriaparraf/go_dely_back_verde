@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ComboRepository } from 'src/combo/infrastructure/typeorm/combo-repository';
+import { ComboRepository } from 'src/combo/infrastructure/repositories/combo-repository';
 import { ProductComboSummaryDto } from '../dto/response/product-combo-summary.dto';
 import { ProductRepository } from 'src/product/infrastructure/repositories/product-repositoy';
 
@@ -12,7 +12,7 @@ export class GetProductsCombosSummaryService {
 
   async execute(): Promise<ProductComboSummaryDto[]> {
     const products = await this.productRepository.findAll({ page: 1, perpage: 10 });
-    const combos = await this.comboRepository.findAllCombos(10, 0);
+    const combos = await this.comboRepository.findAll({page: 10, perpage: 0});
 
     const productSummaries = products.map(product => ({
       id: product.product_id,

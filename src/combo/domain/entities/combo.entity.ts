@@ -5,6 +5,7 @@ import { ComboDescription } from "../value-objects/combo-description.vo";
 import { ComboCurrency } from "../value-objects/combo-currency.vo";
 import { ComboStock } from "../value-objects/combo-stock.vo";
 import { Category } from "src/category/domain/category-aggregate";
+import { Currency } from "src/common/domain/enums/currency.enum";
 
 export class Combo {
 
@@ -17,6 +18,7 @@ export class Combo {
     combo_category: Category;
     combo_image: string;
     products: Product[];
+    // combo_discount: Discount;
 
     constructor(
         
@@ -24,11 +26,12 @@ export class Combo {
         name: string,
         description: string,
         price: number,
-        currency: string,
+        currency: Currency,
         stock: number,
         category: Category,
         image: string,
         products: Product[] = []
+        // discount: Discount
     ) {
         this.combo_id = id;
         this.combo_name = new ComboName(name);
@@ -39,6 +42,7 @@ export class Combo {
         this.combo_category = category;
         this.combo_image = image;
         this.products = products;
+        // this.combo_discount = discount;
     }
 
 }

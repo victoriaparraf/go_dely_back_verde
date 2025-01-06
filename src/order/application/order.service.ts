@@ -12,7 +12,7 @@ import { OrderProduct } from '../infraestructure/typeorm/order-product';
 import { OrderEntity } from '../infraestructure/typeorm/order-entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ComboRepository } from 'src/combo/infrastructure/typeorm/combo-repository';
+import { ComboRepository } from 'src/combo/infrastructure/repositories/combo-repository';
 import { OrderCombo } from '../infraestructure/typeorm/order-combo';
 import { Address } from 'src/user/infrastructure/typeorm/address-entity';
 import { AddressMapper } from '../../user/infrastructure/mappers/address.mapper';
@@ -85,7 +85,7 @@ export class OrderService {
             }
     
             if (dto.order_combos && dto.order_combos.length > 0) {
-                const combos = await Promise.all(dto.order_combos.map(c => this.comboRepository.findComboById(c.combo_id)));
+                const combos = await Promise.all(dto.order_combos.map(c => this.comboRepository.findOne(c.combo_id)));
                 if (combos.includes(null)) {
                     throw new Error('Some combos not found');
                 }
