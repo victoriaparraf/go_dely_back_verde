@@ -27,11 +27,11 @@ export class CreateComboService implements IApplicationService<CreateComboServic
 
   async execute(entryDto: CreateComboServiceEntryDto): Promise<CreateComboServiceResponseDto> {
     try {
-      const { category, products, ...comboDetails } = entryDto;
+      const { combo_category, products, ...comboDetails } = entryDto;
 
-      const categoryEntity = await this.categoryRepository.findOne({ where: { category_id: category } });
+      const categoryEntity = await this.categoryRepository.findOne({ where: { category_id: combo_category } });
       if (!categoryEntity) {
-        throw new NotFoundException(`Category with ID ${category} not found`);
+        throw new NotFoundException(`Category with ID ${combo_category} not found`);
       }
       
       const productEntities = await Promise.all(
@@ -44,12 +44,12 @@ export class CreateComboService implements IApplicationService<CreateComboServic
         }),
       );
 
-      const comboName = new ComboName(comboDetails.name);
-      const comboDescription = new ComboDescription(comboDetails.description);
-      const comboCurrency = new ComboCurrency(comboDetails.currency);
-      const comboPrice = new ComboPrice(comboDetails.price);
-      const comboImage = new ComboImage(comboDetails.image);
-      const comboStock = new ComboStock(comboDetails.stock);
+      const comboName = new ComboName(comboDetails.combo_name);
+      const comboDescription = new ComboDescription(comboDetails.combo_description);
+      const comboCurrency = new ComboCurrency(comboDetails.combo_currency);
+      const comboPrice = new ComboPrice(comboDetails.combo_price);
+      const comboImage = new ComboImage(comboDetails.combo_image);
+      const comboStock = new ComboStock(comboDetails.combo_stock);
 
       const combo = new Combo();
       combo.combo_name = comboName;

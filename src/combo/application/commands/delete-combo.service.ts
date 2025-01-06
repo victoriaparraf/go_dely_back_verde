@@ -1,6 +1,7 @@
-import { InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { ComboRepository } from '../../infrastructure/repositories/combo-repository';
 
+@Injectable()
 export class DeleteComboService{
     constructor(
         private readonly comboRepository: ComboRepository
@@ -16,7 +17,7 @@ export class DeleteComboService{
         try {
             await this.comboRepository.removeCombo(combo);
         } catch (error) {
-            console.error('Error deleting product:', error);
+            console.error('Error deleting combo:', error);
             throw new InternalServerErrorException('Unexpected error, check server logs');
         }
         

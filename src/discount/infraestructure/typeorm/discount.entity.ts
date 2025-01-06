@@ -43,6 +43,6 @@ export class Discount {
     @OneToMany(() => Product, (product) => product.discount, { nullable: true })
     products: Product[];
 
-    @OneToMany(() => Combo, (combo) => combo.discount, { nullable: true })
-    combos: Combo[];
+    // @OneToMany(() => Combo, (combo) => combo.discount, { nullable: true })
+    // combos: Combo[];
 }

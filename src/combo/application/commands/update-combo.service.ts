@@ -23,19 +23,19 @@ export class UpdateComboService {
 
     async execute(updateEntryDto: UpdateComboServiceEntryDto): Promise<void>{
 
-        const{ id, category, products, ...comboDetails } = updateEntryDto;
+        const{ combo_id, combo_category, products, ...comboDetails } = updateEntryDto;
         
-        const combo = await this.comboRepository.findOne(id);
+        const combo = await this.comboRepository.findOne(combo_id);
         if(!combo){
-            throw new NotFoundException(`Combo with ID ${id} not found`);
+            throw new NotFoundException(`Combo with ID ${combo_id} not found`);
         }
 
-        if(category){
+        if(combo_category){
             const categoryEntity = await this.categoryRepository.findOne({
-                where: { category_id: category }
+                where: { category_id: combo_category }
             })
             if (!categoryEntity){
-                throw new NotFoundException(`Category with ID ${id} not found`);
+                throw new NotFoundException(`Category with ID ${combo_id} not found`);
             }
             combo.combo_category = categoryEntity;
         }
@@ -53,17 +53,17 @@ export class UpdateComboService {
             combo.products = productEntities;
         }
 
-        if(comboDetails.name) combo.combo_name = new ComboName(comboDetails.name);
-        if(comboDetails.description) combo.combo_description = new ComboDescription(comboDetails.description);
-        if(comboDetails.currency) combo.combo_currency = new ComboCurrency(comboDetails.currency);
-        if(comboDetails.price) combo.combo_price = new ComboPrice(comboDetails.price);
-        if(comboDetails.stock) combo.combo_stock = new ComboStock(comboDetails.stock);
-        if(comboDetails.image) combo.combo_image = new ComboImage(comboDetails.image).getValue();
+        if(comboDetails.combo_name) combo.combo_name = new ComboName(comboDetails.combo_name);
+        if(comboDetails.combo_description) combo.combo_description = new ComboDescription(comboDetails.combo_description);
+        if(comboDetails.combo_currency) combo.combo_currency = new ComboCurrency(comboDetails.combo_currency);
+        if(comboDetails.combo_price) combo.combo_price = new ComboPrice(comboDetails.combo_price);
+        if(comboDetails.combo_stock) combo.combo_stock = new ComboStock(comboDetails.combo_stock);
+        if(comboDetails.combo_image) combo.combo_image = new ComboImage(comboDetails.combo_image).getValue();
 
         try {
             await this.comboRepository.saveCombo(combo);
         } catch (error) {
-            console.error('Error updating product:', error);
+            console.error('Error updating combo:', error);
             throw new InternalServerErrorException('Unexpected error, check server logs');
         }
     }

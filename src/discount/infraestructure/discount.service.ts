@@ -63,7 +63,7 @@ export class DiscountService {
         discount_start_date: discount.discount_start_date.getValue().toISOString().split('T')[0], 
         discount_end_date: discount.discount_end_date.getValue().toISOString().split('T')[0],
         products: discount.products ? discount.products.map(product => this.mapProductToResponse(product)) : [],
-        combos: discount.combos ? discount.combos.map(combo => this.mapComboToResponse(combo)) : [],
+        // combos: discount.combos ? discount.combos.map(combo => this.mapComboToResponse(combo)) : [],
     };
   }
 
@@ -92,13 +92,13 @@ export class DiscountService {
       discount.products = productEntities;
     }
 
-    if (combos && Array.isArray(combos) && combos.length > 0) {
-      const comboEntities = await this.comboRepository.findByIds(combos);
-      if (comboEntities.length !== combos.length) {
-        throw new BadRequestException('Some combos not found');
-      }
-      discount.combos = comboEntities;
-    }
+    // if (combos && Array.isArray(combos) && combos.length > 0) {
+    //   const comboEntities = await this.comboRepository.findByIds(combos);
+    //   if (comboEntities.length !== combos.length) {
+    //     throw new BadRequestException('Some combos not found');
+    //   }
+    //   discount.combos = comboEntities;
+    // }
 
       await this.discountRepository.save(discount);
       return this.mapDiscountToResponse(discount);
@@ -174,13 +174,13 @@ export class DiscountService {
           discount.products = productEntities;
       }
 
-      if (combos) {
-          const comboEntities = await this.comboRepository.findByIds(combos);
-          if (comboEntities.length !== combos.length) {
-              throw new BadRequestException('Some combos not found');
-          }
-          discount.combos = comboEntities;
-      }
+      // if (combos) {
+      //     const comboEntities = await this.comboRepository.findByIds(combos);
+      //     if (comboEntities.length !== combos.length) {
+      //         throw new BadRequestException('Some combos not found');
+      //     }
+      //     discount.combos = comboEntities;
+      // }
 
       await this.discountRepository.save(discount);
       return this.mapDiscountToResponse(discount);

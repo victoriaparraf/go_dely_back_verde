@@ -85,7 +85,7 @@ export class OrderService {
             }
     
             if (dto.order_combos && dto.order_combos.length > 0) {
-                const combos = await Promise.all(dto.order_combos.map(c => this.comboRepository.findComboById(c.combo_id)));
+                const combos = await Promise.all(dto.order_combos.map(c => this.comboRepository.findOne(c.combo_id)));
                 if (combos.includes(null)) {
                     throw new Error('Some combos not found');
                 }
