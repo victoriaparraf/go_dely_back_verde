@@ -69,15 +69,17 @@ export class CreateProductService implements IApplicationService<CreateProductSe
 
       await this.productRepository.saveProduct(product);
 
-      this.client.send('product_notification', {
-        productImages: createProductDto.images,
-        productName: createProductDto.product_name,
-        productCategory: category.category_name,
-        productWeight: createProductDto.product_weight,
-        productMeasurement: createProductDto.product_measurement,
-        productDescription: createProductDto.product_description,
-        message: 'Check out our new products and their offers!',
-      }).subscribe();
+      this.client.emit('notification', {
+        type: 'product',
+        payload: {
+          productImages: product.images.map((image) => image.image_url),
+          productName: product.product_name,
+          productCategory: category.category_name,
+          productWeight: product.product_weight,
+          productMeasurement: product.product_measurement,
+          productDescription: product.product_description,
+        },
+      });
 
       return ProductMapper.mapProductToResponse(product);
     } catch (error) {
