@@ -3,7 +3,6 @@ import { ProductController } from './infrastructure/product.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './infrastructure/typeorm/product-entity'; 
 import { Image } from './infrastructure/typeorm/image-entity'; 
-import { CloudinaryModule } from './infrastructure/cloudinary/cloudinary.module';
 import { RabbitmqModule } from './infrastructure/rabbitmq/rabbitmq.module';
 import { MailModule } from './infrastructure/mail/mail.module';
 import { Combo } from 'src/combo/infrastructure/typeorm/combo-entity';
@@ -16,13 +15,14 @@ import { DeleteProductService } from './application/command/delete-product-servi
 import { ProductRepository } from './infrastructure/repositories/product-repositoy';
 import { GetProductsCombosSummaryService } from './application/query/get-products-combos-service';
 import { ComboModule } from 'src/combo/combo.module';
+import { CommonModule } from 'src/common/common.module';
 
 @Module({
   controllers: [ProductController],
   providers: [CreateProductService, GetProductService, GetProductsByCategoryService, UpdateProductService, DeleteProductService, GetProductsCombosSummaryService, ProductRepository],
   imports:[
     TypeOrmModule.forFeature([ Product, Image, Combo, CategoryEntity ]),
-    CloudinaryModule,
+    CommonModule,
     RabbitmqModule,
     MailModule,
     ComboModule,

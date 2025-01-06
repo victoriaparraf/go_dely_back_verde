@@ -6,7 +6,6 @@ import { ConfigService } from '@nestjs/config';
 export class CloudinaryService {
 
     constructor(private configService: ConfigService) {
-    // Configurar Cloudinary con las variables de entorno
         cloudinary.config({
             cloud_name: this.configService.get<string>('CLOUDINARY_NAME'),
             api_key: this.configService.get<string>('CLOUDINARY_API_KEY'),

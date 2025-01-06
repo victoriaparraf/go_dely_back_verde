@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query, UseInterceptors, UploadedFiles, Inject } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
-import { CloudinaryService } from './cloudinary/cloudinary.service';
+import { CloudinaryService } from '../../common/infraestructure/cloudinary/cloudinary.service';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateProductService } from '../application/command/create-product-service';
 import { GetProductServicePaginationDto, GetProductServiceEntryDto } from '../application/dto/entry/get-product-entry.dto';

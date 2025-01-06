@@ -2,7 +2,7 @@ import { BadRequestException, Inject, Injectable, InternalServerErrorException, 
 import { CreateProductDto } from './dtos/create-product.dto';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { validate as isUUID } from 'uuid';
-import { CloudinaryService } from './cloudinary/cloudinary.service';
+import { CloudinaryService } from '../../common/infraestructure/cloudinary/cloudinary.service';
 import { ClientProxy } from '@nestjs/microservices';
 import { Product } from './typeorm/product-entity';
 import { Image } from './typeorm/image-entity';
