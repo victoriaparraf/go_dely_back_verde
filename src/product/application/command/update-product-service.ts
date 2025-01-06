@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
-import { CloudinaryService } from 'src/product/infrastructure/cloudinary/cloudinary.service';
 import { UpdateProductServiceEntryDto } from '../dto/entry/update-product-service-entry.dto';
 import { Image } from 'src/product/infrastructure/typeorm/image-entity';
 import { Repository } from 'typeorm';
@@ -13,6 +12,7 @@ import { ProductPrice } from 'src/product/domain/value-objects/product-price.vo'
 import { ProductStock } from 'src/product/domain/value-objects/product-stock.vo';
 import { ProductWeight } from 'src/product/domain/value-objects/product-weight.vo';
 import { ProductRepository } from 'src/product/infrastructure/repositories/product-repositoy';
+import { CloudinaryService } from 'src/common/infraestructure/cloudinary/cloudinary.service';
 
 @Injectable()
 export class UpdateProductService {

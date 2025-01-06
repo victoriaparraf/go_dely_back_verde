@@ -15,6 +15,7 @@ import { ComboPrice } from 'src/combo/domain/value-objects/combo-price.vo';
 import { ComboImage } from '../../domain/value-objects/combo-image.vo';
 import { ComboStock } from 'src/combo/domain/value-objects/combo-stock.vo';
 import { ComboMapper } from 'src/combo/infrastructure/mappers/combo-mapper';
+import { CloudinaryService } from 'src/common/infraestructure/cloudinary/cloudinary.service';
 
 @Injectable()
 export class CreateComboService implements IApplicationService<CreateComboServiceEntryDto, CreateComboServiceResponseDto> {
@@ -23,6 +24,7 @@ export class CreateComboService implements IApplicationService<CreateComboServic
     private readonly comboRepository: ComboRepository, 
     @InjectRepository(Product) private readonly productRepository: Repository<Product>,
     @InjectRepository(CategoryEntity) private readonly categoryRepository: Repository<CategoryEntity>,
+    private readonly cloudinaryService: CloudinaryService
   ) {}
 
   async execute(entryDto: CreateComboServiceEntryDto): Promise<CreateComboServiceResponseDto> {
@@ -51,12 +53,15 @@ export class CreateComboService implements IApplicationService<CreateComboServic
       const comboImage = new ComboImage(comboDetails.combo_image);
       const comboStock = new ComboStock(comboDetails.combo_stock);
 
+      const imageUrl = await this.cloudinaryService.uploadImage(comboImage.getValue(), 'combos');
+
+
       const combo = new Combo();
       combo.combo_name = comboName;
       combo.combo_description = comboDescription;
       combo.combo_price = comboPrice;
       combo.combo_stock = comboStock;
-      combo.combo_image = comboImage.getValue();
+      combo.combo_image = imageUrl;
       combo.combo_currency = comboCurrency;
       combo.combo_category = categoryEntity;
       combo.products = productEntities;

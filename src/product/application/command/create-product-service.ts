@@ -14,7 +14,7 @@ import { ProductStock } from 'src/product/domain/value-objects/product-stock.vo'
 import { ProductWeight } from 'src/product/domain/value-objects/product-weight.vo';
 import { CreateProductServiceEntryDto } from '../dto/entry/create-product-entry.dto';
 import { CreateProductServiceResponseDto } from '../dto/response/create-product-response.dto';
-import { CloudinaryService } from 'src/product/infrastructure/cloudinary/cloudinary.service';
+import { CloudinaryService } from 'src/common/infraestructure/cloudinary/cloudinary.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductMapper } from 'src/product/infrastructure/mappers/product-mapper';
 import { ProductRepository } from 'src/product/infrastructure/repositories/product-repositoy';

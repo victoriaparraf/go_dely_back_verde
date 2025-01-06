@@ -10,7 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { ResponseUserDto } from '../application/dto/response-user.dto';
 import { UserMapper } from './mappers/user.mapper';
 import { AddressMapper } from './mappers/address.mapper';
-import { CloudinaryService } from 'src/product/infrastructure/cloudinary/cloudinary.service';
+import { CloudinaryService } from 'src/common/infraestructure/cloudinary/cloudinary.service';
 
 
 @Injectable()
