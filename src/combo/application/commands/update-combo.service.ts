@@ -14,6 +14,7 @@ import { ComboImage } from 'src/combo/domain/value-objects/combo-image.vo';
 import { CloudinaryService } from 'src/common/infraestructure/cloudinary/cloudinary.service';
 import { ComboWeight } from 'src/combo/domain/value-objects/combo-weight.vo';
 import { ComboMeasurement } from 'src/combo/domain/value-objects/combo-measurement.vo';
+import { ComboCaducityDate } from 'src/combo/domain/value-objects/combo-caducity-date.vo';
 
 @Injectable()
 export class UpdateComboService {
@@ -76,6 +77,7 @@ export class UpdateComboService {
         if(comboDetails.combo_currency) combo.combo_currency = new ComboCurrency(comboDetails.combo_currency);
         if(comboDetails.combo_price) combo.combo_price = new ComboPrice(comboDetails.combo_price);
         if(comboDetails.combo_stock) combo.combo_stock = new ComboStock(comboDetails.combo_stock);
+        if(comboDetails.combo_caducity_date) combo.combo_caducity_date = new ComboCaducityDate(new Date(comboDetails.combo_caducity_date));
 
         try {
             await this.comboRepository.saveCombo(combo);

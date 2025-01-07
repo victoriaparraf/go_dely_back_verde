@@ -12,6 +12,7 @@ export class CreateComboServiceEntryDto {
     combo_categories: string[];
     combo_image: string;
     products: string[];
+    combo_caducity_date?: Date;
     //discount: number | undefined;
     
 }

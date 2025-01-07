@@ -11,6 +11,7 @@ import { OrderCombo } from "src/order/infraestructure/typeorm/order-combo";
 import { Currency } from "src/common/domain/enums/currency.enum";
 import { ComboWeight } from "src/combo/domain/value-objects/combo-weight.vo";
 import { ComboMeasurement } from "src/combo/domain/value-objects/combo-measurement.vo";
+import { ComboCaducityDate } from "src/combo/domain/value-objects/combo-caducity-date.vo";
 
 @Entity()
 export class Combo {
@@ -92,6 +93,16 @@ export class Combo {
 
     @Column()
     combo_image: string;
+
+    @Column({
+        type: 'date',
+        nullable: true,
+        transformer: {
+            to: (value: ComboCaducityDate | null) => value.getValue().toISOString().split('T')[0],
+            from: (value: Date | null) => value ? new ComboCaducityDate(value) : null,
+        },
+    })
+    combo_caducity_date: ComboCaducityDate;
 
     @ManyToMany(() => Product, product => product.combos)
     @JoinTable({

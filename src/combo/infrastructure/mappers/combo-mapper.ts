@@ -17,6 +17,7 @@ export class ComboMapper {
             image: combo.combo_image,
             categories: combo.combo_categories.map(category => category.category_name),
             products: combo.products.map(product => product.product_name.getValue()),
+            caducity_date: combo.combo_caducity_date ? combo.combo_caducity_date.getValue().toISOString().split('T')[0] : null,
             // discount: combo.discount ? Number(combo.discount.discount_percentage) : null,
         }
     }

@@ -13,6 +13,7 @@ import { Category } from "src/category/domain/category.entity";
 import { Discount } from "src/discount/domain/entities/discount.entity";
 import { ComboWeight } from "./value-objects/combo-weight.vo";
 import { ComboMeasurement } from "./value-objects/combo-measurement.vo";
+import { ComboCaducityDate } from "./value-objects/combo-caducity-date.vo";
 
 export class Combo extends AggregateRoot<ComboID> {
     
@@ -26,6 +27,7 @@ export class Combo extends AggregateRoot<ComboID> {
     private products: Product[];
     private image: ComboImage;
     private categories: Category[];
+    private caducity_date?: ComboCaducityDate;
     //private discount?: Discount;
 
     get Name(): ComboName {
@@ -56,6 +58,10 @@ export class Combo extends AggregateRoot<ComboID> {
         return this.stock;
     }
 
+    get CaducityDate(): ComboCaducityDate {
+        return this.caducity_date;
+    }
+
     get Categories(): Category[] {
         return this.categories;
     }
@@ -82,13 +88,14 @@ export class Combo extends AggregateRoot<ComboID> {
         stock: ComboStock,
         weight: ComboWeight,
         measurement: ComboMeasurement,
+        caducity_date: ComboCaducityDate,
         categories: Category[] = [],
         products: Product[]=[],
         image: ComboImage,
         //discount?: Discount
 
     ) {
-        const createdCombo = ComboCreatedEvent.create(id, name, description, price, weight, measurement, currency, stock, categories, image, products);
+        const createdCombo = ComboCreatedEvent.create(id, name, description, price, weight, measurement, currency, stock, categories, image, products, caducity_date);
         super(id);
         this.isValidCombo();
         super.addDomainEvent(createdCombo);

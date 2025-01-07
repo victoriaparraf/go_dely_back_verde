@@ -18,6 +18,7 @@ import { ComboMapper } from 'src/combo/infrastructure/mappers/combo-mapper';
 import { CloudinaryService } from 'src/common/infraestructure/cloudinary/cloudinary.service';
 import { ComboWeight } from 'src/combo/domain/value-objects/combo-weight.vo';
 import { ComboMeasurement } from 'src/combo/domain/value-objects/combo-measurement.vo';
+import { ComboCaducityDate } from '../../domain/value-objects/combo-caducity-date.vo';
 
 @Injectable()
 export class CreateComboService implements IApplicationService<CreateComboServiceEntryDto, CreateComboServiceResponseDto> {
@@ -61,6 +62,7 @@ export class CreateComboService implements IApplicationService<CreateComboServic
       const comboPrice = new ComboPrice(comboDetails.combo_price);
       const comboImage = new ComboImage(comboDetails.combo_image);
       const comboStock = new ComboStock(comboDetails.combo_stock);
+      const comboCaducityDate = new ComboCaducityDate(comboDetails.combo_caducity_date);
 
       const imageUrl = await this.cloudinaryService.uploadImage(comboImage.getValue(), 'combos');
 
@@ -76,6 +78,7 @@ export class CreateComboService implements IApplicationService<CreateComboServic
       combo.combo_currency = comboCurrency;
       combo.combo_categories = categoryEntities;
       combo.products = productEntities;
+      combo.combo_caducity_date = comboCaducityDate;
 
       await this.comboRepository.saveCombo(combo);
 
