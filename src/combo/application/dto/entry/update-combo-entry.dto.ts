@@ -6,6 +6,8 @@ export class UpdateComboServiceEntryDto {
     combo_name?: string;
     combo_description?: string;
     combo_price?: number;
+    combo_weight?: number;
+    combo_measurement?: string;
     combo_stock?: number;
     combo_currency?: Currency;
     combo_categories?: string[];

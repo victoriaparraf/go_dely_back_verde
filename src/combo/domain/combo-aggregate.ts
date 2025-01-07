@@ -11,12 +11,16 @@ import { ComboImage } from "./value-objects/combo-image.vo";
 import { Product } from "src/product/domain/entities/product.entity";
 import { Category } from "src/category/domain/category.entity";
 import { Discount } from "src/discount/domain/entities/discount.entity";
+import { ComboWeight } from "./value-objects/combo-weight.vo";
+import { ComboMeasurement } from "./value-objects/combo-measurement.vo";
 
 export class Combo extends AggregateRoot<ComboID> {
     
     private name: ComboName;
     private description: ComboDescription;
     private price: ComboPrice;
+    private weight: ComboWeight;
+    private measurement: ComboMeasurement;
     private currency: ComboCurrency;
     private stock: ComboStock;
     private products: Product[];
@@ -34,6 +38,14 @@ export class Combo extends AggregateRoot<ComboID> {
 
     get Price(): ComboPrice {
         return this.price;
+    }
+
+    get Weight(): ComboWeight {
+        return this.weight;
+    }
+
+    get Measurement(): ComboMeasurement {
+        return this.measurement;
     }
 
     get Currency(): ComboCurrency {
@@ -68,20 +80,22 @@ export class Combo extends AggregateRoot<ComboID> {
         price: ComboPrice, 
         currency: ComboCurrency, 
         stock: ComboStock,
+        weight: ComboWeight,
+        measurement: ComboMeasurement,
         categories: Category[] = [],
         products: Product[]=[],
         image: ComboImage,
         //discount?: Discount
 
     ) {
-        const createdCombo = ComboCreatedEvent.create(id, name, description, price, currency, stock, categories, image, products);
+        const createdCombo = ComboCreatedEvent.create(id, name, description, price, weight, measurement, currency, stock, categories, image, products);
         super(id);
         this.isValidCombo();
         super.addDomainEvent(createdCombo);
     }
 
     protected isValidCombo(): void{
-        if( !this.name || !this.description || !this.price || !this.currency || !this.stock || !this.categories || !this.image || !this.products ){
+        if( !this.name || !this.description || !this.price || !this.weight || !this.measurement || !this.currency || !this.stock || !this.categories || !this.image || !this.products ){
             throw new unvalidComboException('Not valid Combo');
         }
     }

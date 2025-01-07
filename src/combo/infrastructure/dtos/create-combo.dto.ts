@@ -1,4 +1,4 @@
-import { IsString, IsArray, ArrayNotEmpty, MinLength, IsPositive, IsNumber, IsInt, IsOptional, IsUUID } from 'class-validator';
+import { IsString, IsArray, ArrayNotEmpty, MinLength, IsPositive, IsNumber, IsInt, IsOptional, IsUUID, Length } from 'class-validator';
 import { Currency } from 'src/common/domain/enums/currency.enum';
 
 export class CreateComboDto {
@@ -13,6 +13,14 @@ export class CreateComboDto {
 
     @IsString()
     combo_description: string;
+
+    @IsNumber()
+    @IsPositive()
+    combo_weight: number;
+
+    @IsString()
+    @Length(2, 2)
+    combo_measurement: string;
 
     @IsString()
     combo_currency: Currency;

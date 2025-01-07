@@ -6,6 +6,8 @@ export class GetComboServiceResponseDto {
     name: string;
     description: string;
     price: number;
+    weight: number;
+    measurement: string;
     currency: Currency;
     stock: number;
     image: string;

@@ -9,6 +9,8 @@ import { ComboImage } from '../value-objects/combo-image.vo';
 import { Category } from 'src/category/domain/category.entity';
 import { Product } from 'src/product/domain/entities/product.entity';
 import { Discount } from 'src/discount/domain/entities/discount.entity';
+import { ComboWeight } from '../value-objects/combo-weight.vo';
+import { ComboMeasurement } from '../value-objects/combo-measurement.vo';
 
 export class ComboCreatedEvent extends DomainEventBase {
 
@@ -17,6 +19,8 @@ export class ComboCreatedEvent extends DomainEventBase {
         public readonly name: ComboName,
         public readonly description: ComboDescription,
         public readonly price: ComboPrice,
+        private readonly weight: ComboWeight,
+        private readonly measurement: ComboMeasurement,
         public readonly currency: ComboCurrency,
         public readonly stock: ComboStock,
         public readonly categories: Category[],
@@ -33,6 +37,8 @@ export class ComboCreatedEvent extends DomainEventBase {
         name: ComboName,
         description: ComboDescription,
         price: ComboPrice,
+        weight: ComboWeight,
+        measurement: ComboMeasurement,
         currency: ComboCurrency,
         stock: ComboStock,
         categories: Category[],
@@ -41,7 +47,7 @@ export class ComboCreatedEvent extends DomainEventBase {
         //discount?: Discount
 
     ): ComboCreatedEvent{
-        return new ComboCreatedEvent(comboId, name, description, price, currency, stock, categories, image, products);
+        return new ComboCreatedEvent(comboId, name, description, price, weight, measurement, currency, stock, categories, image, products);
     }
 
     eventName(): string {

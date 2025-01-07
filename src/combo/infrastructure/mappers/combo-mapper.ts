@@ -10,6 +10,8 @@ export class ComboMapper {
             name : combo.combo_name.getValue(),
             description : combo.combo_description.getValue(),
             price : combo.combo_price.getValue(),
+            weight: combo.combo_weight.getValue(),
+            measurement: combo.combo_measurement.getValue(),
             currency : combo.combo_currency.getValue(),
             stock: combo.combo_stock.getValue(),
             image: combo.combo_image,

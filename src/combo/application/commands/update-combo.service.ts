@@ -12,6 +12,8 @@ import { ComboPrice } from 'src/combo/domain/value-objects/combo-price.vo';
 import { ComboStock } from 'src/combo/domain/value-objects/combo-stock.vo';
 import { ComboImage } from 'src/combo/domain/value-objects/combo-image.vo';
 import { CloudinaryService } from 'src/common/infraestructure/cloudinary/cloudinary.service';
+import { ComboWeight } from 'src/combo/domain/value-objects/combo-weight.vo';
+import { ComboMeasurement } from 'src/combo/domain/value-objects/combo-measurement.vo';
 
 @Injectable()
 export class UpdateComboService {
@@ -69,6 +71,8 @@ export class UpdateComboService {
 
         if(comboDetails.combo_name) combo.combo_name = new ComboName(comboDetails.combo_name);
         if(comboDetails.combo_description) combo.combo_description = new ComboDescription(comboDetails.combo_description);
+        if(comboDetails.combo_weight) combo.combo_weight = new ComboWeight(comboDetails.combo_weight);
+        if(comboDetails.combo_measurement) combo.combo_measurement = new ComboMeasurement(comboDetails.combo_measurement);
         if(comboDetails.combo_currency) combo.combo_currency = new ComboCurrency(comboDetails.combo_currency);
         if(comboDetails.combo_price) combo.combo_price = new ComboPrice(comboDetails.combo_price);
         if(comboDetails.combo_stock) combo.combo_stock = new ComboStock(comboDetails.combo_stock);

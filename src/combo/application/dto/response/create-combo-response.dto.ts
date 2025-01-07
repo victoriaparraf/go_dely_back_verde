@@ -5,6 +5,8 @@ export class CreateComboServiceResponseDto {
     id: string;
     name: string;
     price: number;
+    weight: number;
+    measurement: string;
     currency: Currency;
     description: string;
     stock: number;

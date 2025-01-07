@@ -16,6 +16,8 @@ import { ComboImage } from '../../domain/value-objects/combo-image.vo';
 import { ComboStock } from 'src/combo/domain/value-objects/combo-stock.vo';
 import { ComboMapper } from 'src/combo/infrastructure/mappers/combo-mapper';
 import { CloudinaryService } from 'src/common/infraestructure/cloudinary/cloudinary.service';
+import { ComboWeight } from 'src/combo/domain/value-objects/combo-weight.vo';
+import { ComboMeasurement } from 'src/combo/domain/value-objects/combo-measurement.vo';
 
 @Injectable()
 export class CreateComboService implements IApplicationService<CreateComboServiceEntryDto, CreateComboServiceResponseDto> {
@@ -53,6 +55,8 @@ export class CreateComboService implements IApplicationService<CreateComboServic
 
       const comboName = new ComboName(comboDetails.combo_name);
       const comboDescription = new ComboDescription(comboDetails.combo_description);
+      const comboWeight = new ComboWeight(comboDetails.combo_weight);
+      const comboMeasurement = new ComboMeasurement(comboDetails.combo_measurement)
       const comboCurrency = new ComboCurrency(comboDetails.combo_currency);
       const comboPrice = new ComboPrice(comboDetails.combo_price);
       const comboImage = new ComboImage(comboDetails.combo_image);
@@ -65,6 +69,8 @@ export class CreateComboService implements IApplicationService<CreateComboServic
       combo.combo_name = comboName;
       combo.combo_description = comboDescription;
       combo.combo_price = comboPrice;
+      combo.combo_weight = comboWeight;
+      combo.combo_measurement = comboMeasurement;
       combo.combo_stock = comboStock;
       combo.combo_image = imageUrl;
       combo.combo_currency = comboCurrency;
