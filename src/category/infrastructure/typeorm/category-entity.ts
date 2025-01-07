@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import { Product } from 'src/product/infrastructure/typeorm/product-entity';
 import { Combo } from 'src/combo/infrastructure/typeorm/combo-entity';
 
@@ -16,7 +16,7 @@ export class CategoryEntity {
   @OneToMany(() => Product, (product) => product.product_category)
   products: Product[];
 
-  @OneToMany(() => Combo, (combo) => combo.combo_category)
+  @ManyToMany(() => Combo, combo => combo.combo_categories)
   combos: Combo[];
 
 }

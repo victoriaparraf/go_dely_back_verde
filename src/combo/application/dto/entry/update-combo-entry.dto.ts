@@ -6,11 +6,14 @@ export class UpdateComboServiceEntryDto {
     combo_name?: string;
     combo_description?: string;
     combo_price?: number;
+    combo_weight?: number;
+    combo_measurement?: string;
     combo_stock?: number;
     combo_currency?: Currency;
-    combo_category?: string;
-    combo_image?: string;
+    combo_categories?: string[];
+    combo_images?: string[];
     products?: string[];
+    combo_caducity_date?: Date;
     // discount: number | null;
     
 }

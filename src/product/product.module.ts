@@ -3,8 +3,6 @@ import { ProductController } from './infrastructure/product.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './infrastructure/typeorm/product-entity'; 
 import { Image } from './infrastructure/typeorm/image-entity'; 
-import { RabbitmqModule } from './infrastructure/rabbitmq/rabbitmq.module';
-import { MailModule } from './infrastructure/mail/mail.module';
 import { Combo } from 'src/combo/infrastructure/typeorm/combo-entity';
 import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
 import { CreateProductService } from './application/command/create-product-service';
@@ -23,8 +21,6 @@ import { CommonModule } from 'src/common/common.module';
   imports:[
     TypeOrmModule.forFeature([ Product, Image, Combo, CategoryEntity ]),
     CommonModule,
-    RabbitmqModule,
-    MailModule,
     ComboModule,
   ],
   exports: [ProductRepository, CreateProductService, GetProductService, GetProductsByCategoryService, DeleteProductService, GetProductsCombosSummaryService, UpdateProductService],

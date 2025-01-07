@@ -5,12 +5,15 @@ export class CreateComboServiceResponseDto {
     id: string;
     name: string;
     price: number;
+    weight: number;
+    measurement: string;
     currency: Currency;
     description: string;
     stock: number;
-    image: string;
+    images: string[];
     products: string[];
-    category: string;
+    categories: string[];
+    caducity_date?: string;
     // discount: number | null;
 
 }

@@ -16,6 +16,9 @@ import { ComboImage } from '../../domain/value-objects/combo-image.vo';
 import { ComboStock } from 'src/combo/domain/value-objects/combo-stock.vo';
 import { ComboMapper } from 'src/combo/infrastructure/mappers/combo-mapper';
 import { CloudinaryService } from 'src/common/infraestructure/cloudinary/cloudinary.service';
+import { ComboWeight } from 'src/combo/domain/value-objects/combo-weight.vo';
+import { ComboMeasurement } from 'src/combo/domain/value-objects/combo-measurement.vo';
+import { ComboCaducityDate } from '../../domain/value-objects/combo-caducity-date.vo';
 
 @Injectable()
 export class CreateComboService implements IApplicationService<CreateComboServiceEntryDto, CreateComboServiceResponseDto> {
@@ -29,13 +32,18 @@ export class CreateComboService implements IApplicationService<CreateComboServic
 
   async execute(entryDto: CreateComboServiceEntryDto): Promise<CreateComboServiceResponseDto> {
     try {
-      const { combo_category, products, ...comboDetails } = entryDto;
+      const { combo_categories, products, combo_images, ...comboDetails } = entryDto;
 
-      const categoryEntity = await this.categoryRepository.findOne({ where: { category_id: combo_category } });
-      if (!categoryEntity) {
-        throw new NotFoundException(`Category with ID ${combo_category} not found`);
-      }
-      
+      const categoryEntities = await Promise.all(
+        combo_categories.map(async (categoryId) => {
+            const category = await this.categoryRepository.findOne({ where: { category_id: categoryId } });
+            if (!category) {
+                throw new NotFoundException(`Category with ID ${categoryId} not found`);
+            }
+            return category;
+        }),
+      );
+            
       const productEntities = await Promise.all(
         products.map(async (productId) => {
           const product = await this.productRepository.findOne({ where: { product_id: productId } });
@@ -46,32 +54,41 @@ export class CreateComboService implements IApplicationService<CreateComboServic
         }),
       );
 
+      const imageUrls = await Promise.all(
+        combo_images.map((image) => this.cloudinaryService.uploadImage(image, 'combos'))
+      );
+      const comboImages = imageUrls.map((url) => new ComboImage(url));
+
       const comboName = new ComboName(comboDetails.combo_name);
       const comboDescription = new ComboDescription(comboDetails.combo_description);
+      const comboWeight = new ComboWeight(comboDetails.combo_weight);
+      const comboMeasurement = new ComboMeasurement(comboDetails.combo_measurement)
       const comboCurrency = new ComboCurrency(comboDetails.combo_currency);
       const comboPrice = new ComboPrice(comboDetails.combo_price);
-      const comboImage = new ComboImage(comboDetails.combo_image);
       const comboStock = new ComboStock(comboDetails.combo_stock);
-
-      const imageUrl = await this.cloudinaryService.uploadImage(comboImage.getValue(), 'combos');
-
+      const comboCaducityDate = new ComboCaducityDate(comboDetails.combo_caducity_date);
 
       const combo = new Combo();
       combo.combo_name = comboName;
       combo.combo_description = comboDescription;
       combo.combo_price = comboPrice;
+      combo.combo_weight = comboWeight;
+      combo.combo_measurement = comboMeasurement;
       combo.combo_stock = comboStock;
-      combo.combo_image = imageUrl;
+      combo.combo_images = comboImages.map((image) => image.getValue());
       combo.combo_currency = comboCurrency;
-      combo.combo_category = categoryEntity;
+      combo.combo_categories = categoryEntities;
       combo.products = productEntities;
+      combo.combo_caducity_date = comboCaducityDate;
 
       await this.comboRepository.saveCombo(combo);
 
-      // for (const product of productEntities) {
-      //   product.combos.push(combo);
-      //   await this.productRepository.update(product);
-      // } 
+      await Promise.all(
+        productEntities.map(async (product) => {
+          product.combos = [...(product.combos || []), combo];
+          await this.productRepository.save(product);
+        }),
+      );
 
       return ComboMapper.mapComboToResponse(combo);
       

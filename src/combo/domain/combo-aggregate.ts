@@ -11,17 +11,23 @@ import { ComboImage } from "./value-objects/combo-image.vo";
 import { Product } from "src/product/domain/entities/product.entity";
 import { Category } from "src/category/domain/category.entity";
 import { Discount } from "src/discount/domain/entities/discount.entity";
+import { ComboWeight } from "./value-objects/combo-weight.vo";
+import { ComboMeasurement } from "./value-objects/combo-measurement.vo";
+import { ComboCaducityDate } from "./value-objects/combo-caducity-date.vo";
 
 export class Combo extends AggregateRoot<ComboID> {
     
     private name: ComboName;
     private description: ComboDescription;
     private price: ComboPrice;
+    private weight: ComboWeight;
+    private measurement: ComboMeasurement;
     private currency: ComboCurrency;
     private stock: ComboStock;
     private products: Product[];
-    private image: ComboImage;
-    private category: Category;
+    private images: ComboImage[];
+    private categories: Category[];
+    private caducity_date?: ComboCaducityDate;
     //private discount?: Discount;
 
     get Name(): ComboName {
@@ -36,6 +42,14 @@ export class Combo extends AggregateRoot<ComboID> {
         return this.price;
     }
 
+    get Weight(): ComboWeight {
+        return this.weight;
+    }
+
+    get Measurement(): ComboMeasurement {
+        return this.measurement;
+    }
+
     get Currency(): ComboCurrency {
         return this.currency;
     }
@@ -44,8 +58,12 @@ export class Combo extends AggregateRoot<ComboID> {
         return this.stock;
     }
 
-    get Category(): Category {
-        return this.category;
+    get CaducityDate(): ComboCaducityDate {
+        return this.caducity_date;
+    }
+
+    get Categories(): Category[] {
+        return this.categories;
     }
 
     // get Discount(): Discount {
@@ -56,8 +74,8 @@ export class Combo extends AggregateRoot<ComboID> {
         return this.products;
     }
 
-    get Image(): ComboImage {
-        return this.image;
+    get Images(): ComboImage[] {
+        return this.images;
     }
 
     constructor(
@@ -68,20 +86,23 @@ export class Combo extends AggregateRoot<ComboID> {
         price: ComboPrice, 
         currency: ComboCurrency, 
         stock: ComboStock,
-        category: Category,
+        weight: ComboWeight,
+        measurement: ComboMeasurement,
+        caducity_date: ComboCaducityDate,
+        categories: Category[] = [],
         products: Product[]=[],
-        image: ComboImage,
+        images: ComboImage[] = [],
         //discount?: Discount
 
     ) {
-        const createdCombo = ComboCreatedEvent.create(id, name, description, price, currency, stock, category, image, products);
+        const createdCombo = ComboCreatedEvent.create(id, name, description, price, weight, measurement, currency, stock, categories, images, products, caducity_date);
         super(id);
         this.isValidCombo();
         super.addDomainEvent(createdCombo);
     }
 
     protected isValidCombo(): void{
-        if( !this.name || !this.description || !this.price || !this.currency || !this.stock || !this.category || !this.image || !this.products ){
+        if( !this.name || !this.description || !this.price || !this.weight || !this.measurement || !this.currency || !this.stock || !this.categories || !this.images || !this.products ){
             throw new unvalidComboException('Not valid Combo');
         }
     }

@@ -12,6 +12,9 @@ import { ComboPrice } from 'src/combo/domain/value-objects/combo-price.vo';
 import { ComboStock } from 'src/combo/domain/value-objects/combo-stock.vo';
 import { ComboImage } from 'src/combo/domain/value-objects/combo-image.vo';
 import { CloudinaryService } from 'src/common/infraestructure/cloudinary/cloudinary.service';
+import { ComboWeight } from 'src/combo/domain/value-objects/combo-weight.vo';
+import { ComboMeasurement } from 'src/combo/domain/value-objects/combo-measurement.vo';
+import { ComboCaducityDate } from 'src/combo/domain/value-objects/combo-caducity-date.vo';
 
 @Injectable()
 export class UpdateComboService {
@@ -25,21 +28,25 @@ export class UpdateComboService {
 
     async execute(updateEntryDto: UpdateComboServiceEntryDto): Promise<void>{
 
-        const{ combo_id, combo_category, products, ...comboDetails } = updateEntryDto;
+        const{ combo_id, combo_categories, products, combo_images, ...comboDetails } = updateEntryDto;
         
         const combo = await this.comboRepository.findOne(combo_id);
         if(!combo){
             throw new NotFoundException(`Combo with ID ${combo_id} not found`);
         }
 
-        if(combo_category){
-            const categoryEntity = await this.categoryRepository.findOne({
-                where: { category_id: combo_category }
-            })
-            if (!categoryEntity){
-                throw new NotFoundException(`Category with ID ${combo_id} not found`);
-            }
-            combo.combo_category = categoryEntity;
+        if(combo_categories){
+            const categoryEntities = await Promise.all(
+                combo_categories.map(async (categoryId) => {
+                    const category = await this.categoryRepository.findOne({ where: { category_id: categoryId } });
+                    if (!category) {
+                        throw new NotFoundException(`Category with ID ${categoryId} not found`);
+                    }
+                    return category;
+                }),
+            );
+            
+            combo.combo_categories = categoryEntities;
         }
 
         if(products){
@@ -55,19 +62,25 @@ export class UpdateComboService {
             combo.products = productEntities;
         }
 
-        if(comboDetails.combo_image){
+        if(combo_images){
             // const oldImagePublicId = this.extractPublicIdFromUrl(comboDetails.combo_image);
             // await this.cloudinaryService.deleteImage(oldImagePublicId);
 
-            const imageUrl = await this.cloudinaryService.uploadImage(comboDetails.combo_image, 'combos');
-            combo.combo_image = new ComboImage(imageUrl).getValue();
+            const imageUrls = await Promise.all(
+                combo_images.map((image) => this.cloudinaryService.uploadImage(image, 'combos'))
+            );
+            const comboImages = imageUrls.map((url) => new ComboImage(url));
+            combo.combo_images = comboImages.map((image) => image.getValue());
         }
 
         if(comboDetails.combo_name) combo.combo_name = new ComboName(comboDetails.combo_name);
         if(comboDetails.combo_description) combo.combo_description = new ComboDescription(comboDetails.combo_description);
+        if(comboDetails.combo_weight) combo.combo_weight = new ComboWeight(comboDetails.combo_weight);
+        if(comboDetails.combo_measurement) combo.combo_measurement = new ComboMeasurement(comboDetails.combo_measurement);
         if(comboDetails.combo_currency) combo.combo_currency = new ComboCurrency(comboDetails.combo_currency);
         if(comboDetails.combo_price) combo.combo_price = new ComboPrice(comboDetails.combo_price);
         if(comboDetails.combo_stock) combo.combo_stock = new ComboStock(comboDetails.combo_stock);
+        if(comboDetails.combo_caducity_date) combo.combo_caducity_date = new ComboCaducityDate(new Date(comboDetails.combo_caducity_date));
 
         try {
             await this.comboRepository.saveCombo(combo);

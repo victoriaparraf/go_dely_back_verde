@@ -9,6 +9,9 @@ import { ComboImage } from '../value-objects/combo-image.vo';
 import { Category } from 'src/category/domain/category.entity';
 import { Product } from 'src/product/domain/entities/product.entity';
 import { Discount } from 'src/discount/domain/entities/discount.entity';
+import { ComboWeight } from '../value-objects/combo-weight.vo';
+import { ComboMeasurement } from '../value-objects/combo-measurement.vo';
+import { ComboCaducityDate } from '../value-objects/combo-caducity-date.vo';
 
 export class ComboCreatedEvent extends DomainEventBase {
 
@@ -17,11 +20,14 @@ export class ComboCreatedEvent extends DomainEventBase {
         public readonly name: ComboName,
         public readonly description: ComboDescription,
         public readonly price: ComboPrice,
+        private readonly weight: ComboWeight,
+        private readonly measurement: ComboMeasurement,
         public readonly currency: ComboCurrency,
         public readonly stock: ComboStock,
-        public readonly category: Category,
-        public readonly image: ComboImage,
+        public readonly categories: Category[],
+        public readonly images: ComboImage[],
         public readonly products: Product[],
+        public readonly caducity_date?: ComboCaducityDate,
         //public readonly discount?: Discount
     ) {
         super();
@@ -33,15 +39,18 @@ export class ComboCreatedEvent extends DomainEventBase {
         name: ComboName,
         description: ComboDescription,
         price: ComboPrice,
+        weight: ComboWeight,
+        measurement: ComboMeasurement,
         currency: ComboCurrency,
         stock: ComboStock,
-        category: Category,
-        image: ComboImage,
+        categories: Category[],
+        images: ComboImage[],
         products: Product[],
+        caducity_date?: ComboCaducityDate,
         //discount?: Discount
 
     ): ComboCreatedEvent{
-        return new ComboCreatedEvent(comboId, name, description, price, currency, stock, category, image, products);
+        return new ComboCreatedEvent(comboId, name, description, price, weight, measurement, currency, stock, categories, images, products, caducity_date);
     }
 
     eventName(): string {

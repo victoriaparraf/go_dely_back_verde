@@ -10,11 +10,14 @@ export class ComboMapper {
             name : combo.combo_name.getValue(),
             description : combo.combo_description.getValue(),
             price : combo.combo_price.getValue(),
+            weight: combo.combo_weight.getValue(),
+            measurement: combo.combo_measurement.getValue(),
             currency : combo.combo_currency.getValue(),
             stock: combo.combo_stock.getValue(),
-            image: combo.combo_image,
-            category: combo.combo_category.category_name,
+            images: combo.combo_images,
+            categories: combo.combo_categories.map(category => category.category_name),
             products: combo.products.map(product => product.product_name.getValue()),
+            caducity_date: combo.combo_caducity_date ? combo.combo_caducity_date.getValue().toISOString().split('T')[0] : null,
             // discount: combo.discount ? Number(combo.discount.discount_percentage) : null,
         }
     }
