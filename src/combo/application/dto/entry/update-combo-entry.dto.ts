@@ -8,7 +8,7 @@ export class UpdateComboServiceEntryDto {
     combo_price?: number;
     combo_stock?: number;
     combo_currency?: Currency;
-    combo_category?: string;
+    combo_categories?: string[];
     combo_image?: string;
     products?: string[];
     // discount: number | null;

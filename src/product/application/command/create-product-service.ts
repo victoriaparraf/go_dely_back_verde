@@ -73,11 +73,11 @@ export class CreateProductService implements IApplicationService<CreateProductSe
         type: 'product',
         payload: {
           productImages: product.images.map((image) => image.image_url),
-          productName: product.product_name,
+          productName: product.product_name.getValue(),
           productCategory: category.category_name,
-          productWeight: product.product_weight,
-          productMeasurement: product.product_measurement,
-          productDescription: product.product_description,
+          productWeight: product.product_weight.getValue(),
+          productMeasurement: product.product_measurement.getValue(),
+          productDescription: product.product_description.getValue(),
         },
       });
 

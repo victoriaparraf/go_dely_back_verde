@@ -29,13 +29,18 @@ export class CreateComboService implements IApplicationService<CreateComboServic
 
   async execute(entryDto: CreateComboServiceEntryDto): Promise<CreateComboServiceResponseDto> {
     try {
-      const { combo_category, products, ...comboDetails } = entryDto;
+      const { combo_categories, products, ...comboDetails } = entryDto;
 
-      const categoryEntity = await this.categoryRepository.findOne({ where: { category_id: combo_category } });
-      if (!categoryEntity) {
-        throw new NotFoundException(`Category with ID ${combo_category} not found`);
-      }
-      
+      const categoryEntities = await Promise.all(
+        combo_categories.map(async (categoryId) => {
+            const category = await this.categoryRepository.findOne({ where: { category_id: categoryId } });
+            if (!category) {
+                throw new NotFoundException(`Category with ID ${categoryId} not found`);
+            }
+            return category;
+        }),
+      );
+            
       const productEntities = await Promise.all(
         products.map(async (productId) => {
           const product = await this.productRepository.findOne({ where: { product_id: productId } });
@@ -63,15 +68,17 @@ export class CreateComboService implements IApplicationService<CreateComboServic
       combo.combo_stock = comboStock;
       combo.combo_image = imageUrl;
       combo.combo_currency = comboCurrency;
-      combo.combo_category = categoryEntity;
+      combo.combo_categories = categoryEntities;
       combo.products = productEntities;
 
       await this.comboRepository.saveCombo(combo);
 
-      // for (const product of productEntities) {
-      //   product.combos.push(combo);
-      //   await this.productRepository.update(product);
-      // } 
+      await Promise.all(
+        productEntities.map(async (product) => {
+          product.combos = [...(product.combos || []), combo];
+          await this.productRepository.save(product);
+        }),
+      );
 
       return ComboMapper.mapComboToResponse(combo);
       

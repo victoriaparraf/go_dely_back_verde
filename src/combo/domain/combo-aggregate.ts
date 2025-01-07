@@ -21,7 +21,7 @@ export class Combo extends AggregateRoot<ComboID> {
     private stock: ComboStock;
     private products: Product[];
     private image: ComboImage;
-    private category: Category;
+    private categories: Category[];
     //private discount?: Discount;
 
     get Name(): ComboName {
@@ -44,8 +44,8 @@ export class Combo extends AggregateRoot<ComboID> {
         return this.stock;
     }
 
-    get Category(): Category {
-        return this.category;
+    get Categories(): Category[] {
+        return this.categories;
     }
 
     // get Discount(): Discount {
@@ -68,20 +68,20 @@ export class Combo extends AggregateRoot<ComboID> {
         price: ComboPrice, 
         currency: ComboCurrency, 
         stock: ComboStock,
-        category: Category,
+        categories: Category[] = [],
         products: Product[]=[],
         image: ComboImage,
         //discount?: Discount
 
     ) {
-        const createdCombo = ComboCreatedEvent.create(id, name, description, price, currency, stock, category, image, products);
+        const createdCombo = ComboCreatedEvent.create(id, name, description, price, currency, stock, categories, image, products);
         super(id);
         this.isValidCombo();
         super.addDomainEvent(createdCombo);
     }
 
     protected isValidCombo(): void{
-        if( !this.name || !this.description || !this.price || !this.currency || !this.stock || !this.category || !this.image || !this.products ){
+        if( !this.name || !this.description || !this.price || !this.currency || !this.stock || !this.categories || !this.image || !this.products ){
             throw new unvalidComboException('Not valid Combo');
         }
     }

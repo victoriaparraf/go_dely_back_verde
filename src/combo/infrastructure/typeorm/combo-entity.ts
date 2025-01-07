@@ -52,8 +52,13 @@ export class Combo {
     })
     combo_currency: ComboCurrency;
 
-    @ManyToOne(() => CategoryEntity, (category) => category.products)
-    combo_category: CategoryEntity;
+    @ManyToMany(() => CategoryEntity, (category) => category.combos, { cascade: true })
+    @JoinTable({
+        name: 'combo_categories',
+        joinColumn: { name: 'combo_id', referencedColumnName: 'combo_id' },
+        inverseJoinColumn: { name: 'category_id', referencedColumnName: 'category_id' },
+    })
+    combo_categories: CategoryEntity[];
 
     @Column({
         type: 'int',

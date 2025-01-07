@@ -7,7 +7,7 @@ export class CreateComboServiceEntryDto {
     combo_price: number;
     combo_currency: Currency;
     combo_stock?: number;
-    combo_category: string;
+    combo_categories: string[];
     combo_image: string;
     products: string[];
     //discount: number | undefined;

@@ -19,7 +19,7 @@ export class ComboCreatedEvent extends DomainEventBase {
         public readonly price: ComboPrice,
         public readonly currency: ComboCurrency,
         public readonly stock: ComboStock,
-        public readonly category: Category,
+        public readonly categories: Category[],
         public readonly image: ComboImage,
         public readonly products: Product[],
         //public readonly discount?: Discount
@@ -35,13 +35,13 @@ export class ComboCreatedEvent extends DomainEventBase {
         price: ComboPrice,
         currency: ComboCurrency,
         stock: ComboStock,
-        category: Category,
+        categories: Category[],
         image: ComboImage,
         products: Product[],
         //discount?: Discount
 
     ): ComboCreatedEvent{
-        return new ComboCreatedEvent(comboId, name, description, price, currency, stock, category, image, products);
+        return new ComboCreatedEvent(comboId, name, description, price, currency, stock, categories, image, products);
     }
 
     eventName(): string {

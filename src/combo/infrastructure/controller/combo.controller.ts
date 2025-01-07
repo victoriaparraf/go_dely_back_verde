@@ -33,6 +33,8 @@ export class ComboController {
 
     console.log('Created combo response:', combo);
 
+    return combo;
+
   }
 
   @Get()

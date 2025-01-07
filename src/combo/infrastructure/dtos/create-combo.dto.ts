@@ -17,8 +17,9 @@ export class CreateComboDto {
     @IsString()
     combo_currency: Currency;
 
-    @IsUUID()
-    combo_category: string;
+    @IsArray()
+    @ArrayNotEmpty()
+    combo_categories: string[];
 
     @IsInt()
     @IsOptional()

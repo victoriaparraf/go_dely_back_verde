@@ -25,21 +25,25 @@ export class UpdateComboService {
 
     async execute(updateEntryDto: UpdateComboServiceEntryDto): Promise<void>{
 
-        const{ combo_id, combo_category, products, ...comboDetails } = updateEntryDto;
+        const{ combo_id, combo_categories, products, ...comboDetails } = updateEntryDto;
         
         const combo = await this.comboRepository.findOne(combo_id);
         if(!combo){
             throw new NotFoundException(`Combo with ID ${combo_id} not found`);
         }
 
-        if(combo_category){
-            const categoryEntity = await this.categoryRepository.findOne({
-                where: { category_id: combo_category }
-            })
-            if (!categoryEntity){
-                throw new NotFoundException(`Category with ID ${combo_id} not found`);
-            }
-            combo.combo_category = categoryEntity;
+        if(combo_categories){
+            const categoryEntities = await Promise.all(
+                combo_categories.map(async (categoryId) => {
+                    const category = await this.categoryRepository.findOne({ where: { category_id: categoryId } });
+                    if (!category) {
+                        throw new NotFoundException(`Category with ID ${categoryId} not found`);
+                    }
+                    return category;
+                }),
+            );
+            
+            combo.combo_categories = categoryEntities;
         }
 
         if(products){
