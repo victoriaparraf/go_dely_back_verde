@@ -10,7 +10,7 @@ export class GetComboServiceResponseDto {
     measurement: string;
     currency: Currency;
     stock: number;
-    image: string;
+    images: string[];
     products: string[];
     categories: string[];
     caducity_date?: string;

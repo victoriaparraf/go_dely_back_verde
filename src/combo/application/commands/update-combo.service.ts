@@ -28,7 +28,7 @@ export class UpdateComboService {
 
     async execute(updateEntryDto: UpdateComboServiceEntryDto): Promise<void>{
 
-        const{ combo_id, combo_categories, products, ...comboDetails } = updateEntryDto;
+        const{ combo_id, combo_categories, products, combo_images, ...comboDetails } = updateEntryDto;
         
         const combo = await this.comboRepository.findOne(combo_id);
         if(!combo){
@@ -62,12 +62,15 @@ export class UpdateComboService {
             combo.products = productEntities;
         }
 
-        if(comboDetails.combo_image){
+        if(combo_images){
             // const oldImagePublicId = this.extractPublicIdFromUrl(comboDetails.combo_image);
             // await this.cloudinaryService.deleteImage(oldImagePublicId);
 
-            const imageUrl = await this.cloudinaryService.uploadImage(comboDetails.combo_image, 'combos');
-            combo.combo_image = new ComboImage(imageUrl).getValue();
+            const imageUrls = await Promise.all(
+                combo_images.map((image) => this.cloudinaryService.uploadImage(image, 'combos'))
+            );
+            const comboImages = imageUrls.map((url) => new ComboImage(url));
+            combo.combo_images = comboImages.map((image) => image.getValue());
         }
 
         if(comboDetails.combo_name) combo.combo_name = new ComboName(comboDetails.combo_name);

@@ -36,7 +36,7 @@ export class DiscountService {
       combo_currency: combo.combo_currency.getValue(),
       combo_stock: combo.combo_stock.getValue(),
       combo_category: combo.combo_categories,
-      combo_image: combo.combo_image,
+      combo_image: combo.combo_images,
     };
   }
 

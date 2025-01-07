@@ -10,7 +10,7 @@ export class CreateComboServiceEntryDto {
     combo_currency: Currency;
     combo_stock?: number;
     combo_categories: string[];
-    combo_image: string;
+    combo_images: string[];
     products: string[];
     combo_caducity_date?: Date;
     //discount: number | undefined;

@@ -14,7 +14,7 @@ export class ComboMapper {
             measurement: combo.combo_measurement.getValue(),
             currency : combo.combo_currency.getValue(),
             stock: combo.combo_stock.getValue(),
-            image: combo.combo_image,
+            images: combo.combo_images,
             categories: combo.combo_categories.map(category => category.category_name),
             products: combo.products.map(product => product.product_name.getValue()),
             caducity_date: combo.combo_caducity_date ? combo.combo_caducity_date.getValue().toISOString().split('T')[0] : null,

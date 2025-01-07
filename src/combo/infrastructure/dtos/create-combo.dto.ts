@@ -38,8 +38,9 @@ export class CreateComboDto {
     @IsOptional()
     combo_caducity_date: Date;
 
-    @IsString()
-    combo_image: string;
+    @IsArray()
+    @IsString({ each:true })
+    combo_images: string[];
 
     @IsArray()
     @ArrayNotEmpty()

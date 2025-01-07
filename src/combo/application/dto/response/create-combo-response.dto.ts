@@ -10,7 +10,7 @@ export class CreateComboServiceResponseDto {
     currency: Currency;
     description: string;
     stock: number;
-    image: string;
+    images: string[];
     products: string[];
     categories: string[];
     caducity_date?: string;

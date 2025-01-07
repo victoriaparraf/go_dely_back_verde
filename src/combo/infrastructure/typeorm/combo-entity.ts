@@ -12,6 +12,7 @@ import { Currency } from "src/common/domain/enums/currency.enum";
 import { ComboWeight } from "src/combo/domain/value-objects/combo-weight.vo";
 import { ComboMeasurement } from "src/combo/domain/value-objects/combo-measurement.vo";
 import { ComboCaducityDate } from "src/combo/domain/value-objects/combo-caducity-date.vo";
+import { ComboImage } from "src/combo/domain/value-objects/combo-image.vo";
 
 @Entity()
 export class Combo {
@@ -91,8 +92,8 @@ export class Combo {
     })
     combo_stock: ComboStock;
 
-    @Column()
-    combo_image: string;
+    @Column('text' , { array: true })
+    combo_images: string[];
 
     @Column({
         type: 'date',

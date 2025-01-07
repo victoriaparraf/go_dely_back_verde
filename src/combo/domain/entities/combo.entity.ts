@@ -9,6 +9,7 @@ import { Currency } from "src/common/domain/enums/currency.enum";
 import { ComboWeight } from "../value-objects/combo-weight.vo";
 import { ComboMeasurement } from "../value-objects/combo-measurement.vo";
 import { ComboCaducityDate } from "../value-objects/combo-caducity-date.vo";
+import { ComboImage } from "../value-objects/combo-image.vo";
 
 export class Combo {
 
@@ -22,7 +23,7 @@ export class Combo {
     combo_stock: ComboStock;
     combo_caducity_date: ComboCaducityDate;
     combo_categories: Category[];
-    combo_image: string;
+    combo_images: ComboImage[];
     products: Product[];
     // combo_discount: Discount;
 
@@ -38,7 +39,7 @@ export class Combo {
         stock: number,
         caducity_date: Date,
         categories: Category[] = [],
-        image: string,
+        image: ComboImage[] = [],
         products: Product[] = []
         // discount: Discount
     ) {
@@ -52,7 +53,7 @@ export class Combo {
         this.combo_stock = new ComboStock(stock);
         this.combo_caducity_date = new ComboCaducityDate(caducity_date);
         this.combo_categories = categories;
-        this.combo_image = image;
+        this.combo_images = image;
         this.products = products;
         // this.combo_discount = discount;
     }
