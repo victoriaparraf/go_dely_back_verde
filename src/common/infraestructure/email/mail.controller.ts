@@ -1,10 +1,14 @@
 import { Controller } from '@nestjs/common';
 import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
 import { MailerService } from '@nestjs-modules/mailer';
+import { GetUsersEmailsService } from 'src/user/application/query/get-users-email.service';
 
 @Controller()
 export class MailController {
-    constructor(private readonly mailerService: MailerService) {}
+    constructor(
+        private readonly mailerService: MailerService,
+        private readonly getUsersEmailService: GetUsersEmailsService,
+    ) {}
 
     @EventPattern('notification')
     async handleNotification(
@@ -36,11 +40,15 @@ export class MailController {
     ) {
         const htmlContent = generateHtml(payload);
         const subject = `${subjectPrefix} - GoDely`;
-        await this.mailerService.sendMail({
-        to: 'dragoner919@gmail.com',
-        subject,
-        html: htmlContent,
-        });
+        const userEmails = await this.getUsersEmailService.getAllUserEmails();
+
+        for (const email of userEmails) {
+            await this.mailerService.sendMail({
+                to: email,
+                subject,
+                html: htmlContent,
+            });
+        }
     }
 
     private generateProductEmail(payload: any): string {

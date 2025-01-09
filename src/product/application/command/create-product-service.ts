@@ -18,6 +18,7 @@ import { CloudinaryService } from 'src/common/infraestructure/cloudinary/cloudin
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductMapper } from 'src/product/infrastructure/mappers/product-mapper';
 import { ProductRepository } from 'src/product/infrastructure/repositories/product-repositoy';
+import { SendNotificationService } from 'src/notification/application/services/send-notification.service';
 
 @Injectable()
 export class CreateProductService implements IApplicationService<CreateProductServiceEntryDto, CreateProductServiceResponseDto> {
@@ -26,6 +27,7 @@ export class CreateProductService implements IApplicationService<CreateProductSe
     @InjectRepository(CategoryEntity) private readonly categoryRepository: Repository<CategoryEntity>,
     private readonly cloudinaryService: CloudinaryService,
     @Inject('RABBITMQ_SERVICE') private readonly client: ClientProxy,
+    private readonly sendNotificationService: SendNotificationService
   ) {}
 
   async execute(createProductDto: CreateProductServiceEntryDto): Promise<CreateProductServiceResponseDto> {
@@ -80,6 +82,8 @@ export class CreateProductService implements IApplicationService<CreateProductSe
           productDescription: product.product_description.getValue(),
         },
       });
+
+      await this.sendNotificationService.notifyUsersAboutNewProduct(product);
 
       return ProductMapper.mapProductToResponse(product);
     } catch (error) {
