@@ -37,7 +37,7 @@ export class ComboController {
 
   }
 
-  @Get()
+  @Get('many')
   async findAll(@Query() paginationDto: PaginationDto) {
 
     const getComboServicePaginationDto: GetComboServicePaginationDto = {

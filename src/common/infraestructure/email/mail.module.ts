@@ -2,10 +2,14 @@ import { Module } from '@nestjs/common';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MailController } from './mail.controller';
+import { GetUsersEmailsService } from 'src/user/application/query/get-users-email.service';
+import { User } from 'src/user/infrastructure/typeorm/user-entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
     imports: [
         ConfigModule.forRoot(),
+        TypeOrmModule.forFeature([User]),
         MailerModule.forRootAsync({
         imports: [ConfigModule],
         inject: [ConfigService],
@@ -26,5 +30,6 @@ import { MailController } from './mail.controller';
         }),
     ],
     controllers: [MailController],
+    providers: [GetUsersEmailsService],
 })
 export class MailModule {}

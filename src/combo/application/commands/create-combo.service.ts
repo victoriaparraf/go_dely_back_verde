@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, NotFoundException, InternalServerErrorException, Inject } from '@nestjs/common';
 import { IApplicationService } from 'src/common/application/application-service.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -19,6 +19,7 @@ import { CloudinaryService } from 'src/common/infraestructure/cloudinary/cloudin
 import { ComboWeight } from 'src/combo/domain/value-objects/combo-weight.vo';
 import { ComboMeasurement } from 'src/combo/domain/value-objects/combo-measurement.vo';
 import { ComboCaducityDate } from '../../domain/value-objects/combo-caducity-date.vo';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class CreateComboService implements IApplicationService<CreateComboServiceEntryDto, CreateComboServiceResponseDto> {
@@ -27,7 +28,8 @@ export class CreateComboService implements IApplicationService<CreateComboServic
     private readonly comboRepository: ComboRepository, 
     @InjectRepository(Product) private readonly productRepository: Repository<Product>,
     @InjectRepository(CategoryEntity) private readonly categoryRepository: Repository<CategoryEntity>,
-    private readonly cloudinaryService: CloudinaryService
+    private readonly cloudinaryService: CloudinaryService,
+    @Inject('RABBITMQ_SERVICE') private readonly client: ClientProxy,
   ) {}
 
   async execute(entryDto: CreateComboServiceEntryDto): Promise<CreateComboServiceResponseDto> {
@@ -89,6 +91,19 @@ export class CreateComboService implements IApplicationService<CreateComboServic
           await this.productRepository.save(product);
         }),
       );
+
+      this.client.emit('notification', {
+        type: 'combo',
+        payload: {
+          comboImages: combo.combo_images,
+          comboName: combo.combo_name.getValue(),
+          comboCategories: combo.combo_categories.map((category) => category.category_name),
+          comboWeight: combo.combo_weight.getValue(),
+          comboMeasurement: combo.combo_measurement.getValue(),
+          comboDescription: combo.combo_description.getValue(),
+          comboProducts: combo.products.map((product) => product.product_name.getValue()),
+        },
+      });
 
       return ComboMapper.mapComboToResponse(combo);
       

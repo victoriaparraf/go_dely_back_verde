@@ -60,6 +60,9 @@ export class User {
     @OneToMany(() => Address, address => address.user, { cascade: true }) 
     addresses: Address[];
 
+    @Column('simple-array', { nullable: true })
+    notification_tokens?: string[];
+
     @OneToMany(() => OrderEntity, (order) => order.user)
     orders: OrderEntity[];
 
