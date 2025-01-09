@@ -14,6 +14,7 @@ import { ProductRepository } from './infrastructure/repositories/product-reposit
 import { GetProductsCombosSummaryService } from './application/query/get-products-combos-service';
 import { ComboModule } from 'src/combo/combo.module';
 import { CommonModule } from 'src/common/common.module';
+import { NotificationModule } from 'src/notification/notification.module';
 
 @Module({
   controllers: [ProductController],
@@ -22,6 +23,7 @@ import { CommonModule } from 'src/common/common.module';
     TypeOrmModule.forFeature([ Product, Image, Combo, CategoryEntity ]),
     CommonModule,
     ComboModule,
+    NotificationModule
   ],
   exports: [ProductRepository, CreateProductService, GetProductService, GetProductsByCategoryService, DeleteProductService, GetProductsCombosSummaryService, UpdateProductService],
 })

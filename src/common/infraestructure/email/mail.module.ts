@@ -5,13 +5,15 @@ import { MailController } from './mail.controller';
 import { GetUsersEmailsService } from 'src/user/application/query/get-users-email.service';
 import { User } from 'src/user/infrastructure/typeorm/user-entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserModule } from 'src/user/user.module';
+import { NotificationModule } from 'src/notification/notification.module';
 
 @Module({
     imports: [
         ConfigModule.forRoot(),
         TypeOrmModule.forFeature([User]),
         MailerModule.forRootAsync({
-        imports: [ConfigModule],
+        imports: [ConfigModule, UserModule, NotificationModule],
         inject: [ConfigService],
         useFactory: (configService: ConfigService) => ({
             transport: {
@@ -31,5 +33,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     ],
     controllers: [MailController],
     providers: [GetUsersEmailsService],
+    exports: [GetUsersEmailsService]
 })
 export class MailModule {}
