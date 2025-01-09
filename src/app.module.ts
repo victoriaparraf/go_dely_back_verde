@@ -65,7 +65,7 @@ import { NotificationModule } from './notification/notification.module';
       },
     ]),
     
-    NotificationModule,
+    //NotificationModule,
 
   ],
 })
