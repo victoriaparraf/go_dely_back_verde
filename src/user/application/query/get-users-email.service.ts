@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from 'src/user/infrastructure/typeorm/user.repository';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/user/infrastructure/typeorm/user-entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class GetUsersEmailsService {
     constructor(
-        private readonly userRepository: UserRepository, 
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User> 
     ) {}
 
     async getAllUserEmails(): Promise<string[]> {
-        const users = await this.userRepository.findAll();
+        const users = await this.userRepository.find();
         return users.map(user => user.user_email.getValue());
     }
 }

@@ -11,10 +11,10 @@ import { CreateDiscountDto } from './dtos/create-discount.dto';
 export class DiscountController {
   constructor(private readonly createDiscountService: CreateDiscountService) {}
 
-  @Post()
+  @Post('create')
   async create(@Body() createDiscountDto: CreateDiscountDto) {
 
-    const createDiscountServiceEntryDto: CreateDiscountServiceEntryDto={ 
+    const createDiscountServiceEntryDto: CreateDiscountServiceEntryDto = { 
       ...createDiscountDto
     }
     
