@@ -45,12 +45,12 @@ export class SendNotificationService {
         await this.notifyUsers(title, body, data);
     }
 
-    async notifyUsersAboutDiscount(discountDetails: any): Promise<void> {
+    async notifyUsersAboutDiscount(discount: any): Promise<void> {
         const title = '¡Nuevo descuento!';
-        const body = `Aprovecha un ${discountDetails.percentage}% de descuento en ${discountDetails.productName}`;
+        const body = `Aprovecha un ${discount.percentage}% de descuento en nuestros productos seleccionados`;
         const data = {
-        discountId: discountDetails.id,
-        productName: discountDetails.productName,
+        discountId: discount.id,
+        discountName: discount.name,
         };
 
         await this.notifyUsers(title, body, data);

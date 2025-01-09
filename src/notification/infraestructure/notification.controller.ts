@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, HttpException, HttpStatus } from '@nestjs/common';
 import { NotificationService } from '../application/commands/notification.service';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from 'src/user/infrastructure/typeorm/user-entity';
@@ -16,10 +16,14 @@ export class NotificationController {
     @Body() saveNotificationDto: SaveNotificationDto,
   ) {
 
-    const savedToken = await this.notificationService.saveToken(user.user_id, saveNotificationDto.notification_token);
-    return {
-      message: 'Token saved successfully',
-      data: savedToken,
-    };
+    try {
+      const savedToken = await this.notificationService.saveToken(user.user_id, saveNotificationDto.notification_token);
+      return {
+        message: 'Token saved successfully',
+        data: savedToken,
+      };
+    } catch (error) {
+      throw new HttpException('Error saving token', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

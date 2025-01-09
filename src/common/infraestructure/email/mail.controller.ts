@@ -111,11 +111,12 @@ export class MailController {
     }
 
     private generateDiscountEmail(payload: any): string {
+        const data = payload.data;
         return `
         <h1>¡New Discount Available!</h1>
-        <p><strong>Discount Name:</strong> ${payload.discountName}</p>
-        <p><strong>Description:</strong> ${payload.description}</p>
-        <p><strong>Discount Percentage:</strong> ${payload.percentage}%</p>
+        <p><strong>Discount Name:</strong> ${data.name}</p>
+        <p><strong>Description:</strong> ${data.description}</p>
+        <p><strong>Discount Percentage:</strong> ${data.percentage}%</p>
         `;
     }
 

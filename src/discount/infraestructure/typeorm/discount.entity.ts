@@ -3,6 +3,8 @@ import { Product } from "src/product/infrastructure/typeorm/product-entity";
 import { DiscountPercentage } from "src/discount/domain/value-objects/discount-percentage.vo";
 import { DiscountStartDate } from "src/discount/domain/value-objects/discount-start-date.vo";
 import { DiscountEndDate } from "src/discount/domain/value-objects/discount-end-date.vo";
+import { DiscountName } from "src/discount/domain/value-objects/discount-name.vo";
+import { DiscountDescription } from "src/discount/domain/value-objects/discount-description.vo";
 import { Combo } from "src/combo/infrastructure/typeorm/combo-entity";
 
 
@@ -11,6 +13,24 @@ export class Discount {
     
     @PrimaryGeneratedColumn('uuid')
     discount_id: string;
+
+    @Column({
+        type: 'varchar',
+        transformer: {
+            to: (value: DiscountName) => value.getValue(),
+            from: (value: string) => value ? new DiscountName(value) : new DiscountName('Discount'),
+        },
+    })
+    discount_name: DiscountName;
+
+    @Column({
+        type: 'varchar',
+        transformer: {
+            to: (value: DiscountDescription) => value.getValue(),
+            from: (value: string) => value ? new DiscountDescription(value) : new DiscountDescription('Descripcion'),
+        },
+    })
+    discount_description: DiscountDescription;
 
     @Column({
         type: 'decimal',
@@ -43,6 +63,9 @@ export class Discount {
     @OneToMany(() => Product, (product) => product.discount, { nullable: true })
     products: Product[];
 
-    // @OneToMany(() => Combo, (combo) => combo.discount, { nullable: true })
-    // combos: Combo[];
+    @OneToMany(() => Combo, (combo) => combo.discount, { nullable: true })
+    combos: Combo[];
+
+    @Column('text')
+    discount_image: string;
 }
