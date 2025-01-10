@@ -5,6 +5,7 @@ import { UserName } from "src/user/domain/value-object/user-name";
 import { UserPhone } from "src/user/domain/value-object/user-phone";
 import { UserEmail } from "src/user/domain/value-object/user-email";
 import { OrderEntity } from "src/order/infraestructure/typeorm/order-entity";
+import { Notification } from 'src/notification/infraestructure/typeorm/notification.entity';
 
 @Entity('user')
 export class User {
@@ -60,8 +61,8 @@ export class User {
     @OneToMany(() => Address, address => address.user, { cascade: true }) 
     addresses: Address[];
 
-    @Column('simple-array', { nullable: true })
-    notification_tokens?: string[];
+    @OneToMany(() => Notification, (notification) => notification.user, { cascade: true })
+    notification_token: Notification[];
 
     @OneToMany(() => OrderEntity, (order) => order.user)
     orders: OrderEntity[];
