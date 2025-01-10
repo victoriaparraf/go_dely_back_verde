@@ -5,7 +5,6 @@ import { CreateDiscountDto } from '../application/dto/create-discount.dto';
 import { UpdateDiscountDto } from '../application/dto/update-discount.dto';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 
-
 @ApiTags('Discount')
 @Controller('discounts')
 export class DiscountController {

@@ -19,6 +19,7 @@ export class Order extends AggregateRoot<OrderID> {
     private status: OrderStatus;
     private order_products: OrderProduct[];
     private order_combos: OrderCombo[]; 
+    order_id: string;
 
     constructor(
         id: OrderID,
