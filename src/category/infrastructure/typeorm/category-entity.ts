@@ -5,15 +5,18 @@ import { Combo } from 'src/combo/infrastructure/typeorm/combo-entity';
 @Entity('categories')
 export class CategoryEntity {
   @PrimaryGeneratedColumn('uuid')
-  category_id: string;
+  id: string;
 
   @Column({ type: 'varchar', length: 255 })
-  category_name: string;
+  name: string;
 
   @Column({ type: 'text', nullable: true })
-  category_description: string;
+  description?: string;
 
-  @OneToMany(() => Product, (product) => product.product_category)
+  @Column({ type: 'text', nullable: true })
+  image?: string;
+
+  @OneToMany(() => Product, (product) => product.categories)
   products: Product[];
 
   @ManyToMany(() => Combo, combo => combo.combo_categories)

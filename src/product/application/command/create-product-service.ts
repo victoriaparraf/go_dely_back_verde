@@ -4,7 +4,7 @@ import { Product } from 'src/product/infrastructure/typeorm/product-entity';
 import { Image } from 'src/product/infrastructure/typeorm/image-entity';
 import { ClientProxy } from '@nestjs/microservices';
 import { IApplicationService } from 'src/common/application/application-service.interface';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { ProductCurrency } from 'src/product/domain/value-objects/poduct-currency.vo';
 import { ProductDescription } from 'src/product/domain/value-objects/product-description.vo';
 import { ProductMeasurement } from 'src/product/domain/value-objects/product-measurement.vo';
@@ -32,30 +32,30 @@ export class CreateProductService implements IApplicationService<CreateProductSe
 
   async execute(createProductDto: CreateProductServiceEntryDto): Promise<CreateProductServiceResponseDto> {
     try {
-      const { product_category, images, ...productDetails } = createProductDto;
+      const { categories, images, ...productDetails } = createProductDto;
 
-      const category = await this.categoryRepository.findOne({ where: { category_id: product_category } });
+      const category = await this.categoryRepository.findOne({ where: { id: In(categories) } });
       if (!category) {
-        throw new NotFoundException(`Category with ID ${product_category} not found`);
+        throw new NotFoundException(`Category with ID ${categories} not found`);
       }
 
-      const productName = new ProductName(productDetails.product_name);
-      const productDescription = new ProductDescription(productDetails.product_description);
-      const productPrice = new ProductPrice(productDetails.product_price);
-      const productCurrency = new ProductCurrency(productDetails.product_currency);
-      const productWeight = new ProductWeight(productDetails.product_weight.toString());
-      const productMeasurement = new ProductMeasurement(productDetails.product_measurement);
-      const productStock = new ProductStock(productDetails.product_stock);
+      const productName = new ProductName(productDetails.name);
+      const productDescription = new ProductDescription(productDetails.description);
+      const productPrice = new ProductPrice(productDetails.price);
+      const productCurrency = new ProductCurrency(productDetails.currency);
+      const productWeight = new ProductWeight(productDetails.weight.toString());
+      const productMeasurement = new ProductMeasurement(productDetails.measurement);
+      const productStock = new ProductStock(productDetails.stock);
 
       const product = new Product();
-      product.product_name = productName;
-      product.product_description = productDescription;
-      product.product_price = productPrice;
-      product.product_currency = productCurrency;
-      product.product_weight = productWeight;
-      product.product_measurement = productMeasurement;
-      product.product_stock = productStock;
-      product.product_category = category;
+      product.name = productName;
+      product.description = productDescription;
+      product.price = productPrice;
+      product.currency = productCurrency;
+      product.weight = productWeight;
+      product.measurement = productMeasurement;
+      product.stock = productStock;
+      product.categories = [category];
 
       const imageEntities = await Promise.all(
         images.map(async (imagePath) => {
@@ -75,11 +75,11 @@ export class CreateProductService implements IApplicationService<CreateProductSe
         type: 'product',
         payload: {
           productImages: product.images.map((image) => image.image_url),
-          productName: product.product_name.getValue(),
-          productCategory: category.category_name,
-          productWeight: product.product_weight.getValue(),
-          productMeasurement: product.product_measurement.getValue(),
-          productDescription: product.product_description.getValue(),
+          productName: product.name.getValue(),
+          productCategory: category.name,
+          productWeight: product.weight.getValue(),
+          productMeasurement: product.measurement.getValue(),
+          productDescription: product.description.getValue(),
         },
       });
 

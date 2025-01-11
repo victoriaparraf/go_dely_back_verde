@@ -17,7 +17,7 @@ import { OrderEntity } from "src/order/infraestructure/typeorm/order-entity";
 export class Product {
   
   @PrimaryGeneratedColumn('uuid')
-  product_id: string;
+  id: string;
 
   @Column({
     type: 'varchar',
@@ -26,7 +26,7 @@ export class Product {
       from: (value: string) => value ? new ProductName(value) : new ProductName('Producto'),
     },
   })
-  product_name: ProductName;
+  name: ProductName;
 
   @Column({
     type: 'varchar',
@@ -35,7 +35,7 @@ export class Product {
       from: (value: string) => value ? new ProductDescription(value) : new ProductDescription('Descripcion del producto'),
     },
   })
-  product_description: ProductDescription;
+  description: ProductDescription;
 
   @Column({
     type: 'decimal',
@@ -44,7 +44,7 @@ export class Product {
       from: (value: number) => value ? new ProductPrice(value) : new ProductPrice(0),
     },
   })
-  product_price: ProductPrice;
+  price: ProductPrice;
 
   @Column({
     type: 'varchar',
@@ -53,7 +53,7 @@ export class Product {
       from: (value: string) => value ? new ProductCurrency(value) : new ProductCurrency('USD'),
     },
   })
-  product_currency: ProductCurrency;
+  currency: ProductCurrency;
 
   @Column({
     type: 'varchar',
@@ -62,7 +62,7 @@ export class Product {
       from: (value: string) => value ? new ProductWeight(value) : new ProductWeight('0'),
     },
   })
-  product_weight: ProductWeight;
+  weight: ProductWeight;
 
   @Column({
     type: 'varchar',
@@ -71,7 +71,7 @@ export class Product {
       from: (value: string) => value ? new ProductMeasurement(value): new ProductMeasurement('ml'),
     },
   })
-  product_measurement: ProductMeasurement;
+  measurement: ProductMeasurement;
 
   @Column({
     type: 'int',
@@ -81,13 +81,13 @@ export class Product {
       from: (value: number) => value ? new ProductStock(value): new ProductStock(0),
     },
   })
-  product_stock: ProductStock;
+  stock: ProductStock;
 
   @OneToMany(() => Image, (image) => image.product, { cascade: true })
   images: Image[];
 
   @ManyToOne(() => CategoryEntity, (category) => category.products)
-  product_category: CategoryEntity;
+  categories: CategoryEntity[];
 
   @ManyToMany(() => Combo, combo => combo.products)
   combos: Combo[];
@@ -100,6 +100,6 @@ export class Product {
   discount?: Discount;
   
   @OneToMany(() => OrderProduct, orderProduct => orderProduct.product)
-  orders: OrderProduct[];
+  orders?: OrderProduct[];
 
 }

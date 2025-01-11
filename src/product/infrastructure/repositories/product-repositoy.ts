@@ -22,7 +22,7 @@ export class ProductRepository implements IProductRepository {
 
   async createProduct(product: Product) {
     const productEntity = this.productRepository.create(product);
-    productEntity.images = product.images; // Asegúrate de asignar las imágenes aquí
+    productEntity.images = product.images;
     return productEntity;
   }
 
@@ -43,7 +43,7 @@ export class ProductRepository implements IProductRepository {
     let product: Product;
     if (isUUID(term)) {
       product = await this.productRepository.findOne({
-        where: { product_id: term },
+        where: { id: term },
         relations: ['product_category', 'images', 'discount'],
       });
     } else {
@@ -59,7 +59,7 @@ export class ProductRepository implements IProductRepository {
 
   async findByCategory(categoryId: string): Promise<Product[]> {
     return this.productRepository.find({
-      where: { product_category: { category_id: categoryId } },
+      where: { categories: { id: categoryId } },
       relations: ['product_category', 'images', 'discount'],
     });
   }
@@ -73,6 +73,6 @@ export class ProductRepository implements IProductRepository {
   }
 
   async deleteImagesByProduct(productId: string): Promise<void> {
-    await this.imageRepository.delete({ product: { product_id: productId } });
+    await this.imageRepository.delete({ product: { id: productId } });
   }
 }

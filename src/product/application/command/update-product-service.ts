@@ -31,11 +31,11 @@ export class UpdateProductService {
     }
 
     if (product_category) {
-      const category = await this.categoryRepository.findOne({ where: { category_id: product_category } });
+      const category = await this.categoryRepository.findOne({ where: { id: product_category } });
       if (!category) {
         throw new NotFoundException(`Category with ID ${product_category} not found`);
       }
-      product.product_category = category;
+      product.categories = [category];
     }
 
     if (images && images.length) {
@@ -50,13 +50,13 @@ export class UpdateProductService {
       product.images = imageEntities;
     }
 
-    if (productDetails.product_name) product.product_name = new ProductName(productDetails.product_name);
-    if (productDetails.product_description) product.product_description = new ProductDescription(productDetails.product_description);
-    if (productDetails.product_price) product.product_price = new ProductPrice(productDetails.product_price);
-    if (productDetails.product_currency) product.product_currency = new ProductCurrency(productDetails.product_currency);
-    if (productDetails.product_weight) product.product_weight = new ProductWeight(productDetails.product_weight.toString());
-    if (productDetails.product_measurement) product.product_measurement = new ProductMeasurement(productDetails.product_measurement);
-    if (productDetails.product_stock) product.product_stock = new ProductStock(productDetails.product_stock);
+    if (productDetails.product_name) product.name = new ProductName(productDetails.product_name);
+    if (productDetails.product_description) product.description = new ProductDescription(productDetails.product_description);
+    if (productDetails.product_price) product.price = new ProductPrice(productDetails.product_price);
+    if (productDetails.product_currency) product.currency = new ProductCurrency(productDetails.product_currency);
+    if (productDetails.product_weight) product.weight = new ProductWeight(productDetails.product_weight.toString());
+    if (productDetails.product_measurement) product.measurement = new ProductMeasurement(productDetails.product_measurement);
+    if (productDetails.product_stock) product.stock = new ProductStock(productDetails.product_stock);
 
     try {
       await this.productRepository.saveProduct(product);
