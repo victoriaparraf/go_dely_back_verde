@@ -28,8 +28,8 @@ export class CreateOrderService {
   async createOrder(dto: CreateOrderServiceEntryDto, userId: string): Promise<ResponseOrderDTO> {
     try {
       // Validar método de pago
-      const paymentMethod = await this.paymentMethodRepository.findById(dto.paymentMethodId);
-      if (!paymentMethod) throw new Error(`Payment method with ID ${dto.paymentMethodId} not found`);
+      const paymentMethod = await this.paymentMethodRepository.findById(dto.idPayment);
+      if (!paymentMethod) throw new Error(`Payment method with ID ${dto.idPayment} not found`);
 
       // Validar dirección
       const address = await this.addressRepository.findOne({
@@ -39,17 +39,17 @@ export class CreateOrderService {
       if (!address) throw new Error(`Address with ID ${dto.address_id} not found`);
 
       // Validar productos y combos
-      if ((!dto.order_products || dto.order_products.length === 0) && (!dto.order_combos || dto.order_combos.length === 0)) {
+      if ((!dto.products || dto.products.length === 0) && (!dto.combos || dto.combos.length === 0)) {
         throw new Error('At least one product or combo must be included in the order');
       }
 
       // Crear la orden
-      const order = Order.create(address, dto.currency, 0, dto.paymentMethodId, userId);
+      const order = Order.create(address, 'USD', 0, dto.idPayment, userId);
 
       // Procesar productos y combos
       let total = 0;
-      const orderProducts = await this.processOrderProducts(dto.order_products || [], order);
-      const orderCombos = await this.processOrderCombos(dto.order_combos || [], order);
+      const orderProducts = await this.processOrderProducts(dto.products || [], order);
+      const orderCombos = await this.processOrderCombos(dto.combos || [], order);
 
       // Actualizar el total en la orden
       total = orderProducts.reduce((acc, op) => acc + op.total_price, 0) +
@@ -66,7 +66,6 @@ export class CreateOrderService {
       this.client.send('order_notification', {
         orderAddress: address.address_id,
         orderTotal: total,
-        orderCurrency: dto.currency,
         message: 'Your order is ready to be served',
       }).subscribe();
 

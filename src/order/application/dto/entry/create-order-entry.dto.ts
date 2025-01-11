@@ -14,9 +14,8 @@ export interface ComboEntryDto {
 
 export interface CreateOrderServiceEntryDto{
     address_id: string
-    paymentMethodId: string
-    currency: string
-    total: number
-    order_products?: ProductEntryDto[]
-    order_combos?: ComboEntryDto[]
+    idPayment: string
+    email?: string
+    products?: ProductEntryDto[]
+    combos?: ComboEntryDto[]
 }
