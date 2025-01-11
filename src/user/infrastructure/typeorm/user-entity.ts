@@ -12,22 +12,10 @@ export class User {
     @PrimaryGeneratedColumn('uuid')
     user_id: string;
 
-    @Column({
-        type: 'varchar',
-        transformer: {
-        to: (value: UserEmail) => value.getValue(),
-        from: (value: string) => value ? new UserEmail(value) : new UserEmail('example@gmail.com'),
-        },
-    })
+    @Column({ type: 'varchar', length: 255, nullable: false })
     user_email: UserEmail;
 
-    @Column({
-        type: 'varchar',
-        transformer: {
-        to: (value: UserName) => value.getValue(),
-        from: (value: string) => value ? new UserName(value) : new UserName('Cliente'),
-        },
-    })
+    @Column({ type: 'varchar', length: 255, nullable: false })
     user_name: UserName;
 
     @Column('text', {
@@ -35,27 +23,19 @@ export class User {
     })
     user_password: string;
 
-    @Column({
-        type: 'varchar',
-        transformer: {
-        to: (value: UserPhone) => value.getValue(),
-        from: (value: string) => value ? new UserPhone(value) : new UserPhone('+58 414-2542634'),
-        },
-    })
+    @Column({ type: 'varchar', length: 20, nullable: true })
     user_phone: UserPhone;
 
-    @Column('text', {
-        default: 'client'
-    })
+    @Column({ type: 'varchar', length: 255, nullable: true })
+    user_image: string;
+
+    @Column({ type: 'varchar', length: 50, nullable: false })
     user_type: string;
 
     @Column('text', {
         default: 'active'
     })
     user_status: string;
-
-    @Column('text', { nullable: true })
-    user_image: string;
 
     @OneToMany(() => Address, address => address.user, { cascade: true }) 
     addresses: Address[];

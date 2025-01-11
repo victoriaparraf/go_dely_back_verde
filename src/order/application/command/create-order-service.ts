@@ -5,7 +5,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ClientProxy } from '@nestjs/microservices';
 import { ProductRepository } from 'src/product/infrastructure/repositories/product-repositoy';
-import { ComboRepository } from 'src/combo/infrastructure/typeorm/combo-repository';
 import { ComboEntryDto, CreateOrderServiceEntryDto, ProductEntryDto } from '../dto/entry/create-order-entry.dto';
 import { OrderCombo } from 'src/order/infraestructure/typeorm/order-combo';
 import { OrderProduct } from 'src/order/infraestructure/typeorm/order-product';
@@ -13,6 +12,7 @@ import { Order } from 'src/order/domain/order-aggregate';
 import { ResponseOrderDTO } from 'src/order/infraestructure/dtos/response-order.dto';
 import { OrderMapper } from 'src/order/infraestructure/mappers/order.mapper';
 import { OrderRepository } from 'src/order/infraestructure/typeorm/order-repository';
+import { ComboRepository } from 'src/combo/infrastructure/repositories/combo-repository';
 
 @Injectable()
 export class CreateOrderService {
@@ -106,7 +106,7 @@ export class CreateOrderService {
     combosDto: ComboEntryDto[],
     order: Order,
   ): Promise<OrderCombo[]> {
-    const combos = await Promise.all(combosDto.map(c => this.comboRepository.findComboById(c.combo_id)));
+    const combos = await Promise.all(combosDto.map(c => this.comboRepository.findOne(c.combo_id)));
 
     if (combos.includes(null)) throw new Error('Some combos not found');
 

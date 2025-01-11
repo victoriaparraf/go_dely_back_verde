@@ -24,32 +24,34 @@ export class AuthService {
   private mapUserLoginToResponse(user:User):any{
     return{
       user_id: user.user_id,
-      user_email: user.user_email.getValue(),
+      user_email: user.user_email,
       token: this.getJwtToken({ user_id: user.user_id })
     }
   }
 
-  async create(createUserDto: CreateUserDto) {
-    
+  async create(createUserDto: CreateUserDto): Promise<User> {
     try {
-
-      const { user_password, ...userData} = createUserDto;
+      const { email, name, password, phone, role } = createUserDto;
+      console.log('Creating user with:', { email, name, password, phone, role });
 
       const user = this.userRepository.create({
-        user_email: new UserEmail(userData.user_email),
-        user_name: new UserName(userData.user_name),
-        user_phone: new UserPhone(userData.user_phone),
-        user_password: bcrypt.hashSync( user_password, 10 )
+        user_email: new UserEmail(email),
+        user_name: new UserName(name),
+        user_phone: new UserPhone(phone),
+        user_password: bcrypt.hashSync(password, 10),
+        user_type: role || 'CLIENT',
       });
 
-      await this.userRepository.save( user )
+      console.log('User entity created:', user);
+
+      await this.userRepository.save(user);
+
+      console.log('User saved:', user);
 
       return user;
-      
     } catch (error) {
-
+      console.error('Error creating user:', error);
       this.handleDBErrors(error);
-      
     }
   }
 
@@ -124,4 +126,9 @@ export class AuthService {
 
     throw new InternalServerErrorException('Check internal server logs')
   }
+
+  async validateUserById(userId: string): Promise<User> {
+    return this.userRepository.findOne({ where: { user_id: userId } });
+  }
+
 }
