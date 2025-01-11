@@ -11,6 +11,7 @@ import { OrderModule } from './order/order.module';
 import { CategoryModule } from './category/category.module';
 import { PaymentMethodModule } from './payment-method/payment-method.module';
 import { UserModule } from './user/user.module';
+import { CouponModule } from './coupon/coupon.module';
 
 @Module({
   imports: [
@@ -49,6 +50,8 @@ import { UserModule } from './user/user.module';
     UserModule,
 
     AuthModule,
+
+    CouponModule,
     
     ClientsModule.register([
       {
@@ -63,6 +66,8 @@ import { UserModule } from './user/user.module';
         },
       },
     ]),
+    
+    
 
   ],
 })
