@@ -8,17 +8,17 @@ export class CategoryMapper {
   
   static toDomain(entity: CategoryEntity): Category {
     return new Category(
-      new CategoryID(entity.id),
-      new CategoryName(entity.name),
-      new CategoryDescription(entity.description)
+      new CategoryID(entity.category_id),
+      new CategoryName(entity.category_name),
+      new CategoryDescription(entity.category_description)
     );
   }
 
   static toPersistence(aggregate: Category): CategoryEntity {
     const entity = new CategoryEntity();
-    entity.id = aggregate.getId().getValue();
-    entity.name = aggregate.getName().getValue();
-    entity.description = aggregate.getDescription().getValue();
+    entity.category_id = aggregate.getId().getValue();
+    entity.category_name = aggregate.getName().getValue();
+    entity.category_description = aggregate.getDescription().getValue();
     return entity;
   }
 

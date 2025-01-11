@@ -17,7 +17,7 @@ import { OrderEntity } from "src/order/infraestructure/typeorm/order-entity";
 export class Product {
   
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  product_id: string;
 
   @Column({
     type: 'varchar',
@@ -26,7 +26,7 @@ export class Product {
       from: (value: string) => value ? new ProductName(value) : new ProductName('Producto'),
     },
   })
-  name: ProductName;
+  product_name: ProductName;
 
   @Column({
     type: 'varchar',
@@ -35,7 +35,7 @@ export class Product {
       from: (value: string) => value ? new ProductDescription(value) : new ProductDescription('Descripcion del producto'),
     },
   })
-  description: ProductDescription;
+  product_description: ProductDescription;
 
   @Column({
     type: 'decimal',
@@ -44,7 +44,7 @@ export class Product {
       from: (value: number) => value ? new ProductPrice(value) : new ProductPrice(0),
     },
   })
-  price: ProductPrice;
+  product_price: ProductPrice;
 
   @Column({
     type: 'varchar',
@@ -53,7 +53,7 @@ export class Product {
       from: (value: string) => value ? new ProductCurrency(value) : new ProductCurrency('USD'),
     },
   })
-  currency: ProductCurrency;
+  product_currency: ProductCurrency;
 
   @Column({
     type: 'varchar',
@@ -62,7 +62,7 @@ export class Product {
       from: (value: string) => value ? new ProductWeight(value) : new ProductWeight('0'),
     },
   })
-  weight: ProductWeight;
+  product_weight: ProductWeight;
 
   @Column({
     type: 'varchar',
@@ -71,7 +71,7 @@ export class Product {
       from: (value: string) => value ? new ProductMeasurement(value): new ProductMeasurement('ml'),
     },
   })
-  measurement: ProductMeasurement;
+  product_measurement: ProductMeasurement;
 
   @Column({
     type: 'int',
@@ -81,7 +81,7 @@ export class Product {
       from: (value: number) => value ? new ProductStock(value): new ProductStock(0),
     },
   })
-  stock: ProductStock;
+  product_stock: ProductStock;
 
   @OneToMany(() => Image, (image) => image.product, { cascade: true })
   images: Image[];

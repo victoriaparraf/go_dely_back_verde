@@ -43,7 +43,7 @@ export class ProductRepository implements IProductRepository {
     let product: Product;
     if (isUUID(term)) {
       product = await this.productRepository.findOne({
-        where: { id: term },
+        where: { product_id: term },
         relations: ['product_category', 'images', 'discount'],
       });
     } else {
@@ -59,7 +59,7 @@ export class ProductRepository implements IProductRepository {
 
   async findByCategory(categoryId: string): Promise<Product[]> {
     return this.productRepository.find({
-      where: { categories: { id: categoryId } },
+      where: { categories: { category_id: categoryId } },
       relations: ['product_category', 'images', 'discount'],
     });
   }
@@ -73,6 +73,6 @@ export class ProductRepository implements IProductRepository {
   }
 
   async deleteImagesByProduct(productId: string): Promise<void> {
-    await this.imageRepository.delete({ product: { id: productId } });
+    await this.imageRepository.delete({ product: { product_id: productId } });
   }
 }

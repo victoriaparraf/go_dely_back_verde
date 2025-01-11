@@ -5,13 +5,13 @@ import { Combo } from 'src/combo/infrastructure/typeorm/combo-entity';
 @Entity('categories')
 export class CategoryEntity {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  category_id: string;
 
   @Column({ type: 'varchar', length: 255 })
-  name: string;
+  category_name: string;
 
   @Column({ type: 'text', nullable: true })
-  description?: string;
+  category_description?: string;
 
   @Column({ type: 'text', nullable: true })
   image?: string;

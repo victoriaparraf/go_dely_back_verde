@@ -34,7 +34,7 @@ export class CreateProductService implements IApplicationService<CreateProductSe
     try {
       const { categories, images, ...productDetails } = createProductDto;
 
-      const category = await this.categoryRepository.findOne({ where: { id: In(categories) } });
+      const category = await this.categoryRepository.findOne({ where: { category_id: In(categories) } });
       if (!category) {
         throw new NotFoundException(`Category with ID ${categories} not found`);
       }
@@ -48,13 +48,13 @@ export class CreateProductService implements IApplicationService<CreateProductSe
       const productStock = new ProductStock(productDetails.stock);
 
       const product = new Product();
-      product.name = productName;
-      product.description = productDescription;
-      product.price = productPrice;
-      product.currency = productCurrency;
-      product.weight = productWeight;
-      product.measurement = productMeasurement;
-      product.stock = productStock;
+      product.product_name = productName;
+      product.product_description = productDescription;
+      product.product_price = productPrice;
+      product.product_currency = productCurrency;
+      product.product_weight = productWeight;
+      product.product_measurement = productMeasurement;
+      product.product_stock = productStock;
       product.categories = [category];
 
       const imageEntities = await Promise.all(
@@ -75,11 +75,11 @@ export class CreateProductService implements IApplicationService<CreateProductSe
         type: 'product',
         payload: {
           productImages: product.images.map((image) => image.image_url),
-          productName: product.name.getValue(),
-          productCategory: category.name,
-          productWeight: product.weight.getValue(),
-          productMeasurement: product.measurement.getValue(),
-          productDescription: product.description.getValue(),
+          productName: product.product_name.getValue(),
+          productCategory: category.category_name,
+          productWeight: product.product_weight.getValue(),
+          productMeasurement: product.product_measurement.getValue(),
+          productDescription: product.product_description.getValue(),
         },
       });
 

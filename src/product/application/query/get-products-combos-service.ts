@@ -15,9 +15,9 @@ export class GetProductsCombosSummaryService {
     const combos = await this.comboRepository.findAll({page: 10, perpage: 0});
 
     const productSummaries = products.map(product => ({
-      id: product.id,
+      id: product.product_id,
       type: 'Product' as const,
-      name: product.name.getValue(),
+      name: product.product_name.getValue(),
     }));
 
     const comboSummaries = combos.map(combo => ({

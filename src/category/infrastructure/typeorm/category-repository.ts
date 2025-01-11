@@ -16,21 +16,21 @@ export class TypeORMCategoryRepository implements CategoryRepository {
 
     async save(category: Category): Promise<void> {
       const entity = new CategoryEntity();
-      entity.id = category.getId().getValue();
-      entity.name = category.getName().getValue();
-      entity.description = category.getDescription().getValue();
+      entity.category_id = category.getId().getValue();
+      entity.category_name = category.getName().getValue();
+      entity.category_description = category.getDescription().getValue();
   
       await this.ormRepository.save(entity);
     }
 
     async findById(id: CategoryID): Promise<Category | null> {
-        const entity = await this.ormRepository.findOne({ where: { id: id.value } });
+        const entity = await this.ormRepository.findOne({ where: { category_id: id.value } });
         if (!entity) return null;
 
         return Category.reconstitute(
-            new CategoryID(entity.id),
-            entity.name,
-            entity.description
+            new CategoryID(entity.category_id),
+            entity.category_name,
+            entity.category_description
         );
     }
 
@@ -38,30 +38,30 @@ export class TypeORMCategoryRepository implements CategoryRepository {
         const entities = await this.ormRepository.find();
         return entities.map(entity => 
             Category.reconstitute(
-                new CategoryID(entity.id),
-                entity.name,
-                entity.description
+                new CategoryID(entity.category_id),
+                entity.category_name,
+                entity.category_description
             )
         );
     }
 
     async update(category: Category): Promise<void> {
         const entity = await this.ormRepository.findOne({
-            where: { id: category.getId().getValue() },
+            where: { category_id: category.getId().getValue() },
         });
     
         if (!entity) {
             throw new Error(`Category with ID ${category.getId().getValue()} not found`);
         }
     
-        entity.name = category.getName().getValue();
-        entity.description = category.getDescription().getValue();
+        entity.category_name = category.getName().getValue();
+        entity.category_description = category.getDescription().getValue();
     
         await this.ormRepository.save(entity);
     }
     
 
     async delete(id: CategoryID): Promise<void> {
-        await this.ormRepository.delete({ id: id.value });
+        await this.ormRepository.delete({ category_id: id.value });
     }
 }
