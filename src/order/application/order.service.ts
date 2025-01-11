@@ -1,11 +1,11 @@
 import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PaymentMethodRepository } from 'src/payment-method/infrastructure/typeorm/payment-method.repository';
-import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
+import { CreateOrderDto } from '../infraestructure/dtos/create-order.dto';
+import { UpdateOrderDto } from '../infraestructure/dtos/update-order.dto';
 import { OrderRepository } from '../infraestructure/typeorm/order-repository';
 import { Order } from '../domain/order-aggregate';
 import { OrderMapper } from '../infraestructure/mappers/order.mapper';
-import { ResponseOrderDTO } from './dto/response-order.dto';
+import { ResponseOrderDTO } from '../infraestructure/dtos/response-order.dto';
 import { OrderStatus } from '../domain/enums/order-status.enum';
 import { ClientProxy } from '@nestjs/microservices';
 import { OrderProduct } from '../infraestructure/typeorm/order-product';

@@ -1,14 +1,12 @@
-import { IsEmail, IsPhoneNumber, IsString, isValidationOptions, Matches, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsEnum, IsOptional, IsPhoneNumber, IsString, isValidationOptions, Matches, MaxLength, MinLength } from "class-validator";
 
 export class CreateUserDto {
 
-    @IsString()
     @IsEmail()
-    user_email: string;
+    email: string;
 
     @IsString()
-    @MinLength(1)
-    user_name: string;
+    name: string;
 
     @IsString()
     @MinLength(5)
@@ -17,10 +15,14 @@ export class CreateUserDto {
         /(?:(?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
         message: 'The password must have a Uppercase, lowercase letter and a number'
     })
-    user_password: string;
+    password: string;
 
     @IsString()
-    user_phone: string;
+    phone: string;
+
+    @IsOptional()
+    @IsEnum(['CLIENT', 'ADMIN'], { message: 'Role must be either CLIENT or ADMIN' })
+    role?: 'CLIENT' | 'ADMIN' = 'CLIENT';
 
     
 }

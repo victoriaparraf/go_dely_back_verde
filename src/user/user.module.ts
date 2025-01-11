@@ -12,6 +12,6 @@ import { User } from './infrastructure/typeorm/user-entity';
   imports: [TypeOrmModule.forFeature([User, Address]),CloudinaryModule],
   controllers: [UserController],
   providers: [UserService, UserRepository],
-  exports: [UserRepository, TypeOrmModule]
+  exports: [UserRepository, TypeOrmModule, UserService]
 })
 export class UserModule {}

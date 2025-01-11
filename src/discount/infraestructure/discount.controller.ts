@@ -5,7 +5,6 @@ import { CreateDiscountServiceEntryDto } from '../application/dto/entry/create-d
 import { CreateDiscountService } from '../application/commands/create-discount.service';
 import { CreateDiscountDto } from './dtos/create-discount.dto';
 
-
 @ApiTags('Discount')
 @Controller('discounts')
 export class DiscountController {

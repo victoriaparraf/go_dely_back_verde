@@ -12,11 +12,12 @@ import { ProductModule } from 'src/product/product.module';
 import { OrderProduct } from './infraestructure/typeorm/order-product';
 import { OrderCombo } from './infraestructure/typeorm/order-combo';
 import { ComboModule } from 'src/combo/combo.module';
+import { CreateOrderService } from './application/command/create-order-service';
 
 @Module({
   imports: [ TypeOrmModule.forFeature([OrderEntity, OrderProduct, OrderCombo]), PaymentMethodModule, UserModule, RabbitmqModule, MailModule, ProductModule, ComboModule ],
   controllers: [ OrderController ],
-  providers: [ OrderService, OrderRepository ],
+  providers: [ OrderService, CreateOrderService, OrderRepository ],
   exports: [ OrderRepository ]
 
 })

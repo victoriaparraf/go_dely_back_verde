@@ -12,6 +12,6 @@ export class GetUsersEmailsService {
 
     async getAllUserEmails(): Promise<string[]> {
         const users = await this.userRepository.find();
-        return users.map(user => user.user_email.getValue());
+        return users.map(user => user.user_email.toString());
     }
 }
