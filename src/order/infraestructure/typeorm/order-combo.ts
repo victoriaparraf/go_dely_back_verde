@@ -29,5 +29,5 @@ export class OrderCombo {
 
     @Column('decimal', { precision: 10, scale: 2 })
     total_price: number;
-    orderCombo: import("/Users/sofiaarasme/Desktop/GoDely/godely_back/go_dely_back_verde/src/order/domain/order-aggregate").Order;
+    
 }

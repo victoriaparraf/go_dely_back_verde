@@ -33,8 +33,8 @@ export class ProductController {
 
     const createProductServiceEntryDto = {
       ...createProductDto,
-      product_weight: Number(createProductDto.product_weight),
-      product_stock: createProductDto.product_stock ?? 0,
+      weight: Number(createProductDto.weight),
+      stock: createProductDto.stock ?? 0
     };
 
     const product = await this.createProductService.execute(createProductServiceEntryDto);
@@ -91,7 +91,7 @@ export class ProductController {
       ...updateProductDto,
       product_id,
       images: imageUrls.length ? imageUrls : undefined,
-      product_weight: updateProductDto.product_weight ? Number(updateProductDto.product_weight) : undefined,
+      product_weight: updateProductDto.weight ? Number(updateProductDto.weight) : undefined,
     };
 
     await this.updateProductService.execute(updateProductServiceEntryDto);

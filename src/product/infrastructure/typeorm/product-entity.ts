@@ -87,7 +87,7 @@ export class Product {
   images: Image[];
 
   @ManyToOne(() => CategoryEntity, (category) => category.products)
-  product_category: CategoryEntity;
+  categories: CategoryEntity[];
 
   @ManyToMany(() => Combo, combo => combo.products)
   combos: Combo[];
@@ -100,6 +100,6 @@ export class Product {
   discount?: Discount;
   
   @OneToMany(() => OrderProduct, orderProduct => orderProduct.product)
-  orders: OrderProduct[];
+  orders?: OrderProduct[];
 
 }
