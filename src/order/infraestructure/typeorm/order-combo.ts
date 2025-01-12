@@ -29,5 +29,8 @@ export class OrderCombo {
 
     @Column('decimal', { precision: 10, scale: 2 })
     total_price: number;
+<<<<<<< HEAD
     
+=======
+>>>>>>> eb6487b6eeb771d2a390cfc9a7bacaa531607f4a
 }

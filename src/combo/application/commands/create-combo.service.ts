@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Combo } from 'src/combo/infrastructure/typeorm/combo-entity';
 import { Product } from 'src/product/infrastructure/typeorm/product-entity';
-import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
 import { CreateComboServiceEntryDto } from '../dto/entry/create-combo-entry.dto';
 import { CreateComboServiceResponseDto } from '../dto/response/create-combo-response.dto';
 import { ComboRepository } from 'src/combo/infrastructure/repositories/combo-repository';
@@ -20,6 +19,7 @@ import { ComboWeight } from 'src/combo/domain/value-objects/combo-weight.vo';
 import { ComboMeasurement } from 'src/combo/domain/value-objects/combo-measurement.vo';
 import { ComboCaducityDate } from '../../domain/value-objects/combo-caducity-date.vo';
 import { ClientProxy } from '@nestjs/microservices';
+import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
 
 @Injectable()
 export class CreateComboService implements IApplicationService<CreateComboServiceEntryDto, CreateComboServiceResponseDto> {

@@ -1,5 +1,4 @@
 import { Injectable, NotFoundException, InternalServerErrorException, Inject } from '@nestjs/common';
-import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
 import { Product } from 'src/product/infrastructure/typeorm/product-entity';
 import { Image } from 'src/product/infrastructure/typeorm/image-entity';
 import { ClientProxy } from '@nestjs/microservices';
@@ -19,6 +18,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ProductMapper } from 'src/product/infrastructure/mappers/product-mapper';
 import { ProductRepository } from 'src/product/infrastructure/repositories/product-repositoy';
 import { SendNotificationService } from 'src/notification/application/services/send-notification.service';
+import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
 
 @Injectable()
 export class CreateProductService implements IApplicationService<CreateProductServiceEntryDto, CreateProductServiceResponseDto> {
@@ -34,8 +34,13 @@ export class CreateProductService implements IApplicationService<CreateProductSe
     try {
       const { categories, images, ...productDetails } = createProductDto;
 
+<<<<<<< HEAD
       const category = await this.categoryRepository.findOne({ where: { category_id: In(categories) } });
       if (!category) {
+=======
+      const categoryEntity = await this.categoryRepository.findOne({ where: { category_id: In(categories) } });
+      if (!categoryEntity) {
+>>>>>>> eb6487b6eeb771d2a390cfc9a7bacaa531607f4a
         throw new NotFoundException(`Category with ID ${categories} not found`);
       }
 
@@ -55,7 +60,11 @@ export class CreateProductService implements IApplicationService<CreateProductSe
       product.product_weight = productWeight;
       product.product_measurement = productMeasurement;
       product.product_stock = productStock;
+<<<<<<< HEAD
       product.categories = [category];
+=======
+      product.product_category = categoryEntity;
+>>>>>>> eb6487b6eeb771d2a390cfc9a7bacaa531607f4a
 
       const imageEntities = await Promise.all(
         images.map(async (imagePath) => {
@@ -76,7 +85,7 @@ export class CreateProductService implements IApplicationService<CreateProductSe
         payload: {
           productImages: product.images.map((image) => image.image_url),
           productName: product.product_name.getValue(),
-          productCategory: category.category_name,
+          productCategory: categoryEntity.category_name,
           productWeight: product.product_weight.getValue(),
           productMeasurement: product.product_measurement.getValue(),
           productDescription: product.product_description.getValue(),

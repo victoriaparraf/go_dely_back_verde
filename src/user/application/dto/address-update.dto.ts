@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString, MinLength } from "class-validator";
+import { IsBoolean, IsNumber, IsOptional, IsString, MinLength } from "class-validator";
 
 
 export class UpdateAddressDto {
@@ -20,4 +20,8 @@ export class UpdateAddressDto {
     @IsNumber()
     @IsOptional()
     longitude:number
+
+    @IsBoolean()
+    @IsOptional()
+    favorite: boolean;
 }

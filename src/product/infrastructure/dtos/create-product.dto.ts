@@ -34,7 +34,10 @@ export class CreateProductDto {
     images: string[];
 
     @IsArray()
+<<<<<<< HEAD
     @IsString({ each: true })
+=======
+>>>>>>> eb6487b6eeb771d2a390cfc9a7bacaa531607f4a
     categories: string[];
 
 }

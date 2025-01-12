@@ -72,6 +72,7 @@ export class UserService {
         address.name = addAddressDto.name;
         address.latitude = addAddressDto.latitude;
         address.longitude = addAddressDto.longitude;
+        address.favorite = addAddressDto.favorite;
         address.user = user;
       
 
