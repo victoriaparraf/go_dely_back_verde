@@ -4,36 +4,36 @@ export class CreateProductDto {
 
     @IsString()
     @MinLength(1)
-    product_name: string;
+    name: string;
 
     @IsString()
-    product_description: string;
+    description: string;
 
     @IsNumber()
     @IsPositive()
-    product_price: number;
+    price: number;
 
     @IsString()
     @Length(3, 3)
-    product_currency: string;
+    currency: string;
 
     @IsString()
-    product_weight: string;
+    weight: string;
 
     @IsString()
     @Length(2, 2)
-    product_measurement: string;
+    measurement: string;
 
     @IsInt()
     @IsOptional()
     @IsPositive()
-    product_stock?: number;
+    stock?: number;
 
     @IsString({ each:true })
     @IsArray()
     images: string[];
 
-    @IsUUID()
-    product_category: string;
+    @IsArray()
+    categories: string[];
 
 }

@@ -33,20 +33,20 @@ export class ProductService {
 
   async create(createProductDto: CreateProductDto, imageUrls: string[]) {
     try {
-      const { product_category, images, ...productDetails } = createProductDto;
+      const { categories: categoryId, images, ...productDetails } = createProductDto;
 
-      const category = await this.categoryRepository.findOne({ where: { category_id: product_category as any } });
+      const category = await this.categoryRepository.findOne({ where: { category_id: categoryId as any } });
       if (!category) {
-        throw new NotFoundException(`Category with ID ${product_category} not found`);
+        throw new NotFoundException(`Category with ID ${categoryId} not found`);
       }
 
-      const productName = new ProductName(productDetails.product_name);
-      const productDescription = new ProductDescription(productDetails.product_description);
-      const productPrice = new ProductPrice(productDetails.product_price);
-      const productCurrency = new ProductCurrency(productDetails.product_currency);
-      const productWeight = new ProductWeight(productDetails.product_weight);
-      const productMeasurement = new ProductMeasurement(productDetails.product_measurement);
-      const productStock = new ProductStock(productDetails.product_stock);
+      const productName = new ProductName(productDetails.name);
+      const productDescription = new ProductDescription(productDetails.description);
+      const productPrice = new ProductPrice(productDetails.price);
+      const productCurrency = new ProductCurrency(productDetails.currency);
+      const productWeight = new ProductWeight(productDetails.weight);
+      const productMeasurement = new ProductMeasurement(productDetails.measurement);
+      const productStock = new ProductStock(productDetails.stock);
 
       const imageEntities = await Promise.all(
         images.map(async (imagePath) => {
@@ -73,11 +73,11 @@ export class ProductService {
 
       this.client.send('product_notification', {
         productImages: createProductDto.images,
-        productName: createProductDto.product_name,
+        productName: createProductDto.name,
         productCategory: category.category_name,
-        productWeight: createProductDto.product_weight,
-        productMeasurement: createProductDto.product_measurement,
-        productDescription: createProductDto.product_description,
+        productWeight: createProductDto.weight,
+        productMeasurement: createProductDto.measurement,
+        productDescription: createProductDto.description,
         message: 'Check out our new products and their offers!',
       }).subscribe();
 

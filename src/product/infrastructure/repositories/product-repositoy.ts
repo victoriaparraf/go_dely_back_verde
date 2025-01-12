@@ -22,7 +22,7 @@ export class ProductRepository implements IProductRepository {
 
   async createProduct(product: Product) {
     const productEntity = this.productRepository.create(product);
-    productEntity.images = product.images; // Asegúrate de asignar las imágenes aquí
+    productEntity.images = product.images;
     return productEntity;
   }
 

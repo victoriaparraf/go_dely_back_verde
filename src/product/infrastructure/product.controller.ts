@@ -13,6 +13,7 @@ import { CreateProductDto } from './dtos/create-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
 import { DeleteProductService } from '../application/command/delete-product-service';
 import { GetProductsCombosSummaryService } from '../application/query/get-products-combos-service';
+import { CreateProductServiceEntryDto } from '../application/dto/entry/create-product-entry.dto';
 
 @ApiTags('Product')
 @Controller('products')
@@ -31,10 +32,16 @@ export class ProductController {
   @Post('create')
   async create(@Body() createProductDto: CreateProductDto) {
 
-    const createProductServiceEntryDto = {
-      ...createProductDto,
-      product_weight: Number(createProductDto.product_weight),
-      product_stock: createProductDto.product_stock ?? 0,
+    const createProductServiceEntryDto: CreateProductServiceEntryDto = {
+      name: createProductDto.name,
+      description: createProductDto.description,
+      price: createProductDto.price,
+      currency: createProductDto.currency,
+      weight: Number(createProductDto.weight),
+      measurement: createProductDto.measurement,
+      stock: createProductDto.stock,
+      images: createProductDto.images,
+      categories: createProductDto.categories,
     };
 
     const product = await this.createProductService.execute(createProductServiceEntryDto);
@@ -91,7 +98,7 @@ export class ProductController {
       ...updateProductDto,
       product_id,
       images: imageUrls.length ? imageUrls : undefined,
-      product_weight: updateProductDto.product_weight ? Number(updateProductDto.product_weight) : undefined,
+      product_weight: updateProductDto.weight ? Number(updateProductDto.weight) : undefined,
     };
 
     await this.updateProductService.execute(updateProductServiceEntryDto);
