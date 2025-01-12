@@ -7,5 +7,5 @@ export class UpdateCategoryDto {
 
   @IsString()
   @IsNotEmpty()
-  description: string;
+  image: string;
 }

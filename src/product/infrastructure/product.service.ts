@@ -13,11 +13,11 @@ import { ProductPrice } from '../domain/value-objects/product-price.vo';
 import { ProductWeight } from '../domain/value-objects/product-weight.vo';
 import { ProductStock } from '../domain/value-objects/product-stock.vo';
 import { ProductCurrency } from '../domain/value-objects/poduct-currency.vo';
-import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdateProductDto } from './dtos/update-product.dto';
 import { ProductRepository } from './repositories/product-repositoy';
+import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
 
 @Injectable()
 export class ProductService {
