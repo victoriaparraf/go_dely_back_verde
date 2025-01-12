@@ -12,6 +12,7 @@ import { CategoryModule } from './category/category.module';
 import { PaymentMethodModule } from './payment-method/payment-method.module';
 import { UserModule } from './user/user.module';
 import { CouponModule } from './coupon/coupon.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -68,6 +69,7 @@ import { CouponModule } from './coupon/coupon.module';
     ]),
     
     
+    NotificationModule,
 
   ],
 })

@@ -1,15 +1,17 @@
-export class DiscountEndDate {
-    protected readonly value: Date;
+import { ValueObject } from 'src/common/domain/value.object';
+import { unvalidEndDateDiscountException } from "../exceptions/unvalid-end-date-discount";
 
-    constructor(value: Date | string) {        
-        if(value){
-            const dateValue = new Date(value);
-            if (!this.isValidDate(dateValue)) {
-                throw new Error('Invalid discount start date.');
-            }
-            this.value = dateValue;
+export class DiscountEndDate extends ValueObject<Date> {
+    constructor(value: Date | string) {
+        const dateValue = new Date(value);
+        super(dateValue);
+        this.validate(dateValue);
+    }
+
+    protected validate(value: Date): void {
+        if (!this.isValidDate(value)) {
+            throw new unvalidEndDateDiscountException('Invalid discount end date.');
         }
-        return null;
     }
 
     private isValidDate(value: Date): boolean {

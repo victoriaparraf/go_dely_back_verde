@@ -8,6 +8,11 @@ import { ComboStock } from "src/combo/domain/value-objects/combo-stock.vo";
 import { Discount } from "src/discount/infraestructure/typeorm/discount.entity";
 import { CategoryEntity } from "src/category/infrastructure/typeorm/category-entity";
 import { OrderCombo } from "src/order/infraestructure/typeorm/order-combo";
+import { Currency } from "src/common/domain/enums/currency.enum";
+import { ComboWeight } from "src/combo/domain/value-objects/combo-weight.vo";
+import { ComboMeasurement } from "src/combo/domain/value-objects/combo-measurement.vo";
+import { ComboCaducityDate } from "src/combo/domain/value-objects/combo-caducity-date.vo";
+import { ComboImage } from "src/combo/domain/value-objects/combo-image.vo";
 
 @Entity()
 export class Combo {
@@ -43,16 +48,39 @@ export class Combo {
     combo_price: ComboPrice;
 
     @Column({
+        type: 'decimal',
+        transformer: {
+            to: (value: ComboWeight) => value.getValue(),
+            from: (value: number) => value ? new ComboWeight(value) : new ComboWeight(0),
+        },
+    })
+    combo_weight: ComboWeight;
+
+    @Column({
+        type: 'varchar',
+        transformer: {
+            to: (value: ComboMeasurement) => value.getValue(),
+            from: (value: string) => value ? new ComboMeasurement(value): new ComboMeasurement('ml'),
+        },
+    })
+    combo_measurement: ComboMeasurement;
+
+    @Column({
         type: 'varchar',
         transformer: {
         to: (value: ComboCurrency) => value.getValue(),
-        from: (value: string) => value ? new ComboCurrency(value) : new ComboCurrency('USD'),
+        from: (value: string) => value ? new ComboCurrency(value as Currency) : new ComboCurrency('USD' as Currency),
         },
     })
     combo_currency: ComboCurrency;
 
-    @ManyToOne(() => CategoryEntity, (category) => category.products)
-    combo_category: CategoryEntity;
+    @ManyToMany(() => CategoryEntity, (category) => category.combos, { cascade: true })
+    @JoinTable({
+        name: 'combo_categories',
+        joinColumn: { name: 'combo_id', referencedColumnName: 'combo_id' },
+        inverseJoinColumn: { name: 'category_id', referencedColumnName: 'category_id' },
+    })
+    combo_categories: CategoryEntity[];
 
     @Column({
         type: 'int',
@@ -64,8 +92,18 @@ export class Combo {
     })
     combo_stock: ComboStock;
 
-    @Column()
-    combo_image: string;
+    @Column('text' , { array: true })
+    combo_images: string[];
+
+    @Column({
+        type: 'date',
+        nullable: true,
+        transformer: {
+            to: (value: ComboCaducityDate | null) => value.getValue().toISOString().split('T')[0],
+            from: (value: Date | null) => value ? new ComboCaducityDate(value) : null,
+        },
+    })
+    combo_caducity_date: ComboCaducityDate;
 
     @ManyToMany(() => Product, product => product.combos)
     @JoinTable({

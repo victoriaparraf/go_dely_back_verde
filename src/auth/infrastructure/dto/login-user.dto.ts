@@ -4,7 +4,7 @@ export class LoginUserDto {
 
     @IsString()
     @IsEmail()
-    user_email: string;
+    email: string;
 
     @IsString()
     @MinLength(5)
@@ -13,6 +13,6 @@ export class LoginUserDto {
         /(?:(?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
         message: 'The password must have a Uppercase, lowercase letter and a number'
     })
-    user_password: string;
+    password: string;
 
 }

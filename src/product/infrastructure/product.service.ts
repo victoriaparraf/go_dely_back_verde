@@ -1,9 +1,8 @@
 import { BadRequestException, Inject, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
-import { CreateProductDto } from '../application/dto/create-product.dto';
-import { UpdateProductDto } from '../application/dto/update-product.dto';
+import { CreateProductDto } from './dtos/create-product.dto';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { validate as isUUID } from 'uuid';
-import { CloudinaryService } from './cloudinary/cloudinary.service';
+import { CloudinaryService } from '../../common/infraestructure/cloudinary/cloudinary.service';
 import { ClientProxy } from '@nestjs/microservices';
 import { Product } from './typeorm/product-entity';
 import { Image } from './typeorm/image-entity';
@@ -13,11 +12,12 @@ import { ProductName } from '../domain/value-objects/product-name.vo';
 import { ProductPrice } from '../domain/value-objects/product-price.vo';
 import { ProductWeight } from '../domain/value-objects/product-weight.vo';
 import { ProductStock } from '../domain/value-objects/product-stock.vo';
-import { ProductRepository } from './typeorm/product-repositoy';
 import { ProductCurrency } from '../domain/value-objects/poduct-currency.vo';
-import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { UpdateProductDto } from './dtos/update-product.dto';
+import { ProductRepository } from './repositories/product-repositoy';
+import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
 
 @Injectable()
 export class ProductService {
@@ -33,20 +33,20 @@ export class ProductService {
 
   async create(createProductDto: CreateProductDto, imageUrls: string[]) {
     try {
-      const { product_category, images, ...productDetails } = createProductDto;
+      const { categories: categoryId, images, ...productDetails } = createProductDto;
 
-      const category = await this.categoryRepository.findOne({ where: { category_id: product_category as any } });
+      const category = await this.categoryRepository.findOne({ where: { category_id: categoryId as any } });
       if (!category) {
-        throw new NotFoundException(`Category with ID ${product_category} not found`);
+        throw new NotFoundException(`Category with ID ${categoryId} not found`);
       }
 
-      const productName = new ProductName(productDetails.product_name);
-      const productDescription = new ProductDescription(productDetails.product_description);
-      const productPrice = new ProductPrice(productDetails.product_price);
-      const productCurrency = new ProductCurrency(productDetails.product_currency);
-      const productWeight = new ProductWeight(productDetails.product_weight);
-      const productMeasurement = new ProductMeasurement(productDetails.product_measurement);
-      const productStock = new ProductStock(productDetails.product_stock);
+      const productName = new ProductName(productDetails.name);
+      const productDescription = new ProductDescription(productDetails.description);
+      const productPrice = new ProductPrice(productDetails.price);
+      const productCurrency = new ProductCurrency(productDetails.currency);
+      const productWeight = new ProductWeight(productDetails.weight);
+      const productMeasurement = new ProductMeasurement(productDetails.measurement);
+      const productStock = new ProductStock(productDetails.stock);
 
       const imageEntities = await Promise.all(
         images.map(async (imagePath) => {
@@ -73,11 +73,11 @@ export class ProductService {
 
       this.client.send('product_notification', {
         productImages: createProductDto.images,
-        productName: createProductDto.product_name,
+        productName: createProductDto.name,
         productCategory: category.category_name,
-        productWeight: createProductDto.product_weight,
-        productMeasurement: createProductDto.product_measurement,
-        productDescription: createProductDto.product_description,
+        productWeight: createProductDto.weight,
+        productMeasurement: createProductDto.measurement,
+        productDescription: createProductDto.description,
         message: 'Check out our new products and their offers!',
       }).subscribe();
 

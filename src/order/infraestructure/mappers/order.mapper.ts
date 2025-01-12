@@ -1,7 +1,7 @@
 import { Order } from "src/order/domain/order-aggregate";
 import { OrderEntity } from "../typeorm/order-entity";
 import { DeepPartial } from "typeorm";
-import { ResponseOrderDTO } from "src/order/application/dto/response-order.dto";
+import { ResponseOrderDTO } from "src/order/infraestructure/dtos/response-order.dto";
 import { AddressMapper } from '../../../user/infrastructure/mappers/address.mapper';
 <<<<<<< HEAD
 =======

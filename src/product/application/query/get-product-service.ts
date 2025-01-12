@@ -1,10 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { IApplicationService } from 'src/common/application/application-service.interface';
-import { ProductRepository } from 'src/product/infrastructure/typeorm/product-repositoy';
-import { Product } from 'src/product/infrastructure/typeorm/product-entity';
-import { GetProductServiceEntryDto, GetProductServicePaginationDto } from '../dto/get-product-entry.dto';
-import { GetProductServiceResponseDto } from '../dto/get-product-response.dto';
+import { GetProductServiceEntryDto, GetProductServicePaginationDto } from '../dto/entry/get-product-entry.dto';
+import { GetProductServiceResponseDto } from '../dto/response/get-product-response.dto';
 import { ProductMapper } from 'src/product/infrastructure/mappers/product-mapper';
+import { ProductRepository } from 'src/product/infrastructure/repositories/product-repositoy';
 
 @Injectable()
 export class GetProductService implements IApplicationService<GetProductServiceEntryDto, GetProductServiceResponseDto> {

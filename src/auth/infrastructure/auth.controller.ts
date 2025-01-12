@@ -3,9 +3,9 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from '../infrastructure/dto/create-user.dto';
 import { LoginUserDto } from '../infrastructure/dto/login-user.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUser } from './get-user.decorator';
 import { User } from 'src/user/infrastructure/typeorm/user-entity';
 import { UserMapper } from 'src/user/infrastructure/mappers/user.mapper';
+import { GetUser } from './jwt/strategies/get-user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -21,16 +21,15 @@ export class AuthController {
     return this.authService.login(loginUserDto);
   }
 
-  @Get('private')
-  @UseGuards( AuthGuard('jwt') )
-  testingPrivateRoute(
-    @GetUser() user: User
-  ){
-    return {
-      ok: true,
-      message: 'Authorized',
-      user: UserMapper.toDTO(user)
+  @Get('current')
+  @UseGuards(AuthGuard('jwt'))
+  getCurrentUser(@GetUser() user: User) {
+    console.log('Current user:', user);
+    if (!user) {
+      throw new UnauthorizedException('User not found');
     }
+    const userDto = UserMapper.toDTO(user);
+    return userDto;
   }
 
   @Post('logout')

@@ -9,7 +9,7 @@ export class UserEmail {
       this.value = value.toLowerCase(); // Asegura que el correo esté en minúsculas
     }
   
-    public getValue(): string {
+    getValue(): string {
       return this.value;
     }
   

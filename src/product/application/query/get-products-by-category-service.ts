@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ProductMapper } from 'src/product/infrastructure/mappers/product-mapper';
-import { ProductRepository } from 'src/product/infrastructure/typeorm/product-repositoy';
-import { GetProductServiceResponseDto } from '../dto/get-product-response.dto';
+import { GetProductServiceResponseDto } from '../dto/response/get-product-response.dto';
+import { ProductRepository } from 'src/product/infrastructure/repositories/product-repositoy';
 
 @Injectable()
 export class GetProductsByCategoryService {
