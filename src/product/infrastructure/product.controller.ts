@@ -13,6 +13,7 @@ import { CreateProductDto } from './dtos/create-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
 import { DeleteProductService } from '../application/command/delete-product-service';
 import { GetProductsCombosSummaryService } from '../application/query/get-products-combos-service';
+import { CreateProductServiceEntryDto } from '../application/dto/entry/create-product-entry.dto';
 
 @ApiTags('Product')
 @Controller('products')
@@ -31,10 +32,16 @@ export class ProductController {
   @Post('create')
   async create(@Body() createProductDto: CreateProductDto) {
 
-    const createProductServiceEntryDto = {
-      ...createProductDto,
+    const createProductServiceEntryDto: CreateProductServiceEntryDto = {
+      name: createProductDto.name,
+      description: createProductDto.description,
+      price: createProductDto.price,
+      currency: createProductDto.currency,
       weight: Number(createProductDto.weight),
-      stock: createProductDto.stock ?? 0
+      measurement: createProductDto.measurement,
+      stock: createProductDto.stock,
+      images: createProductDto.images,
+      categories: createProductDto.categories,
     };
 
     const product = await this.createProductService.execute(createProductServiceEntryDto);
@@ -51,7 +58,7 @@ export class ProductController {
     return this.getProductsCombosSummaryService.execute();
   }
 
-  @Get()
+  @Get('many')
   async findAll(@Query() paginationDto: PaginationDto) {
     const getProductServicePaginationDto: GetProductServicePaginationDto = {
       page: paginationDto.page,
@@ -60,7 +67,7 @@ export class ProductController {
     return this.getProductService.findAll(getProductServicePaginationDto);
   }
 
-  @Get(':term')
+  @Get('one/:term')
   async findOne(@Param('term') term: string) {
     const getProductServiceEntryDto: GetProductServiceEntryDto = { term };
     return this.getProductService.execute(getProductServiceEntryDto);
@@ -71,7 +78,7 @@ export class ProductController {
     return this.getProductsByCategoryService.execute(categoryId);
   }
 
-  @Patch(':product_id')
+  @Patch('update/:product_id')
   @UseInterceptors(FilesInterceptor('files'))
   async update(
     @Param('product_id', ParseUUIDPipe) product_id: string,
@@ -99,7 +106,7 @@ export class ProductController {
   }
 
 
-  @Delete(':product_id')
+  @Delete('delete/:product_id')
   async remove(@Param('product_id', ParseUUIDPipe) product_id: string) {
     await this.deleteProductService.execute(product_id);
     return { message: 'Product deleted successfully' };

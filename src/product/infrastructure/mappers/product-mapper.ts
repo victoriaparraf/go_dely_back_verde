@@ -12,7 +12,7 @@ export class ProductMapper {
       weight: parseFloat(product.product_weight.getValue()),
       measurement: product.product_measurement.getValue(),
       stock: product.product_stock.getValue(),
-      categories: product.categories.map(category => category.category_id),
+      categories: product.product_category ? [product.product_category.category_name] : [],
       images: product.images.map((img) => img.image_url),
       discount: product.discount ? Number(product.discount.discount_percentage) : null,
     };

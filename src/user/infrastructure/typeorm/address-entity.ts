@@ -17,6 +17,9 @@ export class Address {
   @Column()
   name: string;
 
+  @Column()
+  favorite: boolean;
+
   @ManyToOne(() => User, user => user.addresses)
   user: User;
 

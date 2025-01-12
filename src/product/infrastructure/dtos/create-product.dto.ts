@@ -34,7 +34,6 @@ export class CreateProductDto {
     images: string[];
 
     @IsArray()
-    @IsString({ each: true })
     categories: string[];
 
 }

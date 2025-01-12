@@ -1,31 +1,31 @@
 import { AggregateRoot } from 'src/common/domain/aggregate.root';
 import { CategoryID } from './value-objects/category-id.vo';
 import { CategoryName } from './value-objects/category-name.vo';
-import { CategoryDescription } from './value-objects/category-description.vo';
+import { CategoryImage } from './value-objects/category-image.vo';
 
 export class Category extends AggregateRoot<CategoryID> {
     private name: CategoryName;
-    private description: CategoryDescription;
+    private image: CategoryImage;
 
-    constructor (id: CategoryID, name: CategoryName, description: CategoryDescription) {
+    constructor (id: CategoryID, name: CategoryName, image: CategoryImage) {
         super(id);
         this.name = name;
-        this.description = description;
+        this.image = image;
     }
 
-    static create(name: string, description: string): Category {
+    static create(name: string, image: string): Category {
         return new Category(
             new CategoryID(),
             new CategoryName(name),
-            new CategoryDescription(description)
+            new CategoryImage(image)
         );
     }
 
-    static reconstitute(id: CategoryID, name: string, description: string): Category {
+    static reconstitute(id: CategoryID, name: string, image: string): Category {
         return new Category(
             id,
             new CategoryName(name),
-            new CategoryDescription(description)
+            new CategoryImage(image)
         );
     }
 
@@ -37,15 +37,15 @@ export class Category extends AggregateRoot<CategoryID> {
         return this.name;
     }
 
-    public getDescription(): CategoryDescription {
-        return this.description;
+    public getImage(): CategoryImage {
+        return this.image;
     }
 
     updateName(newName: CategoryName): void {
         this.name = newName;
     }
 
-    updateDescription(newDescription: CategoryDescription): void {
-        this.description = newDescription;
+    updateImage(newImage: CategoryImage): void {
+        this.image = newImage;
     }
 }

@@ -1,17 +1,18 @@
-import {IsNumber, IsString, MinLength } from "class-validator"
+import {IsBoolean, IsNumber, IsString, MinLength } from "class-validator"
 
 
-export class AddAddressDto{
+export class AddAddressDto {
 
     @IsString()
     @MinLength(4)
-    name:string
+    name: string;
 
-    
     @IsNumber()
-    latitude:number
+    latitude: number;
 
-    
     @IsNumber()
-    longitude:number
+    longitude: number;
+
+    @IsBoolean()
+    favorite: boolean = true;
 }

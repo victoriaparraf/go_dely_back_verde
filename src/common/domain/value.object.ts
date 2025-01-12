@@ -2,8 +2,8 @@ export abstract class ValueObject<T> {
     readonly value: T;
 
     constructor(value: T) {
-        this.value = value;
         this.validate(value);
+        this.value = value;
     }
 
     protected abstract validate(value: T): void;
