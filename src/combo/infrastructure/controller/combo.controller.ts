@@ -12,7 +12,7 @@ import { UpdateComboServiceEntryDto } from '../../application/dto/entry/update-c
 import { CreateComboServiceEntryDto } from 'src/combo/application/dto/entry/create-combo-entry.dto';
 
 @ApiTags('Combo')
-@Controller('combos')
+@Controller('bundle')
 export class ComboController {
   constructor(
     private readonly createComboService: CreateComboService,
@@ -49,7 +49,7 @@ export class ComboController {
 
   }
 
-  @Get(':term')
+  @Get('one/:term')
   async findOne(@Param('term') term: string) {
 
     const getComboServiceEntryDto: GetComboServiceEntryDto = { term }
@@ -66,7 +66,7 @@ export class ComboController {
     return { message: 'Combo updated successfully' };
   }
 
-  @Delete(':id')
+  @Delete('delete/:id')
   async remove(@Param('id', ParseUUIDPipe) id: string) {
 
     await this.deleteComboService.execute(id);

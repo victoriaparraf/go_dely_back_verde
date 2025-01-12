@@ -5,7 +5,7 @@ import { CategoryService } from './category.service';
 import { CategoryMapper } from './mappers/category.mapper';
 import { CategoryResponseDto } from '../application/dto/response-category.dto';
 
-@Controller('categories')
+@Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
@@ -18,7 +18,7 @@ export class CategoryController {
     };
   }
 
-  @Get(':id')
+  @Get('one/:id')
   async getCategoryById(@Param('id') id: string) {
     const category = await this.categoryService.getCategoryById(id);
     if (!category) {
@@ -27,12 +27,12 @@ export class CategoryController {
     return CategoryMapper.toResponse(category);
   }
 
-  @Get()
+  @Get('many')
   async getAllCategories() {
     return await this.categoryService.getAllCategories();
   }
 
-  @Patch(':id')
+  @Patch('update/:id')
   async updateCategory(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
@@ -44,7 +44,7 @@ export class CategoryController {
     };
   }
 
-  @Delete(':id')
+  @Delete('delete/:id')
   async deleteCategory(@Param('id') id: string) {
     await this.categoryService.deleteCategory(id);
     return { message: 'Category deleted successfully' };
