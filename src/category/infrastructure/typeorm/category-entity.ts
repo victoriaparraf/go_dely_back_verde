@@ -11,9 +11,12 @@ export class CategoryEntity {
   category_name: string;
 
   @Column({ type: 'text', nullable: true })
-  category_description: string;
+  category_description?: string;
 
-  @OneToMany(() => Product, (product) => product.product_category)
+  @Column({ type: 'text', nullable: true })
+  image?: string;
+
+  @OneToMany(() => Product, (product) => product.categories)
   products: Product[];
 
   @ManyToMany(() => Combo, combo => combo.combo_categories)

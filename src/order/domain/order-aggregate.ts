@@ -1,6 +1,5 @@
 import { AggregateRoot } from 'src/common/domain/aggregate.root';
 import { OrderID } from './value-objects/order-id.vo';
-
 import { OrderCurrency } from './value-objects/order-currency.vo';
 import { OrderTotal } from './value-objects/order-total.vo';
 import { PaymentMethodId } from 'src/payment-method/domain/value-objects/payment-method-id.vo';

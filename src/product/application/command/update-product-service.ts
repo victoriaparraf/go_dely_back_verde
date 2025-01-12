@@ -35,7 +35,7 @@ export class UpdateProductService {
       if (!category) {
         throw new NotFoundException(`Category with ID ${product_category} not found`);
       }
-      product.product_category = category;
+      product.categories = [category];
     }
 
     if (images && images.length) {

@@ -22,7 +22,7 @@ export class ProductRepository implements IProductRepository {
 
   async createProduct(product: Product) {
     const productEntity = this.productRepository.create(product);
-    productEntity.images = product.images; // Asegúrate de asignar las imágenes aquí
+    productEntity.images = product.images;
     return productEntity;
   }
 
@@ -59,7 +59,7 @@ export class ProductRepository implements IProductRepository {
 
   async findByCategory(categoryId: string): Promise<Product[]> {
     return this.productRepository.find({
-      where: { product_category: { category_id: categoryId } },
+      where: { categories: { category_id: categoryId } },
       relations: ['product_category', 'images', 'discount'],
     });
   }

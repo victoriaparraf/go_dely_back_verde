@@ -5,9 +5,9 @@ import { Combo } from "src/combo/domain/entities/combo.entity";
 
 export class Category {
 
-    category_id: string;
-    category_name: CategoryName;
-    category_description: CategoryDescription;
+    id: string;
+    name: CategoryName;
+    description: CategoryDescription;
     products: Product[];
     combos: Combo[];
 
@@ -19,9 +19,9 @@ export class Category {
         products: Product[] = [],
         combos: Combo[] = []
     ) {
-        this.category_id = id;
-        this.category_name = new CategoryName(name);
-        this.category_description = new CategoryDescription(description);
+        this.id = id;
+        this.name = new CategoryName(name);
+        this.description = new CategoryDescription(description);
         this.products = products;
         this.combos = combos;
     }
