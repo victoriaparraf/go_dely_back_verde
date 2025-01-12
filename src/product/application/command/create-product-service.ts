@@ -1,5 +1,4 @@
 import { Injectable, NotFoundException, InternalServerErrorException, Inject } from '@nestjs/common';
-import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
 import { Product } from 'src/product/infrastructure/typeorm/product-entity';
 import { Image } from 'src/product/infrastructure/typeorm/image-entity';
 import { ClientProxy } from '@nestjs/microservices';
@@ -19,6 +18,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ProductMapper } from 'src/product/infrastructure/mappers/product-mapper';
 import { ProductRepository } from 'src/product/infrastructure/repositories/product-repositoy';
 import { SendNotificationService } from 'src/notification/application/services/send-notification.service';
+import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
 
 @Injectable()
 export class CreateProductService implements IApplicationService<CreateProductServiceEntryDto, CreateProductServiceResponseDto> {

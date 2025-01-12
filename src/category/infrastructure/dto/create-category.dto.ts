@@ -7,5 +7,5 @@ export class CreateCategoryDto {
 
   @IsString()
   @IsNotEmpty()
-  description: string;
+  image: string;
 }
