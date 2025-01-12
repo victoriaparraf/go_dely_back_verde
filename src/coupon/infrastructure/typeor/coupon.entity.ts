@@ -30,21 +30,9 @@ export class Coupon {
     })
     coupon_amount: CouponAmount;
 
-    @Column({
-        type: 'date',
-        transformer: {
-            to: (value: CouponCreationDate) => value instanceof CouponCreationDate ? value.getValue() : value,
-            from: (value: Date) => new CouponCreationDate(value),
-        },
-    })
-    coupon_creation_date: CouponCreationDate;
-    
-    @Column({
-        type: 'date',
-        transformer: {
-            to: (value: CouponExpirationDate) => value instanceof CouponExpirationDate ? value.getValue() : value,
-            from: (value: Date) => new CouponExpirationDate(value),
-        },
-    })
-    coupon_expiration_date: CouponExpirationDate;
+    @Column({ type: 'date' })
+    coupon_expiration_date: Date;
+
+    @Column({ type: 'date' })
+    coupon_creation_date: Date;
 }

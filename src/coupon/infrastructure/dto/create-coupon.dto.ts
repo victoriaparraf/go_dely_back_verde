@@ -1,19 +1,19 @@
 import { IsDate, IsNotEmpty, IsNumber, IsPositive, IsString, Min, MinLength } from "class-validator";
-
+import { Transform } from 'class-transformer';
 
 export class CreateCouponDto {
 
     @IsString()
     @MinLength(1)
-    coupon_code: string;
+    code: string;
+
+    @Transform(({ value }) => new Date(value))
+    @IsDate()
+    @IsNotEmpty()
+    expiration_date: Date;
 
     @IsNumber()
     @IsPositive()
-    coupon_amount: number;
-
-    @IsDate()
-    @IsNotEmpty()
-    coupon_expiration_date: Date;
-
-
+    amount: number;
+    
 }

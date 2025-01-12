@@ -7,7 +7,7 @@ import { CouponCode } from "src/coupon/domain/value-objects/coupon-code.vo";
 import { CouponAmount } from '../../domain/value-objects/coupon-amount.vo';
 import { CouponCreationDate } from '../../domain/value-objects/coupon-creation-date.vo';
 import { CouponExpirationDate } from '../../domain/value-objects/coupon-expiration-date.vo';
-import { Coupon } from "src/coupon/infrastructure/Typeorm/coupon.entity";
+import { Coupon } from "src/coupon/infrastructure/typeor/coupon.entity";
 
 
 
@@ -19,16 +19,16 @@ export class CreateCouponService implements IApplicationService<CreateCouponServ
   async execute(createCouponEntryDto: CreateCouponServiceEntryDto): Promise<CreateCouponServiceResponseDto> {
 
     try {
-        const couponCode = new CouponCode(createCouponEntryDto.coupon_code);
-        const couponAmount = new CouponAmount(createCouponEntryDto.coupon_amount);
+        const couponCode = new CouponCode(createCouponEntryDto.code);
+        const couponAmount = new CouponAmount(createCouponEntryDto.amount);
         const couponCreationDate = new CouponCreationDate(new Date());
-        const couponExpirationDate = new CouponExpirationDate(createCouponEntryDto.coupon_expiration_date);
+        const couponExpirationDate = new CouponExpirationDate(createCouponEntryDto.expiration_date);
 
         const coupon = new Coupon();
         coupon.coupon_code = couponCode;
         coupon.coupon_amount = couponAmount;    
-        coupon.coupon_creation_date = couponCreationDate;   
-        coupon.coupon_expiration_date = couponExpirationDate;
+        coupon.coupon_creation_date = couponCreationDate.getValue();   
+        coupon.coupon_expiration_date = couponExpirationDate.getValue();
 
         await this.couponRepository.saveCoupon(coupon);
 

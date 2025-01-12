@@ -1,4 +1,4 @@
-import { Coupon } from "src/coupon/infrastructure/Typeorm/coupon.entity";
+import { Coupon } from "src/coupon/infrastructure/typeor/coupon.entity";
 
 
 

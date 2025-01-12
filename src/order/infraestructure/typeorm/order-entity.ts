@@ -3,13 +3,8 @@ import { OrderStatus } from 'src/order/domain/enums/order-status.enum';
 import { User } from 'src/user/infrastructure/typeorm/user-entity';
 import { OrderProduct } from './order-product';
 import { OrderCombo } from './order-combo';
-<<<<<<< HEAD
 import { Exclude } from 'class-transformer';
 import { Address } from 'src/user/infrastructure/typeorm/address-entity';
-=======
-import { Address } from 'src/user/infrastructure/typeorm/address-entity';
-import { Exclude } from 'class-transformer';
->>>>>>> origin/Nicola-branch
 
 @Entity('orders')
 export class OrderEntity {
