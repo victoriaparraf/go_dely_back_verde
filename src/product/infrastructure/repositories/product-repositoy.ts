@@ -1,11 +1,11 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
-import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
 import { Image } from '../typeorm/image-entity';
 import { isUUID } from 'class-validator';
 import { IProductRepository } from 'src/product/domain/repositories/product-repository-interface';
 import { Product } from '../typeorm/product-entity';
+import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
 
 @Injectable()
 export class ProductRepository implements IProductRepository {

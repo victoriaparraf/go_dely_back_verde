@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserEmail } from 'src/user/domain/value-object/user-email';
 import { UserName } from 'src/user/domain/value-object/user-name';
 import { UserPhone } from 'src/user/domain/value-object/user-phone';
+import { CreateUserResponseDto } from 'src/user/application/dto/create-user-response.dto';
 
 
 @Injectable()
@@ -23,23 +24,28 @@ export class AuthService {
 
   private mapUserLoginToResponse(user:User):any{
     return{
-      user_id: user.user_id,
-      user_email: user.user_email,
+      user: {
+        id: user.user_id,
+        email: user.user_email,
+        name: user.user_name,
+        phone: user.user_phone,
+        type: user.user_role
+      },
       token: this.getJwtToken({ user_id: user.user_id })
-    }
+    };
   }
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<CreateUserResponseDto> {
     try {
       const { email, name, password, phone, role } = createUserDto;
       console.log('Creating user with:', { email, name, password, phone, role });
 
       const user = this.userRepository.create({
-        user_email: new UserEmail(email),
-        user_name: new UserName(name),
-        user_phone: new UserPhone(phone),
-        user_password: bcrypt.hashSync(password, 10),
-        user_type: role || 'CLIENT',
+        user_email: new UserEmail(createUserDto.email).getValue(),
+        user_name: new UserName(createUserDto.name).getValue(),
+        user_password: await bcrypt.hash(createUserDto.password, 10),
+        user_phone: new UserPhone(createUserDto.phone).getValue(),
+        user_role: createUserDto.role,
       });
 
       console.log('User entity created:', user);
@@ -48,32 +54,24 @@ export class AuthService {
 
       console.log('User saved:', user);
 
-      return user;
+      return {
+        message: 'User created',
+        id: user.user_id,
+      };
+      
     } catch (error) {
       console.error('Error creating user:', error);
       this.handleDBErrors(error);
     }
   }
 
-  findAll() {
-    return `This action returns all auth`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
-  }
-
   async login( loginUserDto: LoginUserDto ) {
     
-    const { user_password, user_email } = loginUserDto;
+    const { password, email } = loginUserDto;
     
     const user = await this.userRepository
       .createQueryBuilder('user')
-      .where('user.user_email = :email', { email: user_email })
+      .where('user.user_email = :email', { email: email })
       .addSelect(['user.user_id', 'user.user_email', 'user.user_password'])
       .getOne();
     
@@ -81,7 +79,7 @@ export class AuthService {
     if ( !user )
       throw new UnauthorizedException('Not valid credentials');
 
-    if (!bcrypt.compareSync(user_password, user.user_password))
+    if (!bcrypt.compareSync(password, user.user_password))
       throw new UnauthorizedException('Not valid password');
 
     if (user.user_status !== 'active') {

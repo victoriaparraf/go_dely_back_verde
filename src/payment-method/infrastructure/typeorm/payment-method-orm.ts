@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryColumn } from 'typeorm';
 
 @Entity('payment_methods')
 export class PaymentMethodEntity {
+
     @PrimaryColumn('uuid')
     id: string;
 
@@ -13,4 +14,5 @@ export class PaymentMethodEntity {
 
     @Column({ default: true })
     active: boolean;
+    
 }
