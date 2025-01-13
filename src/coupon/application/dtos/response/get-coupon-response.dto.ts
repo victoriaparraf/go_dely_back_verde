@@ -1,8 +1,8 @@
 
 export class GetCouponServiceResponseDto {
-  coupon_id: string;
-  coupon_code: string;
-  coupon_amount: number;
-  coupon_creation_date: Date;
-  coupon_expiration_date: Date;
+  cuponId: string;
+  code: string;
+  amount: number;
+  creation_date: Date;
+  expiration_date: Date;
 }

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ICouponRepository } from "src/coupon/domain/repositories/coupon-repositori-interface";
-import { Coupon } from "../Typeorm/coupon.entity";
+import { Coupon } from "../typeor/coupon.entity";
 import { Repository } from "typeorm";
 import { isUUID } from "class-validator";
 

@@ -2,7 +2,7 @@ import { Delete, Module } from '@nestjs/common';
 
 import { CouponController } from './infrastructure/coupon.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Coupon } from './infrastructure/Typeorm/coupon.entity';
+import { Coupon } from './infrastructure/typeor/coupon.entity';
 import { CouponRepository } from './infrastructure/repositories/coupon-repository';
 import { CreateCouponService } from './application/command/create-coupon-service';
 import { DeleteCouponService } from './application/command/delete-coupon-service';

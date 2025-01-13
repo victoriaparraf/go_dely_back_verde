@@ -3,7 +3,6 @@ import { OrderEntity } from "../typeorm/order-entity";
 import { DeepPartial } from "typeorm";
 import { ResponseOrderDTO } from "src/order/infraestructure/dtos/response-order.dto";
 import { AddressMapper } from '../../../user/infrastructure/mappers/address.mapper';
-import { Product } from "src/product/infrastructure/typeorm/product-entity";
 
 export class OrderMapper {
   static toEntity(order: Order): DeepPartial<OrderEntity> {

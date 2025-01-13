@@ -7,7 +7,7 @@ import { CreateCouponServiceEntryDto } from '../application/dtos/entry/create-co
 import { GetCouponServiceEntryDto } from '../application/dtos/entry/get-coupon-entry.dto';
 
 
-@Controller('coupon')
+@Controller('cupon')
 export class CouponController {
   constructor(
     private readonly createCouponService: CreateCouponService,
@@ -31,7 +31,7 @@ export class CouponController {
   findOne(@Param('code') code: string) {
     const regex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-    if (!regex.test(code)) {
+    if (regex.test(code)) {
         throw new Error(`The coupon code must be a valid code not a UUID.`);
     }
     const getCouponEntryDto: GetCouponServiceEntryDto = {code}
@@ -40,7 +40,8 @@ export class CouponController {
   }
 
   @Delete('delete/:id')
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.deleteCouponService.execute(id);
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    await this.deleteCouponService.execute(id);
+    return { message: 'Coupon Deleted Successfully' };
   }
 }
