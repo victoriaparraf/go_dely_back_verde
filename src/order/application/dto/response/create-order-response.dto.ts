@@ -36,4 +36,6 @@ export interface CreateOrderServiceResponseDto{
         combo_stock: number
     }[];
 
+    cupon_code: string;
+
 }

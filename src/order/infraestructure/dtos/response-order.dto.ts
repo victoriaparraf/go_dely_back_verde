@@ -60,4 +60,8 @@ export class ResponseOrderDTO {
         combo_currency: string,
         combo_stock: number
     }[];
+
+    @ApiProperty({ required: false })
+    cupon_code?: string;
+
 }

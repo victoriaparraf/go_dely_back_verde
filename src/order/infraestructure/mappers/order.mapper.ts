@@ -37,7 +37,8 @@ export class OrderMapper {
                 combo_currency: combo.combo.combo_currency.getValue(),
                 combo_stock: combo.combo.combo_stock.getValue()
             };
-        })
+        }),
+        cupon_code: order.getCupon()?.value,
     };
   }
 
@@ -54,6 +55,7 @@ export class OrderMapper {
       entity.status,
       entity.order_products,
       entity.order_combos,
+      entity.cupon_code,
     );
   }
 
@@ -91,7 +93,8 @@ export class OrderMapper {
             combo_description: combo.combo.combo_description.getValue(),
             combo_currency: combo.combo.combo_currency.getValue(),
             combo_stock: combo.combo.combo_stock.getValue()
-        }))
+        })),
+        cupon_code: order.getCupon()?.value,
     };
   }
   

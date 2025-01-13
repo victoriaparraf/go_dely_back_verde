@@ -64,4 +64,8 @@ export class CreateOrderDto{
     @Type(() => ComboDto)
     combos?: ComboDto[];
 
+    @IsString()
+    @MinLength(6)
+    cupon_code?: string;
+
 }

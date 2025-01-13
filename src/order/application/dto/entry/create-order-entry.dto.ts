@@ -17,4 +17,5 @@ export interface CreateOrderServiceEntryDto{
     total: number
     products?: ProductEntryDto[]
     combos?: ComboEntryDto[]
+    cupon_code?: string
 }

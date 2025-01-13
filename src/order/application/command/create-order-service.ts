@@ -13,6 +13,7 @@ import { ResponseOrderDTO } from 'src/order/infraestructure/dtos/response-order.
 import { OrderMapper } from 'src/order/infraestructure/mappers/order.mapper';
 import { OrderRepository } from 'src/order/infraestructure/typeorm/order-repository';
 import { ComboRepository } from 'src/combo/infrastructure/repositories/combo-repository';
+import { CouponRepository } from 'src/coupon/infrastructure/repositories/coupon-repository';
 
 @Injectable()
 export class CreateOrderService {
@@ -22,6 +23,7 @@ export class CreateOrderService {
     @Inject('RABBITMQ_SERVICE') private readonly client: ClientProxy,
     private readonly productRepository: ProductRepository,
     private readonly comboRepository: ComboRepository,
+    private readonly couponRepository: CouponRepository,
     @InjectRepository(Address) private readonly addressRepository: Repository<Address>,
   ) {}
 
@@ -54,6 +56,15 @@ export class CreateOrderService {
       // Actualizar el total en la orden
       total = orderProducts.reduce((acc, op) => acc + op.total_price, 0) +
               orderCombos.reduce((acc, oc) => acc + oc.total_price, 0);
+
+      // Aplicar descuento si hay un cupon_code
+      if (dto.cupon_code) {
+        const coupon = await this.couponRepository.findOneCoupon(dto.cupon_code);
+        if (coupon) {
+          const discount = (total * Number(coupon.coupon_amount.getValue())) / 100;
+          total -= discount;
+        }
+      }
 
       order.updateTotal(total);
 

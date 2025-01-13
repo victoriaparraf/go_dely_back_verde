@@ -8,6 +8,8 @@ import { OrderProduct } from '../infraestructure/typeorm/order-product';
 import { OrderCombo } from '../infraestructure/typeorm/order-combo';
 import { Address } from 'src/user/infrastructure/typeorm/address-entity';
 import { PaymentMethodName } from 'src/payment-method/domain/value-objects/payment-method-name.vo';
+import { Coupon } from 'src/coupon/infrastructure/typeorm/coupon.entity';
+import { CouponCode } from 'src/coupon/domain/value-objects/coupon-code.vo';
 
 export class Order extends AggregateRoot<OrderID> {
     private address: Address;
@@ -21,6 +23,7 @@ export class Order extends AggregateRoot<OrderID> {
     private order_products: OrderProduct[];
     private order_combos: OrderCombo[]; 
     order_id: string;
+    private cupon_code?: CouponCode;
 
     constructor(
         id: OrderID,
@@ -34,6 +37,7 @@ export class Order extends AggregateRoot<OrderID> {
         status: OrderStatus = OrderStatus.CREATED,
         order_products: OrderProduct[] = [],
         order_combos: OrderCombo[] = [],
+        cupon_code?: CouponCode
 
     ) {
         super(id);
@@ -47,6 +51,7 @@ export class Order extends AggregateRoot<OrderID> {
         this.status = status;
         this.order_products = order_products;
         this.order_combos = order_combos;
+        this.cupon_code = cupon_code;
     }
 
     static create(
@@ -60,6 +65,7 @@ export class Order extends AggregateRoot<OrderID> {
         status: OrderStatus = OrderStatus.CREATED,
         order_products: OrderProduct[] = [],
         order_combos: OrderCombo[] = [],
+        cupon_code?: string
 
     ): Order {
         return new Order(
@@ -73,7 +79,8 @@ export class Order extends AggregateRoot<OrderID> {
             new UserId(user_id),
             status,
             order_products,
-            order_combos
+            order_combos,
+            cupon_code ? new CouponCode(cupon_code) : undefined
         );
     }
 
@@ -88,7 +95,8 @@ export class Order extends AggregateRoot<OrderID> {
         user_id: string,
         status: OrderStatus,
         order_products: OrderProduct[] = [],
-        order_combos: OrderCombo[] = []
+        order_combos: OrderCombo[] = [],
+        cupon_code?: string
         
 
     ): Order {
@@ -103,8 +111,13 @@ export class Order extends AggregateRoot<OrderID> {
             new UserId(user_id),
             status,
             order_products,
-            order_combos
+            order_combos,
+            cupon_code ? new CouponCode(cupon_code) : undefined
         );
+    }
+
+    getCupon(): CouponCode | undefined {
+        return this.cupon_code;
     }
 
     getLongitude(): number{

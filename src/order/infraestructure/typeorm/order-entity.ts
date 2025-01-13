@@ -5,10 +5,11 @@ import { OrderProduct } from './order-product';
 import { OrderCombo } from './order-combo';
 import { Exclude } from 'class-transformer';
 import { Address } from 'src/user/infrastructure/typeorm/address-entity';
+import { Coupon } from 'src/coupon/infrastructure/typeorm/coupon.entity';
 
 @Entity('orders')
 export class OrderEntity {
-    
+
     @PrimaryGeneratedColumn('uuid')
     order_id: string;
 
@@ -44,5 +45,7 @@ export class OrderEntity {
     @Exclude()
     order_combos: OrderCombo[];
 
+    @Column({ type: 'varchar', length: 50, nullable: true })
+    cupon_code: string;
 
 }
