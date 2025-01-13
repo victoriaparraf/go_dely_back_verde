@@ -1,20 +1,19 @@
 import { AggregateRoot } from 'src/common/domain/aggregate.root';
 import { OrderID } from './value-objects/order-id.vo';
-
 import { OrderCurrency } from './value-objects/order-currency.vo';
 import { OrderTotal } from './value-objects/order-total.vo';
-import { PaymentMethodId } from 'src/payment-method/domain/value-objects/payment-method-id.vo';
 import { UserId } from 'src/user/domain/value-object/user-id';
 import { OrderStatus } from './enums/order-status.enum';
 import { OrderProduct } from '../infraestructure/typeorm/order-product';
 import { OrderCombo } from '../infraestructure/typeorm/order-combo';
 import { Address } from 'src/user/infrastructure/typeorm/address-entity';
+import { PaymentMethodName } from 'src/payment-method/domain/value-objects/payment-method-name.vo';
 
 export class Order extends AggregateRoot<OrderID> {
     private address: Address;
     private currency: OrderCurrency;
     private total: OrderTotal;
-    private paymentMethodId: PaymentMethodId;
+    private paymentMethod: PaymentMethodName;
     private user_id: UserId;
     private status: OrderStatus;
     private order_products: OrderProduct[];
@@ -26,7 +25,7 @@ export class Order extends AggregateRoot<OrderID> {
         address: Address,
         currency: OrderCurrency,
         total: OrderTotal,
-        paymentMethodId: PaymentMethodId,
+        paymentMethod: PaymentMethodName,
         user_id: UserId,
         status: OrderStatus = OrderStatus.CREATED,
         order_products: OrderProduct[] = [],
@@ -37,7 +36,7 @@ export class Order extends AggregateRoot<OrderID> {
         this.address = address;
         this.currency = currency;
         this.total = total;
-        this.paymentMethodId = paymentMethodId;
+        this.paymentMethod = paymentMethod;
         this.user_id = user_id;
         this.status = status;
         this.order_products = order_products;
@@ -60,7 +59,7 @@ export class Order extends AggregateRoot<OrderID> {
             address,
             new OrderCurrency(currency),
             new OrderTotal(total),
-            new PaymentMethodId(paymentMethod),
+            new PaymentMethodName(paymentMethod),
             new UserId(user_id),
             status,
             order_products,
@@ -86,7 +85,7 @@ export class Order extends AggregateRoot<OrderID> {
             address,
             new OrderCurrency(currency),
             new OrderTotal(total),
-            new PaymentMethodId(paymentMethod),
+            new PaymentMethodName(paymentMethod),
             new UserId(user_id),
             status,
             order_products,
@@ -110,8 +109,8 @@ export class Order extends AggregateRoot<OrderID> {
         return this.total.value;
     }
 
-    getPaymentMethodId(): PaymentMethodId {
-        return this.paymentMethodId;
+    getPaymentMethodName(): PaymentMethodName {
+        return this.paymentMethod;
     }
 
     updateCurrency(newCurrency: string): void {
@@ -119,7 +118,7 @@ export class Order extends AggregateRoot<OrderID> {
     }
 
     updatePaymentMethodId(newPaymentMethodId: string): void {
-        this.paymentMethodId = new PaymentMethodId(newPaymentMethodId);
+        this.paymentMethod = new PaymentMethodName(newPaymentMethodId);
     }
 
     updateAddress(newAddress: Address): void {

@@ -33,36 +33,36 @@ export class OrderService {
 
     async createOrder(dto: CreateOrderDto, user_id: string): Promise<ResponseOrderDTO> {
         try {
-            const paymentMethod = await this.paymentMethodRepository.findById(dto.paymentMethodId);
+            const paymentMethod = await this.paymentMethodRepository.findById(dto.paymentMethod);
             if (!paymentMethod) {
-                throw new Error(`Payment method with ID ${dto.paymentMethodId} not found`);
+                throw new Error(`Payment method with ID ${dto.paymentMethod} not found`);
             }
 
             const address= await this.addressRepository.findOne({
                 where: {
-                  address_id: dto.address_id,
+                  address_id: dto.address,
                   user: { user_id: user_id },
                 },
                 relations: ['user'],
             });
     
-            if ((!dto.order_products || dto.order_products.length === 0) && (!dto.order_combos || dto.order_combos.length === 0)) {
+            if ((!dto.products || dto.products.length === 0) && (!dto.combos || dto.combos.length === 0)) {
                 throw new Error('At least one product or combo must be included in the order');
             }
     
-            const order = Order.create(address, dto.currency, 0, dto.paymentMethodId, user_id);
+            const order = Order.create(address, dto.currency, 0, dto.paymentMethod, user_id);
     
             let total = 0;
             const orderProducts = [];
             const orderCombos = [];
     
-            if (dto.order_products && dto.order_products.length > 0) {
-                const products = await Promise.all(dto.order_products.map(p => this.productRepository.findOne(p.product_id)));
+            if (dto.products && dto.products.length > 0) {
+                const products = await Promise.all(dto.products.map(p => this.productRepository.findOne(p.product_id)));
                 if (products.includes(null)) {
                     throw new Error('Some products not found');
                 }
     
-                dto.order_products.forEach(productData => {
+                dto.products.forEach(productData => {
                     const product = products.find(p => p?.product_id === productData.product_id);
                     if (!product) {
                         throw new Error(`Product with ID ${productData.product_id} not found`);
@@ -84,13 +84,13 @@ export class OrderService {
                 orderProducts.forEach(op => order.addOrderProduct(op));
             }
     
-            if (dto.order_combos && dto.order_combos.length > 0) {
-                const combos = await Promise.all(dto.order_combos.map(c => this.comboRepository.findOne(c.combo_id)));
+            if (dto.combos && dto.combos.length > 0) {
+                const combos = await Promise.all(dto.combos.map(c => this.comboRepository.findOne(c.combo_id)));
                 if (combos.includes(null)) {
                     throw new Error('Some combos not found');
                 }
     
-                dto.order_combos.forEach(comboData => {
+                dto.combos.forEach(comboData => {
                     const combo = combos.find(c => c?.combo_id === comboData.combo_id);
                     if (!combo) {
                         throw new Error(`Combo with ID ${comboData.combo_id} not found`);
@@ -121,7 +121,7 @@ export class OrderService {
             orderEntity.currency = order.getCurrency().value;
             orderEntity.total = order.getTotal();
             console.log("Total in OrderEntity:", orderEntity.total);
-            orderEntity.paymentMethodId = order.getPaymentMethodId().toString();
+            orderEntity.paymentMethod = order.getPaymentMethodName().toString();
             orderEntity.status = order.getStatus();
             orderEntity.order_products = orderProducts;
             orderEntity.order_combos = orderCombos;
@@ -158,7 +158,7 @@ export class OrderService {
             orderEntity.address = order.getAddress();
             orderEntity.currency = order.getCurrency().toString();
             orderEntity.total = order.getTotal();
-            orderEntity.paymentMethodId = order.getPaymentMethodId().toString();
+            orderEntity.paymentMethod = order.getPaymentMethodName().toString();
             orderEntity.status = order.getStatus();
             return OrderMapper.toDTO(order);
         }));
@@ -176,7 +176,7 @@ export class OrderService {
         orderEntity.address = order.getAddress();
         orderEntity.currency = order.getCurrency().toString();
         orderEntity.total = order.getTotal();
-        orderEntity.paymentMethodId = order.getPaymentMethodId().toString();
+        orderEntity.paymentMethod = order.getPaymentMethodName().toString();
         orderEntity.status = order.getStatus();
         return OrderMapper.toDTO(order);
     }

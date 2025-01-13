@@ -20,8 +20,8 @@ export class OrderEntity {
     @Column('decimal', { precision: 10, scale: 2 })
     total: number;
 
-    @Column({ type: 'varchar', length: 50 })
-    paymentMethodId: string;
+    @Column({ type: 'varchar', length: 250 })
+    paymentMethod: string;
 
     @ManyToOne(() => User, user => user.orders)
     user: User;

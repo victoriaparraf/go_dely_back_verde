@@ -4,7 +4,7 @@ export interface CreateOrderServiceResponseDto{
     address: string;
     currency: string;
     total: number;
-    paymentMethodId: string;
+    paymentMethod: string;
     user_id: string;
     status: string;
 

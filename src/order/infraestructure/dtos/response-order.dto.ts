@@ -17,7 +17,7 @@ export class ResponseOrderDTO {
     total: number;
 
     @ApiProperty()
-    paymentMethodId: string;
+    paymentMethod: string;
 
     @ApiProperty()
     user_id: string;
@@ -27,7 +27,7 @@ export class ResponseOrderDTO {
 
     @ApiProperty({ type: () => [OrderProduct]})
     @Type(() => OrderProduct)
-    order_products: {
+    products: {
         order_id: string;
         product_id: string;
         quantity: number;
@@ -43,7 +43,7 @@ export class ResponseOrderDTO {
 
     @ApiProperty({ type: () => [OrderCombo]})
     @Type(() => OrderCombo)
-    order_combos: {
+    combos: {
         order_id: string,
         combo_id: string,
         quantity: number,
