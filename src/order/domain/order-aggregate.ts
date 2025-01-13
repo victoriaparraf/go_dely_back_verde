@@ -11,6 +11,8 @@ import { PaymentMethodName } from 'src/payment-method/domain/value-objects/payme
 
 export class Order extends AggregateRoot<OrderID> {
     private address: Address;
+    private longitude: number;
+    private latitude: number;
     private currency: OrderCurrency;
     private total: OrderTotal;
     private paymentMethod: PaymentMethodName;
@@ -23,6 +25,8 @@ export class Order extends AggregateRoot<OrderID> {
     constructor(
         id: OrderID,
         address: Address,
+        longitude: number,
+        latitude: number,
         currency: OrderCurrency,
         total: OrderTotal,
         paymentMethod: PaymentMethodName,
@@ -34,6 +38,8 @@ export class Order extends AggregateRoot<OrderID> {
     ) {
         super(id);
         this.address = address;
+        this.longitude = longitude;
+        this.latitude = latitude;
         this.currency = currency;
         this.total = total;
         this.paymentMethod = paymentMethod;
@@ -45,6 +51,8 @@ export class Order extends AggregateRoot<OrderID> {
 
     static create(
         address: Address,
+        longitude : number,
+        latitude : number,
         currency: string,
         total: number,
         paymentMethod: string,
@@ -57,6 +65,8 @@ export class Order extends AggregateRoot<OrderID> {
         return new Order(
             OrderID.create(),
             address,
+            longitude,
+            latitude,
             new OrderCurrency(currency),
             new OrderTotal(total),
             new PaymentMethodName(paymentMethod),
@@ -70,6 +80,8 @@ export class Order extends AggregateRoot<OrderID> {
     static reconstitute(
         id: string,
         address: Address,
+        longitude : number,
+        latitude : number,
         currency: string,
         total: number,
         paymentMethod: string,
@@ -83,6 +95,8 @@ export class Order extends AggregateRoot<OrderID> {
         return new Order(
             new OrderID(id),
             address,
+            longitude,
+            latitude,
             new OrderCurrency(currency),
             new OrderTotal(total),
             new PaymentMethodName(paymentMethod),
@@ -91,6 +105,14 @@ export class Order extends AggregateRoot<OrderID> {
             order_products,
             order_combos
         );
+    }
+
+    getLongitude(): number{
+        return this.longitude;
+    }
+
+    getLatitude(): number{
+        return this.latitude;
     }
 
     getId(): OrderID {

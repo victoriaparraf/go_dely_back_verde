@@ -44,7 +44,7 @@ export class CreateOrderService {
       }
 
       // Crear la orden
-      const order = Order.create(address, dto.currency, 0, dto.paymentMethod, userId);
+      const order = Order.create(address, dto.longitude, dto.latitude, dto.currency, 0, dto.paymentMethod, userId);
 
       // Procesar productos y combos
       let total = 0;

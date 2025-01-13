@@ -11,6 +11,12 @@ export class ResponseOrderDTO {
     address: string;
 
     @ApiProperty()
+    longitude: number;
+
+    @ApiProperty()
+    latitude: number;
+
+    @ApiProperty()
     currency: string;
 
     @ApiProperty()

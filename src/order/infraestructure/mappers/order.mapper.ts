@@ -9,6 +9,8 @@ export class OrderMapper {
     return {
         order_id: order.getId().value,
         currency: order.getCurrency().value,
+        longitude: order.getLongitude(),
+        latitude: order.getLatitude(),
         total: order.getTotal(),
         paymentMethod: order.getPaymentMethodName().value,
         status: order.getStatus(),
@@ -43,6 +45,8 @@ export class OrderMapper {
     return Order.reconstitute(
       entity.order_id,
       entity.address,
+      entity.longitude,
+      entity.latitude,
       entity.currency,
       entity.total,
       entity.paymentMethod,
@@ -57,6 +61,8 @@ export class OrderMapper {
     return {
         order_id: order.getId().value,
         address: AddressMapper.toDtoAddres(order.getAddress()).name,
+        longitude: order.getLongitude(),
+        latitude: order.getLatitude(),
         currency: order.getCurrency().value,
         total: order.getTotal(),
         paymentMethod: order.getPaymentMethodName().value,

@@ -8,11 +8,18 @@ import { Address } from 'src/user/infrastructure/typeorm/address-entity';
 
 @Entity('orders')
 export class OrderEntity {
+    
     @PrimaryGeneratedColumn('uuid')
     order_id: string;
 
     @ManyToOne(() => Address, address => address.orders)
     address: Address;
+
+    @Column({ type: 'decimal', nullable: false })
+    longitude: number;
+
+    @Column({ type: 'decimal', nullable: false })
+    latitude: number;
 
     @Column({ type: 'varchar', length: 3, nullable: false })
     currency: string;
@@ -36,4 +43,6 @@ export class OrderEntity {
     @OneToMany(() => OrderCombo, orderCombo => orderCombo.order, { cascade: true, onDelete: 'CASCADE' })
     @Exclude()
     order_combos: OrderCombo[];
+
+
 }

@@ -32,6 +32,14 @@ export class CreateOrderDto{
     @MinLength(6)
     address: string;
 
+    @IsNumber()
+    @Min(6)
+    longitude: number;
+
+    @IsNumber()
+    @Min(6)
+    latitude: number;
+
     @IsString()
     @MinLength(6)
     paymentMethod: string;

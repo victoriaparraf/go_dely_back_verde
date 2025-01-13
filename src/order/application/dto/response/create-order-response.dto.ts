@@ -1,7 +1,9 @@
 export interface CreateOrderServiceResponseDto{
 
-    order_id: string;
+    id: string;
     address: string;
+    longitude: number;
+    latitude: number;
     currency: string;
     total: number;
     paymentMethod: string;
@@ -33,4 +35,5 @@ export interface CreateOrderServiceResponseDto{
         combo_currency: string,
         combo_stock: number
     }[];
+
 }

@@ -10,6 +10,8 @@ export interface ComboEntryDto {
 
 export interface CreateOrderServiceEntryDto{
     address: string
+    longitude: number;
+    latitude: number;
     paymentMethod: string
     currency: string
     total: number
