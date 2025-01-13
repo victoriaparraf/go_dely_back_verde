@@ -44,7 +44,7 @@ export class ProductService {
       const productDescription = new ProductDescription(productDetails.description);
       const productPrice = new ProductPrice(productDetails.price);
       const productCurrency = new ProductCurrency(productDetails.currency);
-      const productWeight = new ProductWeight(productDetails.weight);
+      const productWeight = new ProductWeight(productDetails.weight.toString());
       const productMeasurement = new ProductMeasurement(productDetails.measurement);
       const productStock = new ProductStock(productDetails.stock);
 
