@@ -16,7 +16,7 @@ import { GetProductsCombosSummaryService } from '../application/query/get-produc
 import { CreateProductServiceEntryDto } from '../application/dto/entry/create-product-entry.dto';
 
 @ApiTags('Product')
-@Controller('products')
+@Controller('product')
 export class ProductController {
 
   constructor(
