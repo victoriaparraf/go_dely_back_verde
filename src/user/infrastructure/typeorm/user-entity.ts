@@ -23,7 +23,7 @@ export class User {
     })
     user_password: string;
 
-    @Column({ type: 'varchar', length: 255, nullable: true })
+    @Column('text')
     user_image: string;
 
     @Column({ type: 'varchar', length: 50, nullable: false })
