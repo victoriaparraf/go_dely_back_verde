@@ -6,7 +6,7 @@ export class PaymentMethodEntity {
     @PrimaryColumn('uuid')
     id: string;
 
-    @Column()
+    @Column({ type: 'varchar', unique: true })
     name: string;
 
     @Column()

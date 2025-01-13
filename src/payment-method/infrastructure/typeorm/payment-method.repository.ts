@@ -18,6 +18,11 @@ export class PaymentMethodRepository implements PaymentMethodRepositoryInterface
         return entity ? PaymentMethodMapper.toDomain(entity) : null;
     }
 
+    async findByName(name: string): Promise<PaymentMethod | undefined> {
+        const entity = await this.ormRepository.findOneBy({ name });
+        return entity ? PaymentMethodMapper.toDomain(entity) : undefined;
+    }
+
     async save(paymentMethod: PaymentMethod): Promise<void> {
         const entity = PaymentMethodMapper.toPersistence(paymentMethod);
         await this.ormRepository.save(entity);

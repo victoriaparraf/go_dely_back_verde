@@ -34,6 +34,10 @@ export class PaymentMethodService {
         return await this.paymentMethodRepository.findById(id);
     }
 
+    async getPaymentMethodByName(name: string): Promise<PaymentMethod | null> {
+        return await this.paymentMethodRepository.findByName(name);
+    }
+
     async getAllPaymentMethods(): Promise<PaymentMethod[]> {
         return await this.paymentMethodRepository.findAll();
     }
