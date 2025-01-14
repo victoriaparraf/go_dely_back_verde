@@ -8,6 +8,7 @@ export class FirebaseNotificationsService {
         title: string,
         body: string,
         data?: Record<string, string>,
+        imageUrl?: string
     ): Promise<void> {
         if (!tokens || tokens.length === 0) {
             console.warn('No tokens provided for notification');
@@ -19,6 +20,7 @@ export class FirebaseNotificationsService {
             notification: {
                 title,
                 body,
+                imageUrl,
             },
             data,
         };

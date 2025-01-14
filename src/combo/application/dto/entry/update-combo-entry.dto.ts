@@ -14,6 +14,6 @@ export class UpdateComboServiceEntryDto {
     images?: string[];
     productId?: string[];
     caducityDate?: Date | string;
-    discount?: number;
+    discount?: string;
     
 }

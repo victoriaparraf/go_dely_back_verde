@@ -42,6 +42,7 @@ export class ProductController {
       stock: createProductDto.stock,
       images: createProductDto.images,
       categories: createProductDto.categories,
+      discount: createProductDto.discount
     };
 
     const product = await this.createProductService.execute(createProductServiceEntryDto);

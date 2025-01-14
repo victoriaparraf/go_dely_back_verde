@@ -45,4 +45,8 @@ export class CreateComboDto {
     @IsArray()
     @ArrayNotEmpty()
     productId: string[];
+
+    @IsString()
+    @IsOptional()
+    discount: string;
 }

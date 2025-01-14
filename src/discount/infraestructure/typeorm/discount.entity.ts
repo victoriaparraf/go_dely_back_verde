@@ -70,7 +70,7 @@ export class Discount {
     @Column('text', { 
         transformer: {
             to: (value: DiscountImage) => value.getValue(),
-            from: (value: string) => value ? new DiscountImage(value) : new DiscountImage(''),
+            from: (value: string) => value ? new DiscountImage(value) : new DiscountImage('url'),
         },
     })
     discount_image: DiscountImage;

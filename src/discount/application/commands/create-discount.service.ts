@@ -52,9 +52,7 @@ export class CreateDiscountService implements IApplicationService<CreateDiscount
 
             this.client.emit('notification',{
                 type: 'discount',
-                payload:{
-                    data: DiscountMapper.mapDiscountToResponse(discount)
-                }
+                payload: DiscountMapper.mapDiscountToResponse(discount)
             });
 
             await this.sendNotificationService.notifyUsersAboutDiscount(DiscountMapper.mapDiscountToResponse(discount));

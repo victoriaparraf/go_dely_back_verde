@@ -37,4 +37,8 @@ export class CreateProductDto {
     @IsArray()
     categories: string[];
 
+    @IsString()
+    @IsOptional()
+    discount: string;
+
 }
