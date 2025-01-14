@@ -1,5 +1,5 @@
 export class GetDiscountServiceEntryDto {
-    term: string;
+    id: string;
 }
 
 export class GetDiscountServicePaginationDto {

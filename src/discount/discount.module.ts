@@ -8,15 +8,18 @@ import { CreateDiscountService } from './application/commands/create-discount.se
 import { CommonModule } from 'src/common/common.module';
 import { NotificationModule } from 'src/notification/notification.module';
 import { DiscountRepository } from './infraestructure/repositories/discount-repository';
+import { GetDiscountService } from './application/query/get-discount.service';
+import { UpdateDiscountService } from './application/commands/update-discount.service';
+import { DeleteDiscountService } from './application/commands/delete-discount.service';
 
 @Module({
   controllers: [DiscountController],
-  providers: [CreateDiscountService, DiscountRepository],
+  providers: [CreateDiscountService, DiscountRepository , GetDiscountService, UpdateDiscountService, DeleteDiscountService],
   imports: [
     TypeOrmModule.forFeature([ Discount, Product, Combo ]),
     CommonModule,
     NotificationModule
   ],
-  exports: [CreateDiscountService, DiscountRepository],
+  exports: [CreateDiscountService, DiscountRepository, GetDiscountService, UpdateDiscountService, DeleteDiscountService],
 })
 export class DiscountModule {}

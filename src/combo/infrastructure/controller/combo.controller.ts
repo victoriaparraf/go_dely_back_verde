@@ -25,7 +25,7 @@ export class ComboController {
   async create(@Body() createComboDto: CreateComboDto) {
 
     const createComboServiceEntryDto: CreateComboServiceEntryDto = {
-      combo_stock: createComboDto.combo_stock ?? 0,
+      stock: createComboDto.stock ?? 0,
       ...createComboDto
     };
 
@@ -49,17 +49,17 @@ export class ComboController {
 
   }
 
-  @Get('one/:term')
-  async findOne(@Param('term') term: string) {
+  @Get('one/:id')
+  async findOne(@Param('term') id: string) {
 
-    const getComboServiceEntryDto: GetComboServiceEntryDto = { term }
+    const getComboServiceEntryDto: GetComboServiceEntryDto = { id }
     return this.getComboService.execute(getComboServiceEntryDto);
   }
 
   @Patch(':id')
   async update(@Param('id', ParseUUIDPipe) id: string, @Body() updateComboDto: UpdateComboDto) {
 
-    const updateComboServiceEntryDto: UpdateComboServiceEntryDto = { combo_id: id, ...updateComboDto };
+    const updateComboServiceEntryDto: UpdateComboServiceEntryDto = { id, ...updateComboDto };
 
     await this.updateComboService.execute(updateComboServiceEntryDto);
     

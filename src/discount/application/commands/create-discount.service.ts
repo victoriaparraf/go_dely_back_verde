@@ -1,12 +1,8 @@
-import { Inject, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import { Inject, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { IApplicationService } from "src/common/application/application-service.interface";
 import { CreateDiscountServiceEntryDto } from "../dto/entry/create-discount-entrydto";
 import { CreateDiscountServiceResponseDto } from "../dto/response/create-discount-response.dto";
 import { DiscountRepository } from "src/discount/infraestructure/repositories/discount-repository";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Product } from "src/product/infrastructure/typeorm/product-entity";
-import { Repository } from "typeorm";
-import { Combo } from "src/combo/infrastructure/typeorm/combo-entity";
 import { ClientProxy } from "@nestjs/microservices";
 import { CloudinaryService } from "src/common/infraestructure/cloudinary/cloudinary.service";
 import { DiscountName } from "src/discount/domain/value-objects/discount-name.vo";
@@ -17,14 +13,13 @@ import { DiscountEndDate } from "src/discount/domain/value-objects/discount-end-
 import { Discount } from "src/discount/infraestructure/typeorm/discount.entity";
 import { DiscountMapper } from "src/discount/infraestructure/mappers/discount-mapper";
 import { SendNotificationService } from "src/notification/application/services/send-notification.service";
+import { DiscountImage } from "src/discount/domain/value-objects/discount-image.vo";
 
 @Injectable()
 export class CreateDiscountService implements IApplicationService<CreateDiscountServiceEntryDto, CreateDiscountServiceResponseDto>{
 
     constructor(
         private readonly discountRepository: DiscountRepository,
-        @InjectRepository(Product) private readonly productRepository: Repository<Product>,
-        @InjectRepository(Combo) private readonly comboRepository: Repository<Combo>,
         @Inject('RABBITMQ_SERVICE') private readonly client: ClientProxy,
         private readonly cloudinaryService: CloudinaryService,
         private readonly sendNotificationService: SendNotificationService
@@ -33,42 +28,17 @@ export class CreateDiscountService implements IApplicationService<CreateDiscount
     async execute(entryDto: CreateDiscountServiceEntryDto): Promise<CreateDiscountServiceResponseDto> {
         try {
             
-            const { products, combos, discount_image, ...discountDetails } = entryDto;
-
-            let productEntities = [];
-            if (products){
-                productEntities = await Promise.all(
-                    products.map(async (productId) => {
-                        const product = await this.productRepository.findOne({ where: { product_id: productId } });
-                        if (!product) {
-                            throw new NotFoundException(`Product with ID ${productId} not found`);
-                        }
-                        return product;
-                    }),
-                );
-            }
-
-            let comboEntities = [];
-            if (combos){
-                comboEntities = await Promise.all(
-                    combos.map(async (comboId) => {
-                        const combo = await this.comboRepository.findOne({ where: { combo_id: comboId } });
-                        if (!combo) {
-                            throw new NotFoundException(`Combo with ID ${comboId} not found`);
-                        }
-                        return combo;
-                    }),
-                );
-            }
+            const { image, ...discountDetails } = entryDto;
 
             let imageUrl = null;
-            if(discount_image) imageUrl = await this.cloudinaryService.uploadImage(discount_image, 'discounts'); 
+            if(image) imageUrl = await this.cloudinaryService.uploadImage(image, 'discounts'); 
 
-            const discountName = new DiscountName(discountDetails.discount_name);
-            const discountDescription = new DiscountDescription(discountDetails.discount_description);
-            const discountPercentage = new DiscountPercentage(discountDetails.discount_percentage);
-            const discountStartDate= new DiscountStartDate(discountDetails.discount_start_date);
-            const discountEndDate = new DiscountEndDate(discountDetails.discount_end_date);
+            const discountName = new DiscountName(discountDetails.name);
+            const discountDescription = new DiscountDescription(discountDetails.description);
+            const discountPercentage = new DiscountPercentage(discountDetails.percentage);
+            const discountStartDate= new DiscountStartDate(discountDetails.startDate);
+            const discountEndDate = new DiscountEndDate(discountDetails.deadline);
+            const discountImage = new DiscountImage(imageUrl);
 
             const discount = new Discount();
             discount.discount_name = discountName;
@@ -76,25 +46,9 @@ export class CreateDiscountService implements IApplicationService<CreateDiscount
             discount.discount_percentage = discountPercentage;
             discount.discount_start_date = discountStartDate;
             discount.discount_end_date = discountEndDate;
-            discount.discount_image = imageUrl;
-            discount.products = productEntities;
-            discount.combos = comboEntities;
+            discount.discount_image = discountImage;
 
             await this.discountRepository.saveDiscount(discount);
-
-            await Promise.all(
-                productEntities.map(async (product)=> {
-                    product.discount = [ ...(product.discount || null), product ];
-                    await this.productRepository.save(product);
-                })
-            );
-
-            await Promise.all(
-                comboEntities.map( async (combo)=> {
-                    combo.discount = [ ...(combo.discount || null), combo ];
-                    await this.comboRepository.save(combo);
-                })
-            );
 
             this.client.emit('notification',{
                 type: 'discount',
