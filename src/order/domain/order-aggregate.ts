@@ -63,7 +63,7 @@ export class Order extends AggregateRoot<OrderID> {
         status: OrderStatus = OrderStatus.CREATED,
         order_products: OrderProduct[] = [],
         order_combos: OrderCombo[] = [],
-        cupon_code?: string
+        cupon_code?: CouponCode
 
     ): Order {
         return new Order(
@@ -78,7 +78,7 @@ export class Order extends AggregateRoot<OrderID> {
             status,
             order_products,
             order_combos,
-            cupon_code ? new CouponCode(cupon_code) : undefined
+            cupon_code ? new CouponCode(cupon_code.value) : undefined
         );
     }
 
@@ -94,7 +94,7 @@ export class Order extends AggregateRoot<OrderID> {
         status: OrderStatus,
         order_products: OrderProduct[] = [],
         order_combos: OrderCombo[] = [],
-        cupon_code?: string
+        cupon_code?: CouponCode
         
 
     ): Order {
@@ -110,8 +110,12 @@ export class Order extends AggregateRoot<OrderID> {
             status,
             order_products,
             order_combos,
-            cupon_code ? new CouponCode(cupon_code) : undefined
+            cupon_code ? new CouponCode(cupon_code.value) : undefined
         );
+    }
+
+    addCoupon(couponCode: string): void {
+        this.cupon_code = new CouponCode(couponCode);
     }
 
     getCupon(): CouponCode | undefined {

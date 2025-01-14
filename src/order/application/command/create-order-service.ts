@@ -51,11 +51,13 @@ export class CreateOrderService {
               orderCombos.reduce((acc, oc) => acc + oc.total_price, 0);
 
       // Aplicar descuento si hay un cupon_code
+      console.log(dto.cupon_code);
       if (dto.cupon_code) {
         const coupon = await this.couponRepository.findOneCoupon(dto.cupon_code);
         if (coupon) {
           const discount = (total * Number(coupon.coupon_amount.getValue())) / 100;
           total -= discount;
+          order.addCoupon(dto.cupon_code);
         }
       }
 
@@ -74,7 +76,10 @@ export class CreateOrderService {
         message: 'Your order is ready to be served',
       }).subscribe();
 
+      console.log(order);
+
       return OrderMapper.toDTO(order);
+
     } catch (error) {
       throw new InternalServerErrorException(`Failed to create order: ${error.message}`);
     }

@@ -44,6 +44,6 @@ export class OrderEntity {
     order_combos: OrderCombo[];
 
     @Column({ type: 'varchar', length: 50, nullable: true })
-    cupon_code: string;
+    cupon_code?: string;
 
 }

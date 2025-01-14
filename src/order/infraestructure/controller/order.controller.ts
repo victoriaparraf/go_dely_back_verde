@@ -8,13 +8,15 @@ import { OrderService } from 'src/order/application/order.service';
 import { CreateOrderServiceEntryDto } from 'src/order/application/dto/entry/create-order-entry.dto';
 import { ResponseOrderDTO } from '../dtos/response-order.dto';
 import { CreateOrderService } from 'src/order/application/command/create-order-service';
+import { GetOrderService } from 'src/order/application/query/get-order-service';
 
 @ApiTags('Order')
-@Controller('orders')
+@Controller('order')
 export class OrderController {
     constructor(
         private readonly orderService: OrderService,
-        private readonly createOrderService: CreateOrderService
+        private readonly createOrderService: CreateOrderService,
+        private readonly getOrderService: GetOrderService,
     ) {}
 
     @Post('create')
@@ -26,14 +28,14 @@ export class OrderController {
         return this.createOrderService.createOrder(createOrderDto, user_id);
     }
 
-    @Get()
-    findAll() {
-        return this.orderService.findAll();
+    @Get('many')
+    async findAll(): Promise<ResponseOrderDTO[]> {
+        return this.getOrderService.findAll();
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.orderService.getOrderById(id);
+    async getOrderById(@Param('id') orderId: string): Promise<ResponseOrderDTO | null> {
+        return this.getOrderService.execute(orderId);
     }
 
     @Patch(':id')

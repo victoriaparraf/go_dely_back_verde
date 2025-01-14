@@ -3,7 +3,6 @@ import { OrderCurrency } from "../value-objects/order-currency.vo";
 import { OrderTotal } from "../value-objects/order-total.vo";
 import { OrderStatus } from "../enums/order-status.enum";
 import { PaymentMethodId } from "src/payment-method/domain/value-objects/payment-method-id.vo";
-import { Address } from "src/user/infrastructure/typeorm/address-entity";
 
 export class OrderEntity {
     order_id: string;
