@@ -51,7 +51,7 @@ export class Combo {
         type: 'decimal',
         transformer: {
             to: (value: ComboWeight) => value.getValue(),
-            from: (value: number) => value ? new ComboWeight(value) : new ComboWeight(0),
+            from: (value: number) => value ? new ComboWeight(value) : new ComboWeight(1),
         },
     })
     combo_weight: ComboWeight;
@@ -96,7 +96,7 @@ export class Combo {
         array: true,
         transformer: {
             to: (value: ComboImage[]) => value.map((img) => img.getValue()),
-            from: (value: string[]) => value.map((img) => new ComboImage(img)),
+            from: (value: string[]) => value ? value.map((img) => new ComboImage(img)) : [],
         },
     })
     combo_images: ComboImage[];

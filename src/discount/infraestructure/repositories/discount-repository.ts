@@ -27,13 +27,13 @@ export class DiscountRepository implements IDiscountRepository {
         if (isUUID(term)) {
             discount = await this.discountRepository.findOne({
                 where: { discount_id: term },
-                relations: ['products', 'combos'],
+                relations: ['product', 'combo'],
             });
         } else {
             discount = await this.discountRepository
                 .createQueryBuilder('discount')
                 .leftJoinAndSelect('discount.products', 'product')
-                .leftJoinAndSelect('discount.combos', 'discount')
+                .leftJoinAndSelect('discount.combos', 'combo')
                 .where('discount.discount_name = :discount_name', { discount_name: term })
                 .getOne();
         }

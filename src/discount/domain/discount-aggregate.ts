@@ -5,8 +5,6 @@ import { DiscountDescription } from "./value-objects/discount-description.vo";
 import { DiscountPercentage } from "./value-objects/discount-percentage.vo";
 import { DiscountStartDate } from "./value-objects/discount-start-date.vo";
 import { DiscountEndDate } from './value-objects/discount-end-date.vo';
-import { Product } from "src/product/domain/entities/product.entity";
-import { Combo } from "src/combo/domain/entities/combo.entity";
 import { DiscountImage } from "./value-objects/discount-image.vo";
 import { DiscountCreatedEvent } from "./events/discount-created.event";
 import { unvalidDiscountException } from "./exceptions/unvalid-discount";

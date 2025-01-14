@@ -67,6 +67,11 @@ export class Discount {
     @OneToMany(() => Combo, (combo) => combo.discount, { nullable: true })
     combos: Combo[];
 
-    @Column('text')
+    @Column('text', { 
+        transformer: {
+            to: (value: DiscountImage) => value.getValue(),
+            from: (value: string) => value ? new DiscountImage(value) : new DiscountImage(''),
+        },
+    })
     discount_image: DiscountImage;
 }
