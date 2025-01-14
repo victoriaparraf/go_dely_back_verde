@@ -1,5 +1,5 @@
 import { GetCouponServiceResponseDto } from "src/coupon/application/dtos/response/get-coupon-response.dto";
-import { Coupon } from "../typeorm/coupon.entity";
+import { Coupon } from "../typeor/coupon.entity";
 
 export class CouponMapper {
   static mapCouponToResponse(coupon: Coupon): GetCouponServiceResponseDto {

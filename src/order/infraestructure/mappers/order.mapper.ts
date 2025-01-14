@@ -2,18 +2,21 @@ import { Order } from "src/order/domain/order-aggregate";
 import { OrderEntity } from "../typeorm/order-entity";
 import { DeepPartial } from "typeorm";
 import { ResponseOrderDTO } from "src/order/infraestructure/dtos/response-order.dto";
-import { AddressMapper } from '../../../user/infrastructure/mappers/address.mapper';
+import { CouponCode } from "src/coupon/domain/value-objects/coupon-code.vo";
 
 export class OrderMapper {
   static toEntity(order: Order): DeepPartial<OrderEntity> {
     return {
         order_id: order.getId().value,
+        incremental_id: order.getIncrementalId(),
+        address: order.getAddress(),
         currency: order.getCurrency().value,
         longitude: order.getLongitude(),
         latitude: order.getLatitude(),
         total: order.getTotal(),
         paymentMethod: order.getPaymentMethodName().value,
         status: order.getStatus(),
+        cupon_code: order.getCupon()?.value,
         order_products: order.getOrderProducts().map(product => ({
             order_id: product.order_id,
             product_id: product.product_id,
@@ -38,12 +41,12 @@ export class OrderMapper {
                 combo_stock: combo.combo.combo_stock.getValue()
             };
         }),
-        cupon_code: order.getCupon()?.value,
     };
   }
 
   static toDomain(entity: OrderEntity): Order {
     return Order.reconstitute(
+      entity.incremental_id,
       entity.order_id,
       entity.address,
       entity.longitude,
@@ -55,14 +58,15 @@ export class OrderMapper {
       entity.status,
       entity.order_products,
       entity.order_combos,
-      entity.cupon_code,
+      entity.cupon_code ? new CouponCode(entity.cupon_code) : undefined,
     );
   }
 
   static toDTO(order: Order): ResponseOrderDTO {
     return {
         order_id: order.getId().value,
-        address: AddressMapper.toDtoAddres(order.getAddress()).name,
+        incremental_id: order.getIncrementalId(),
+        address: order.getAddress(),
         longitude: order.getLongitude(),
         latitude: order.getLatitude(),
         currency: order.getCurrency().value,
@@ -70,6 +74,7 @@ export class OrderMapper {
         paymentMethod: order.getPaymentMethodName().value,
         user_id: order.getUserId().value,
         status: order.getStatus(),
+        cupon_code: order.getCupon()?.value,
         products: order.getOrderProducts().map(product => ({
             order_id: product.order_id,
             product_id: product.product_id,
@@ -94,7 +99,6 @@ export class OrderMapper {
             combo_currency: combo.combo.combo_currency.getValue(),
             combo_stock: combo.combo.combo_stock.getValue()
         })),
-        cupon_code: order.getCupon()?.value,
     };
   }
   

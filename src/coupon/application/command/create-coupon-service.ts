@@ -7,7 +7,7 @@ import { CouponCode } from "src/coupon/domain/value-objects/coupon-code.vo";
 import { CouponAmount } from '../../domain/value-objects/coupon-amount.vo';
 import { CouponCreationDate } from '../../domain/value-objects/coupon-creation-date.vo';
 import { CouponExpirationDate } from '../../domain/value-objects/coupon-expiration-date.vo';
-import { Coupon } from "src/coupon/infrastructure/typeorm/coupon.entity";
+import { Coupon } from "src/coupon/infrastructure/typeor/coupon.entity";
 
 
 

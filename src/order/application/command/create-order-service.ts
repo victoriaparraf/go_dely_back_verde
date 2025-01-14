@@ -33,20 +33,17 @@ export class CreateOrderService {
       const paymentMethod = await this.paymentMethodRepository.findByName(dto.paymentMethod);
       if (!paymentMethod) throw new Error(`Payment method '${dto.paymentMethod}' not found`);
 
-      // Validar dirección
-      const address = await this.addressRepository.findOne({
-        where: { name: dto.address, user: { user_id: userId } },
-        relations: ['user'],
-      });
-      if (!address) throw new Error(`Address '${dto.address}' not found`);
-
       // Validar productos y combos
       if ((!dto.products || dto.products.length === 0) && (!dto.combos || dto.combos.length === 0)) {
         throw new Error('At least one product or combo must be included in the order');
       }
 
+      // Obtener el incremental_id
+      const lastOrder = await this.orderRepository.findLastOrder();
+      const incremental_id = lastOrder ? lastOrder.incremental_id + 1 : 1;
+
       // Crear la orden
-      const order = Order.create(address, dto.longitude, dto.latitude, dto.currency, 0, dto.paymentMethod, userId);
+      const order = Order.create(Number(incremental_id), dto.address, dto.longitude, dto.latitude, dto.currency, 0, dto.paymentMethod, userId);
 
       // Procesar productos y combos
       let total = 0;
@@ -58,11 +55,13 @@ export class CreateOrderService {
               orderCombos.reduce((acc, oc) => acc + oc.total_price, 0);
 
       // Aplicar descuento si hay un cupon_code
+      console.log(dto.cupon_code);
       if (dto.cupon_code) {
         const coupon = await this.couponRepository.findOneCoupon(dto.cupon_code);
         if (coupon) {
           const discount = (total * Number(coupon.coupon_amount.getValue())) / 100;
           total -= discount;
+          order.addCoupon(dto.cupon_code);
         }
       }
 
@@ -75,13 +74,16 @@ export class CreateOrderService {
 
       // Enviar notificación
       this.client.send('order_notification', {
-        orderAddress: address.address_id,
+        orderAddress: dto.address,
         orderTotal: total,
         orderCurrency: dto.currency,
         message: 'Your order is ready to be served',
       }).subscribe();
 
+      console.log(order);
+
       return OrderMapper.toDTO(order);
+
     } catch (error) {
       throw new InternalServerErrorException(`Failed to create order: ${error.message}`);
     }

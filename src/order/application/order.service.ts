@@ -15,17 +15,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ComboRepository } from 'src/combo/infrastructure/repositories/combo-repository';
 import { OrderCombo } from '../infraestructure/typeorm/order-combo';
 import { Address } from 'src/user/infrastructure/typeorm/address-entity';
-import { AddressMapper } from '../../user/infrastructure/mappers/address.mapper';
 import { ProductRepository } from 'src/product/infrastructure/repositories/product-repositoy';
 
 @Injectable()
 export class OrderService {
     constructor(
         private readonly orderRepository: OrderRepository,
-        private readonly paymentMethodRepository: PaymentMethodRepository,
-        @Inject('RABBITMQ_SERVICE') private readonly client: ClientProxy,
-        private readonly productRepository: ProductRepository,
-        private readonly comboRepository: ComboRepository,
         @InjectRepository(OrderProduct) private readonly orderProductRepository: Repository<OrderProduct>,
         @InjectRepository(OrderCombo) private readonly orderComboRepository: Repository<OrderCombo>,
         @InjectRepository(Address) private readonly addressRepository: Repository<Address>
@@ -37,7 +32,7 @@ export class OrderService {
         const orderDTOs = await Promise.all(orders.map(order => {
             const orderEntity = new OrderEntity();
             orderEntity.order_id = order.getId().toString();
-            orderEntity.address = order.getAddress();
+            orderEntity.address = order.getAddress().toString();
             orderEntity.currency = order.getCurrency().toString();
             orderEntity.total = order.getTotal();
             orderEntity.paymentMethod = order.getPaymentMethodName().toString();
@@ -82,7 +77,7 @@ export class OrderService {
             if (!address) {
                 throw new Error(`Address with ID ${dto.address_id} not found`);
             }
-            order.updateAddress(address);
+            order.updateAddress(address.toString());
         }
 
         if (dto.total !== undefined) {
