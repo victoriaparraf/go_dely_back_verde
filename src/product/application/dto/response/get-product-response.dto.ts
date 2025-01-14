@@ -9,5 +9,5 @@ export class GetProductServiceResponseDto {
     stock: number;
     categories: string[];
     images: string[];
-    discount: string;
+    discount?: string;
   }
