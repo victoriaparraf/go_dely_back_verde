@@ -15,6 +15,7 @@ import { CloudinaryService } from 'src/common/infraestructure/cloudinary/cloudin
 import { ComboWeight } from 'src/combo/domain/value-objects/combo-weight.vo';
 import { ComboMeasurement } from 'src/combo/domain/value-objects/combo-measurement.vo';
 import { ComboCaducityDate } from 'src/combo/domain/value-objects/combo-caducity-date.vo';
+import { Discount } from 'src/discount/infraestructure/typeorm/discount.entity';
 
 @Injectable()
 export class UpdateComboService {
@@ -23,12 +24,13 @@ export class UpdateComboService {
         private readonly comboRepository: ComboRepository,
         @InjectRepository(Product) private readonly productRepository: Repository<Product>,
         @InjectRepository(CategoryEntity) private readonly categoryRepository: Repository<CategoryEntity>,
+        @InjectRepository(Discount) private readonly discountRepository: Repository<Discount>,
         private readonly cloudinaryService: CloudinaryService
     ){}
 
     async execute(updateEntryDto: UpdateComboServiceEntryDto): Promise<void>{
 
-        const{ id, category, productId, images, ...comboDetails } = updateEntryDto;
+        const{ id, category, productId, images, discount, ...comboDetails } = updateEntryDto;
         
         const combo = await this.comboRepository.findOne(id);
         if(!combo){
@@ -60,6 +62,14 @@ export class UpdateComboService {
                 }),
             );
             combo.products = productEntities;
+        }
+
+        if (discount){
+            const discountEntity = await this.discountRepository.findOne({ where: { discount_id: discount } });
+            if (!discountEntity) {
+                throw new NotFoundException(`Discount with ID ${discount} not found`);
+            }
+            combo.discount = discountEntity;
         }
 
         if(images){
