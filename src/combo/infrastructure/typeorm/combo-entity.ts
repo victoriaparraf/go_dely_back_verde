@@ -92,7 +92,13 @@ export class Combo {
     })
     combo_stock: ComboStock;
 
-    @Column('text' , { array: true })
+    @Column('text', { 
+        array: true,
+        transformer: {
+            to: (value: ComboImage[]) => value.map((img) => img.getValue()),
+            from: (value: string[]) => value.map((img) => new ComboImage(img)),
+        },
+    })
     combo_images: ComboImage[];
 
     @Column({

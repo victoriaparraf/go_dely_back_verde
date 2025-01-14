@@ -28,7 +28,7 @@ export class ComboCreatedEvent extends DomainEventBase {
         public readonly images: ComboImage[],
         public readonly products: Product[],
         public readonly caducity_date?: ComboCaducityDate,
-        //public readonly discount?: Discount
+        public readonly discount?: Discount
     ) {
         super();
     }
@@ -47,10 +47,10 @@ export class ComboCreatedEvent extends DomainEventBase {
         images: ComboImage[],
         products: Product[],
         caducity_date?: ComboCaducityDate,
-        //discount?: Discount
+        discount?: Discount
 
     ): ComboCreatedEvent{
-        return new ComboCreatedEvent(comboId, name, description, price, weight, measurement, currency, stock, categories, images, products, caducity_date);
+        return new ComboCreatedEvent(comboId, name, description, price, weight, measurement, currency, stock, categories, images, products, caducity_date, discount);
     }
 
     eventName(): string {

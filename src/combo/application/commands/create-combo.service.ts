@@ -20,6 +20,7 @@ import { ComboMeasurement } from 'src/combo/domain/value-objects/combo-measureme
 import { ComboCaducityDate } from '../../domain/value-objects/combo-caducity-date.vo';
 import { ClientProxy } from '@nestjs/microservices';
 import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
+import { Discount } from 'src/discount/infraestructure/typeorm/discount.entity';
 
 @Injectable()
 export class CreateComboService implements IApplicationService<CreateComboServiceEntryDto, CreateComboServiceResponseDto> {
@@ -28,13 +29,14 @@ export class CreateComboService implements IApplicationService<CreateComboServic
     private readonly comboRepository: ComboRepository, 
     @InjectRepository(Product) private readonly productRepository: Repository<Product>,
     @InjectRepository(CategoryEntity) private readonly categoryRepository: Repository<CategoryEntity>,
+    @InjectRepository(Discount) private readonly discountRepository: Repository<Discount>,
     private readonly cloudinaryService: CloudinaryService,
     @Inject('RABBITMQ_SERVICE') private readonly client: ClientProxy,
   ) {}
 
   async execute(entryDto: CreateComboServiceEntryDto): Promise<CreateComboServiceResponseDto> {
     try {
-      const { category, productId, images, ...comboDetails } = entryDto;
+      const { category, productId, images, discount, ...comboDetails } = entryDto;
 
       const categoryEntities = await Promise.all(
         category.map(async (categoryId) => {
@@ -61,6 +63,14 @@ export class CreateComboService implements IApplicationService<CreateComboServic
       );
       const comboImages = imageUrls.map((url) => new ComboImage(url));
 
+      let discountEntity = null;
+      if(discount){
+        discountEntity = await this.discountRepository.findOne({ where: { discount_id: discount } });
+        if (!discountEntity) {
+          throw new NotFoundException(`Discount with ID ${discount} not found`);
+        }
+      }
+
       const comboName = new ComboName(comboDetails.name);
       const comboDescription = new ComboDescription(comboDetails.description);
       const comboWeight = new ComboWeight(comboDetails.weight);
@@ -82,6 +92,7 @@ export class CreateComboService implements IApplicationService<CreateComboServic
       combo.combo_categories = categoryEntities;
       combo.products = productEntities;
       combo.combo_caducity_date = comboCaducityDate;
+      combo.discount = discountEntity;
 
       await this.comboRepository.saveCombo(combo);
 
@@ -101,7 +112,7 @@ export class CreateComboService implements IApplicationService<CreateComboServic
           comboWeight: combo.combo_weight.getValue(),
           comboMeasurement: combo.combo_measurement.getValue(),
           comboDescription: combo.combo_description.getValue(),
-          comboProducts: combo.products.map((product) => product.product_name.getValue()),
+          comboProducts: combo.products.map((product) => product.product_name.getValue())
         },
       });
 

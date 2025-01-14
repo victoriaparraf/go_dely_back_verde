@@ -28,7 +28,7 @@ export class Combo extends AggregateRoot<ComboID> {
     private images: ComboImage[];
     private categories: Category[];
     private caducity_date?: ComboCaducityDate;
-    //private discount?: Discount;
+    private discount?: Discount;
 
     get Name(): ComboName {
         return this.name;
@@ -66,9 +66,9 @@ export class Combo extends AggregateRoot<ComboID> {
         return this.categories;
     }
 
-    // get Discount(): Discount {
-    //     return this.discount;
-    // }
+    get Discount(): Discount {
+        return this.discount;
+    }
 
     get Products(): Product[] {
         return this.products;
@@ -92,10 +92,10 @@ export class Combo extends AggregateRoot<ComboID> {
         categories: Category[] = [],
         products: Product[]=[],
         images: ComboImage[] = [],
-        //discount?: Discount
+        discount?: Discount
 
     ) {
-        const createdCombo = ComboCreatedEvent.create(id, name, description, price, weight, measurement, currency, stock, categories, images, products, caducity_date);
+        const createdCombo = ComboCreatedEvent.create(id, name, description, price, weight, measurement, currency, stock, categories, images, products, caducity_date, discount);
         super(id);
         this.isValidCombo();
         super.addDomainEvent(createdCombo);
