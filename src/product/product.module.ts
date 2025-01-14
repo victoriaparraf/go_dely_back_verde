@@ -15,12 +15,13 @@ import { ComboModule } from 'src/combo/combo.module';
 import { CommonModule } from 'src/common/common.module';
 import { NotificationModule } from 'src/notification/notification.module';
 import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
+import { Discount } from 'src/discount/infraestructure/typeorm/discount.entity';
 
 @Module({
   controllers: [ProductController],
   providers: [CreateProductService, GetProductService, GetProductsByCategoryService, UpdateProductService, DeleteProductService, GetProductsCombosSummaryService, ProductRepository],
   imports:[
-    TypeOrmModule.forFeature([ Product, Image, Combo, CategoryEntity ]),
+    TypeOrmModule.forFeature([ Product, Image, Combo, CategoryEntity, Discount ]),
     CommonModule,
     ComboModule,
     NotificationModule

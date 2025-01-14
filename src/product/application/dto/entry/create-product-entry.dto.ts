@@ -8,4 +8,5 @@ export class CreateProductServiceEntryDto {
     stock: number;
     categories: string[];
     images: string[];
+    discount?: string;
   }
