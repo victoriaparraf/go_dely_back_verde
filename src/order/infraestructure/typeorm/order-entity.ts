@@ -11,6 +11,9 @@ export class OrderEntity {
     @PrimaryGeneratedColumn('uuid')
     order_id: string;
 
+    @Column({ type: 'int', generated: 'increment' })
+    incremental_id: number;
+
     @Column({ type: 'varchar', nullable: false })
     address: string;
 

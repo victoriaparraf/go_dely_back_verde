@@ -67,5 +67,11 @@ export class OrderRepository {
   async remove(orderId: string): Promise<void> {
     await this.repository.delete(orderId);
   }
+
+  async findLastOrder(): Promise<OrderEntity | undefined> {
+    return this.repository.createQueryBuilder('order')
+      .orderBy('order.incremental_id', 'DESC')
+      .getOne();
+  }
   
 }

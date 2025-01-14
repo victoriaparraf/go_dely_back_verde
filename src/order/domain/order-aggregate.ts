@@ -22,9 +22,11 @@ export class Order extends AggregateRoot<OrderID> {
     private order_combos: OrderCombo[]; 
     order_id: string;
     private cupon_code?: CouponCode;
+    incremental_id: number;
 
     constructor(
         id: OrderID,
+        incremental_id: number,
         address: string,
         longitude: number,
         latitude: number,
@@ -39,6 +41,7 @@ export class Order extends AggregateRoot<OrderID> {
 
     ) {
         super(id);
+        this.incremental_id = incremental_id;
         this.address = address;
         this.longitude = longitude;
         this.latitude = latitude;
@@ -53,6 +56,7 @@ export class Order extends AggregateRoot<OrderID> {
     }
 
     static create(
+        incremental_id: number,
         address: string,
         longitude : number,
         latitude : number,
@@ -68,6 +72,7 @@ export class Order extends AggregateRoot<OrderID> {
     ): Order {
         return new Order(
             OrderID.create(),
+            incremental_id,
             address,
             longitude,
             latitude,
@@ -83,6 +88,7 @@ export class Order extends AggregateRoot<OrderID> {
     }
 
     static reconstitute(
+        incremental_id: number,
         id: string,
         address: string,
         longitude : number,
@@ -100,6 +106,7 @@ export class Order extends AggregateRoot<OrderID> {
     ): Order {
         return new Order(
             new OrderID(id),
+            incremental_id,
             address,
             longitude,
             latitude,
@@ -112,6 +119,10 @@ export class Order extends AggregateRoot<OrderID> {
             order_combos,
             cupon_code ? new CouponCode(cupon_code.value) : undefined
         );
+    }
+
+    getIncrementalId(): number {
+        return this.incremental_id;
     }
 
     addCoupon(couponCode: string): void {

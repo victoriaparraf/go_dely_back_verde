@@ -8,6 +8,7 @@ export class OrderMapper {
   static toEntity(order: Order): DeepPartial<OrderEntity> {
     return {
         order_id: order.getId().value,
+        incremental_id: order.getIncrementalId(),
         address: order.getAddress(),
         currency: order.getCurrency().value,
         longitude: order.getLongitude(),
@@ -45,6 +46,7 @@ export class OrderMapper {
 
   static toDomain(entity: OrderEntity): Order {
     return Order.reconstitute(
+      entity.incremental_id,
       entity.order_id,
       entity.address,
       entity.longitude,
@@ -63,6 +65,7 @@ export class OrderMapper {
   static toDTO(order: Order): ResponseOrderDTO {
     return {
         order_id: order.getId().value,
+        incremental_id: order.getIncrementalId(),
         address: order.getAddress(),
         longitude: order.getLongitude(),
         latitude: order.getLatitude(),

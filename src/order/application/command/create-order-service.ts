@@ -38,8 +38,12 @@ export class CreateOrderService {
         throw new Error('At least one product or combo must be included in the order');
       }
 
+      // Obtener el incremental_id
+      const lastOrder = await this.orderRepository.findLastOrder();
+      const incremental_id = lastOrder ? lastOrder.incremental_id + 1 : 1;
+
       // Crear la orden
-      const order = Order.create(dto.address, dto.longitude, dto.latitude, dto.currency, 0, dto.paymentMethod, userId);
+      const order = Order.create(Number(incremental_id), dto.address, dto.longitude, dto.latitude, dto.currency, 0, dto.paymentMethod, userId);
 
       // Procesar productos y combos
       let total = 0;
