@@ -4,10 +4,8 @@ export class GetDiscountServiceResponseDto {
     name: string;
     description: string;
     percentage: number;
-    start_date: Date  | string;
-    end_date: Date  | string;
+    startDate: Date  | string;
+    deadline: Date  | string;
     image?: string;
-    products?: string[];
-    combos?: string[];
 
 }

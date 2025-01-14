@@ -18,8 +18,6 @@ export class Discount extends AggregateRoot<DiscountID>{
     private percentage: DiscountPercentage;
     private start_date: DiscountStartDate;
     private end_date: DiscountEndDate;
-    private products?: Product[];
-    private combos?: Combo[];
     private image?: DiscountImage;
 
     get Name(): DiscountName{
@@ -42,14 +40,6 @@ export class Discount extends AggregateRoot<DiscountID>{
         return this.EndDate;
     }
 
-    get Products(): Product[] {
-        return this.products;
-    }
-
-    get Combos(): Combo[]{
-        return this.combos;
-    }
-
     get Image(): DiscountImage{
         return this.image;
     }
@@ -59,14 +49,13 @@ export class Discount extends AggregateRoot<DiscountID>{
         id: DiscountID,
         name: DiscountName,
         description: DiscountDescription,
+        percentage: DiscountPercentage,
         start_date: DiscountStartDate,
         end_date: DiscountEndDate,
-        products?: Product[],
-        combos?: Combo[],
         image?: DiscountImage
 
     ){
-        const createdDiscount = DiscountCreatedEvent.create(id, name, description, start_date, end_date, products, combos, image)
+        const createdDiscount = DiscountCreatedEvent.create(id, name, description, percentage, start_date, end_date, image)
 
         super(id);
         this.isValidDiscount();

@@ -6,6 +6,7 @@ import { DiscountEndDate } from "src/discount/domain/value-objects/discount-end-
 import { DiscountName } from "src/discount/domain/value-objects/discount-name.vo";
 import { DiscountDescription } from "src/discount/domain/value-objects/discount-description.vo";
 import { Combo } from "src/combo/infrastructure/typeorm/combo-entity";
+import { DiscountImage } from "src/discount/domain/value-objects/discount-image.vo";
 
 
 @Entity()
@@ -67,5 +68,5 @@ export class Discount {
     combos: Combo[];
 
     @Column('text')
-    discount_image: string;
+    discount_image: DiscountImage;
 }
