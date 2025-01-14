@@ -8,6 +8,9 @@ export class ResponseOrderDTO {
     order_id: string;
 
     @ApiProperty()
+    incremental_id: number;
+
+    @ApiProperty()
     address: string;
 
     @ApiProperty()

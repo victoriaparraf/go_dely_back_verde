@@ -4,8 +4,6 @@ import { User } from 'src/user/infrastructure/typeorm/user-entity';
 import { OrderProduct } from './order-product';
 import { OrderCombo } from './order-combo';
 import { Exclude } from 'class-transformer';
-import { Address } from 'src/user/infrastructure/typeorm/address-entity';
-import { Coupon } from 'src/coupon/infrastructure/typeorm/coupon.entity';
 
 @Entity('orders')
 export class OrderEntity {
@@ -13,8 +11,11 @@ export class OrderEntity {
     @PrimaryGeneratedColumn('uuid')
     order_id: string;
 
-    @ManyToOne(() => Address, address => address.orders)
-    address: Address;
+    @Column({ type: 'int', generated: 'increment' })
+    incremental_id: number;
+
+    @Column({ type: 'varchar', nullable: false })
+    address: string;
 
     @Column({ type: 'decimal', nullable: false })
     longitude: number;
@@ -46,6 +47,6 @@ export class OrderEntity {
     order_combos: OrderCombo[];
 
     @Column({ type: 'varchar', length: 50, nullable: true })
-    cupon_code: string;
+    cupon_code?: string;
 
 }

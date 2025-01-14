@@ -26,7 +26,7 @@ export class OrderRepository {
 
   async findAll(): Promise<Order[]> {
     const entities = await this.repository.find({
-      relations: ['user', 'order_products', 'order_combos'],
+      relations: ['user', 'order_products', 'order_combos', 'coupon'],
     });
     return Promise.all(entities.map(OrderMapper.toDomain));
   }
@@ -34,7 +34,7 @@ export class OrderRepository {
   async findById(orderId: string): Promise<Order | null> {
     const entity = await this.repository.findOne({
       where: { order_id: orderId },
-      relations: ['user', 'order_products', 'order_combos'],
+      relations: ['user', 'order_products', 'order_combos', 'coupon'],
     });
     return entity ? OrderMapper.toDomain(entity) : null;
   }
@@ -67,4 +67,11 @@ export class OrderRepository {
   async remove(orderId: string): Promise<void> {
     await this.repository.delete(orderId);
   }
+
+  async findLastOrder(): Promise<OrderEntity | undefined> {
+    return this.repository.createQueryBuilder('order')
+      .orderBy('order.incremental_id', 'DESC')
+      .getOne();
+  }
+  
 }
