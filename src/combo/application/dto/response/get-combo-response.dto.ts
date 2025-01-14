@@ -11,9 +11,9 @@ export class GetComboServiceResponseDto {
     currency: Currency;
     stock: number;
     images: string[];
-    products: string[];
-    categories: string[];
-    caducity_date?: string;
+    productId: string[];
+    category: string[];
+    caducityDate?: string;
     // discount: number | null;
 
 }

@@ -5,44 +5,44 @@ export class CreateComboDto {
 
     @IsString()
     @MinLength(1)
-    combo_name: string;
+    name: string;
 
     @IsNumber()
     @IsPositive()
-    combo_price: number;
+    price: number;
 
     @IsString()
-    combo_description: string;
+    description: string;
 
     @IsNumber()
     @IsPositive()
-    combo_weight: number;
+    weight: number;
 
     @IsString()
     @Length(2, 2)
-    combo_measurement: string;
+    measurement: string;
 
     @IsString()
-    combo_currency: Currency;
+    currency: Currency;
 
     @IsArray()
     @ArrayNotEmpty()
-    combo_categories: string[];
+    category: string[];
 
     @IsInt()
     @IsOptional()
     @IsPositive()
-    combo_stock?: number;
+    stock?: number;
 
     @IsDateString()
     @IsOptional()
-    combo_caducity_date: Date;
+    caducityDate?: Date | string;
 
     @IsArray()
     @IsString({ each:true })
-    combo_images: string[];
+    images: string[];
 
     @IsArray()
     @ArrayNotEmpty()
-    products: string[];
+    productId: string[];
 }

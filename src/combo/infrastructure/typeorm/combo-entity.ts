@@ -93,7 +93,7 @@ export class Combo {
     combo_stock: ComboStock;
 
     @Column('text' , { array: true })
-    combo_images: string[];
+    combo_images: ComboImage[];
 
     @Column({
         type: 'date',

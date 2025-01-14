@@ -2,17 +2,17 @@ import { Currency } from "src/common/domain/enums/currency.enum";
 
 export class CreateComboServiceEntryDto {
 
-    combo_name: string;
-    combo_description: string;
-    combo_price: number;
-    combo_weight: number;
-    combo_measurement: string;
-    combo_currency: Currency;
-    combo_stock?: number;
-    combo_categories: string[];
-    combo_images: string[];
-    products: string[];
-    combo_caducity_date?: Date;
+    name: string;
+    description: string;
+    price: number;
+    weight: number;
+    measurement: string;
+    currency: Currency;
+    stock?: number;
+    category: string[];
+    images: string[];
+    productId: string[];
+    caducityDate?: Date | string;
     //discount: number | undefined;
     
 }

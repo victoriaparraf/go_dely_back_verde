@@ -34,10 +34,10 @@ export class CreateComboService implements IApplicationService<CreateComboServic
 
   async execute(entryDto: CreateComboServiceEntryDto): Promise<CreateComboServiceResponseDto> {
     try {
-      const { combo_categories, products, combo_images, ...comboDetails } = entryDto;
+      const { category, productId, images, ...comboDetails } = entryDto;
 
       const categoryEntities = await Promise.all(
-        combo_categories.map(async (categoryId) => {
+        category.map(async (categoryId) => {
             const category = await this.categoryRepository.findOne({ where: { category_id: categoryId } });
             if (!category) {
                 throw new NotFoundException(`Category with ID ${categoryId} not found`);
@@ -47,7 +47,7 @@ export class CreateComboService implements IApplicationService<CreateComboServic
       );
             
       const productEntities = await Promise.all(
-        products.map(async (productId) => {
+        productId.map(async (productId) => {
           const product = await this.productRepository.findOne({ where: { product_id: productId } });
           if (!product) {
             throw new NotFoundException(`Product with ID ${productId} not found`);
@@ -57,18 +57,18 @@ export class CreateComboService implements IApplicationService<CreateComboServic
       );
 
       const imageUrls = await Promise.all(
-        combo_images.map((image) => this.cloudinaryService.uploadImage(image, 'combos'))
+        images.map((image) => this.cloudinaryService.uploadImage(image, 'combos'))
       );
       const comboImages = imageUrls.map((url) => new ComboImage(url));
 
-      const comboName = new ComboName(comboDetails.combo_name);
-      const comboDescription = new ComboDescription(comboDetails.combo_description);
-      const comboWeight = new ComboWeight(comboDetails.combo_weight);
-      const comboMeasurement = new ComboMeasurement(comboDetails.combo_measurement)
-      const comboCurrency = new ComboCurrency(comboDetails.combo_currency);
-      const comboPrice = new ComboPrice(comboDetails.combo_price);
-      const comboStock = new ComboStock(comboDetails.combo_stock);
-      const comboCaducityDate = new ComboCaducityDate(comboDetails.combo_caducity_date);
+      const comboName = new ComboName(comboDetails.name);
+      const comboDescription = new ComboDescription(comboDetails.description);
+      const comboWeight = new ComboWeight(comboDetails.weight);
+      const comboMeasurement = new ComboMeasurement(comboDetails.measurement)
+      const comboCurrency = new ComboCurrency(comboDetails.currency);
+      const comboPrice = new ComboPrice(comboDetails.price);
+      const comboStock = new ComboStock(comboDetails.stock);
+      const comboCaducityDate = new ComboCaducityDate(comboDetails.caducityDate);
 
       const combo = new Combo();
       combo.combo_name = comboName;
@@ -77,7 +77,7 @@ export class CreateComboService implements IApplicationService<CreateComboServic
       combo.combo_weight = comboWeight;
       combo.combo_measurement = comboMeasurement;
       combo.combo_stock = comboStock;
-      combo.combo_images = comboImages.map((image) => image.getValue());
+      combo.combo_images = comboImages;
       combo.combo_currency = comboCurrency;
       combo.combo_categories = categoryEntities;
       combo.products = productEntities;

@@ -14,9 +14,9 @@ export class GetComboService implements IApplicationService<GetComboServiceEntry
 
     async execute(entryDto: GetComboServiceEntryDto): Promise<GetComboServiceResponseDto> {
 
-        const combo = await this.comboRepository.findOne(entryDto.term);
+        const combo = await this.comboRepository.findOne(entryDto.id);
         if (!combo) {
-            throw new NotFoundException(`Combo with term ${entryDto.term} not found`);
+            throw new NotFoundException(`Combo with term ${entryDto.id} not found`);
         }
         return ComboMapper.mapComboToResponse(combo);
 
