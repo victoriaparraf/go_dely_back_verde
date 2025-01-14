@@ -33,20 +33,13 @@ export class CreateOrderService {
       const paymentMethod = await this.paymentMethodRepository.findByName(dto.paymentMethod);
       if (!paymentMethod) throw new Error(`Payment method '${dto.paymentMethod}' not found`);
 
-      // Validar dirección
-      const address = await this.addressRepository.findOne({
-        where: { name: dto.address, user: { user_id: userId } },
-        relations: ['user'],
-      });
-      if (!address) throw new Error(`Address '${dto.address}' not found`);
-
       // Validar productos y combos
       if ((!dto.products || dto.products.length === 0) && (!dto.combos || dto.combos.length === 0)) {
         throw new Error('At least one product or combo must be included in the order');
       }
 
       // Crear la orden
-      const order = Order.create(address, dto.longitude, dto.latitude, dto.currency, 0, dto.paymentMethod, userId);
+      const order = Order.create(dto.address, dto.longitude, dto.latitude, dto.currency, 0, dto.paymentMethod, userId);
 
       // Procesar productos y combos
       let total = 0;
@@ -75,7 +68,7 @@ export class CreateOrderService {
 
       // Enviar notificación
       this.client.send('order_notification', {
-        orderAddress: address.address_id,
+        orderAddress: dto.address,
         orderTotal: total,
         orderCurrency: dto.currency,
         message: 'Your order is ready to be served',

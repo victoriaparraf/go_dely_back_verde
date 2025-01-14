@@ -2,12 +2,12 @@ import { Order } from "src/order/domain/order-aggregate";
 import { OrderEntity } from "../typeorm/order-entity";
 import { DeepPartial } from "typeorm";
 import { ResponseOrderDTO } from "src/order/infraestructure/dtos/response-order.dto";
-import { AddressMapper } from '../../../user/infrastructure/mappers/address.mapper';
 
 export class OrderMapper {
   static toEntity(order: Order): DeepPartial<OrderEntity> {
     return {
         order_id: order.getId().value,
+        address: order.getAddress(),
         currency: order.getCurrency().value,
         longitude: order.getLongitude(),
         latitude: order.getLatitude(),
@@ -62,7 +62,7 @@ export class OrderMapper {
   static toDTO(order: Order): ResponseOrderDTO {
     return {
         order_id: order.getId().value,
-        address: AddressMapper.toDtoAddres(order.getAddress()).name,
+        address: order.getAddress(),
         longitude: order.getLongitude(),
         latitude: order.getLatitude(),
         currency: order.getCurrency().value,

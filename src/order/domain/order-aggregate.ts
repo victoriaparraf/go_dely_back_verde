@@ -6,13 +6,11 @@ import { UserId } from 'src/user/domain/value-object/user-id';
 import { OrderStatus } from './enums/order-status.enum';
 import { OrderProduct } from '../infraestructure/typeorm/order-product';
 import { OrderCombo } from '../infraestructure/typeorm/order-combo';
-import { Address } from 'src/user/infrastructure/typeorm/address-entity';
 import { PaymentMethodName } from 'src/payment-method/domain/value-objects/payment-method-name.vo';
-import { Coupon } from 'src/coupon/infrastructure/typeorm/coupon.entity';
 import { CouponCode } from 'src/coupon/domain/value-objects/coupon-code.vo';
 
 export class Order extends AggregateRoot<OrderID> {
-    private address: Address;
+    private address: string;
     private longitude: number;
     private latitude: number;
     private currency: OrderCurrency;
@@ -27,7 +25,7 @@ export class Order extends AggregateRoot<OrderID> {
 
     constructor(
         id: OrderID,
-        address: Address,
+        address: string,
         longitude: number,
         latitude: number,
         currency: OrderCurrency,
@@ -55,7 +53,7 @@ export class Order extends AggregateRoot<OrderID> {
     }
 
     static create(
-        address: Address,
+        address: string,
         longitude : number,
         latitude : number,
         currency: string,
@@ -86,7 +84,7 @@ export class Order extends AggregateRoot<OrderID> {
 
     static reconstitute(
         id: string,
-        address: Address,
+        address: string,
         longitude : number,
         latitude : number,
         currency: string,
@@ -132,7 +130,7 @@ export class Order extends AggregateRoot<OrderID> {
         return this.id;
     }
 
-    getAddress(): Address {
+    getAddress(): string {
         return this.address;
     }
 
@@ -156,7 +154,7 @@ export class Order extends AggregateRoot<OrderID> {
         this.paymentMethod = new PaymentMethodName(newPaymentMethodId);
     }
 
-    updateAddress(newAddress: Address): void {
+    updateAddress(newAddress: string): void {
         this.address = newAddress;
     }
 

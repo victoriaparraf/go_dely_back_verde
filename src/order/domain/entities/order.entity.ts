@@ -7,7 +7,7 @@ import { Address } from "src/user/infrastructure/typeorm/address-entity";
 
 export class OrderEntity {
     order_id: string;
-    address: Address;
+    address: string;
     currency: OrderCurrency;
     total: OrderTotal;
     paymentMethodId: PaymentMethodId;
@@ -16,7 +16,7 @@ export class OrderEntity {
 
     constructor(
         id: string,
-        address: Address,
+        address: string,
         currency: string,
         total: number,
         paymentMethodId: string,
