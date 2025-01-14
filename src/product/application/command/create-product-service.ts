@@ -73,17 +73,10 @@ export class CreateProductService implements IApplicationService<CreateProductSe
 
       this.client.emit('notification', {
         type: 'product',
-        payload: {
-          productImages: product.images.map((image) => image.image_url),
-          productName: product.product_name.getValue(),
-          productCategory: categoryEntity.category_name,
-          productWeight: product.product_weight.getValue(),
-          productMeasurement: product.product_measurement.getValue(),
-          productDescription: product.product_description.getValue(),
-        },
+        payload: ProductMapper.mapProductToResponse(product),
       });
 
-      await this.sendNotificationService.notifyUsersAboutNewProduct(product);
+      await this.sendNotificationService.notifyUsersAboutNewProduct(ProductMapper.mapProductToResponse(product));
 
       return ProductMapper.mapProductToResponse(product);
     } catch (error) {

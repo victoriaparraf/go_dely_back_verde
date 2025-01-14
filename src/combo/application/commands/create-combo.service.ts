@@ -21,6 +21,7 @@ import { ComboCaducityDate } from '../../domain/value-objects/combo-caducity-dat
 import { ClientProxy } from '@nestjs/microservices';
 import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
 import { Discount } from 'src/discount/infraestructure/typeorm/discount.entity';
+import { SendNotificationService } from 'src/notification/application/services/send-notification.service';
 
 @Injectable()
 export class CreateComboService implements IApplicationService<CreateComboServiceEntryDto, CreateComboServiceResponseDto> {
@@ -32,6 +33,7 @@ export class CreateComboService implements IApplicationService<CreateComboServic
     @InjectRepository(Discount) private readonly discountRepository: Repository<Discount>,
     private readonly cloudinaryService: CloudinaryService,
     @Inject('RABBITMQ_SERVICE') private readonly client: ClientProxy,
+    private readonly sendNotificationService: SendNotificationService
   ) {}
 
   async execute(entryDto: CreateComboServiceEntryDto): Promise<CreateComboServiceResponseDto> {
@@ -105,16 +107,10 @@ export class CreateComboService implements IApplicationService<CreateComboServic
 
       this.client.emit('notification', {
         type: 'combo',
-        payload: {
-          comboImages: combo.combo_images,
-          comboName: combo.combo_name.getValue(),
-          comboCategories: combo.combo_categories.map((category) => category.category_name),
-          comboWeight: combo.combo_weight.getValue(),
-          comboMeasurement: combo.combo_measurement.getValue(),
-          comboDescription: combo.combo_description.getValue(),
-          comboProducts: combo.products.map((product) => product.product_name.getValue())
-        },
+        payload: ComboMapper.mapComboToResponse(combo),
       });
+
+      await this.sendNotificationService.notifyUsersAboutNewProduct(ComboMapper.mapComboToResponse(combo));
 
       return ComboMapper.mapComboToResponse(combo);
       
