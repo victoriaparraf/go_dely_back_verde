@@ -38,18 +38,18 @@ export class ComboController {
   }
 
   @Get('many')
-  async findAll(@Query() paginationDto: PaginationDto) {
+  async findAll(@Query() paginationDto?: PaginationDto) {
 
     const getComboServicePaginationDto: GetComboServicePaginationDto = {
-      page: paginationDto.page,
-      perpage: paginationDto.perpage,
+      page: paginationDto?.page || 1,
+      perpage: paginationDto?.perpage || 10,
     };
 
     return this.getComboService.findAll(getComboServicePaginationDto);
 
   }
 
-  @Get('one/:id')
+  @Get('one/:term')
   async findOne(@Param('term') id: string) {
 
     const getComboServiceEntryDto: GetComboServiceEntryDto = { id }

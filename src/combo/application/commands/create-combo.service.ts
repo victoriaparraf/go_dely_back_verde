@@ -52,7 +52,9 @@ export class CreateComboService implements IApplicationService<CreateComboServic
             
       const productEntities = await Promise.all(
         productId.map(async (productId) => {
-          const product = await this.productRepository.findOne({ where: { product_id: productId } });
+          const product = await this.productRepository.findOne({
+            where: { product_id: productId },
+          });
           if (!product) {
             throw new NotFoundException(`Product with ID ${productId} not found`);
           }
@@ -100,8 +102,24 @@ export class CreateComboService implements IApplicationService<CreateComboServic
 
       await Promise.all(
         productEntities.map(async (product) => {
-          product.combos = [...(product.combos || []), combo];
-          await this.productRepository.save(product);
+
+          const existingProduct = await this.productRepository.findOne({
+            where: { product_id: product.product_id },
+            relations: ['combos'],
+          });
+      
+          if (!existingProduct) {
+            throw new NotFoundException(`Product with ID ${product.product_id} not found`);
+          }
+      
+          const isAlreadyAssociated = existingProduct.combos.some(
+            (existingCombo) => existingCombo.combo_id === combo.combo_id,
+          );
+      
+          if (!isAlreadyAssociated) {
+            existingProduct.combos.push(combo);
+            await this.productRepository.save(existingProduct); // Guardar relaciones acumuladas
+          }
         }),
       );
 
