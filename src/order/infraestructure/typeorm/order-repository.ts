@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Order } from 'src/order/domain/order-aggregate';
 import { OrderEntity } from '../typeorm/order-entity';
 import { OrderMapper } from '../mappers/order.mapper';
 import { User } from 'src/user/infrastructure/typeorm/user-entity';
 import { OrderProduct } from '../typeorm/order-product';
 import { OrderCombo } from '../typeorm/order-combo';
+import { OrderStatus } from 'src/order/domain/enums/order-status.enum';
 
 @Injectable()
 export class OrderRepository {
@@ -23,6 +24,11 @@ export class OrderRepository {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
+
+  async findByStatuses(statuses: OrderStatus[]): Promise<Order []> {
+    const entities = await this.repository.find({ where: { status: In(statuses) }, relations: ['user', 'order_products', 'order_combos'] });
+    return entities.map(OrderMapper.toDomain);
+  }
 
   async findAll(): Promise<Order[]> {
     const entities = await this.repository.find({

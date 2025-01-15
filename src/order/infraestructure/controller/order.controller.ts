@@ -3,8 +3,6 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
 import { GetUser } from 'src/auth/infrastructure/get-user.decorator';
 import { UpdateOrderDto } from 'src/order/infraestructure/dtos/update-order.dto';
-import { UpdateOrderStatusDto } from 'src/order/infraestructure/dtos/update-status.dto';
-import { OrderService } from 'src/order/application/order.service';
 import { CreateOrderServiceEntryDto } from 'src/order/application/dto/entry/create-order-entry.dto';
 import { ResponseOrderDTO } from '../dtos/response-order.dto';
 import { CreateOrderService } from 'src/order/application/command/create-order-service';
@@ -37,6 +35,18 @@ export class OrderController {
     @Get('many')
     async findAll(): Promise<ResponseOrderDTO[]> {
         return this.getOrderService.findAll();
+    }
+
+    @Get('many/past')
+    async getPastOrders(): Promise<ResponseOrderDTO[]> {
+        const statuses = [OrderStatus.CANCELLED, OrderStatus.DELIVERED];
+        return this.getOrderService.findByStatuses(statuses);
+    }
+
+    @Get('many/active')
+    async getActiveOrders(): Promise<ResponseOrderDTO[]> {
+        const statuses = [OrderStatus.BEING_PROCESSED, OrderStatus.CREATED, OrderStatus.SHIPPED];
+        return this.getOrderService.findByStatuses(statuses);
     }
 
     @Get('one/:id')
