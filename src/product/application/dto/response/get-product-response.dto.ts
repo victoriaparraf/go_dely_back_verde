@@ -10,4 +10,4 @@ export class GetProductServiceResponseDto {
     categories: string[];
     images: string[];
     discount: number | null;
-  }
+}

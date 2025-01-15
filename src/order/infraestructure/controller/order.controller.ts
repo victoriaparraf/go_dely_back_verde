@@ -33,12 +33,12 @@ export class OrderController {
         return this.getOrderService.findAll();
     }
 
-    @Get(':id')
+    @Get('one/:id')
     async getOrderById(@Param('id') orderId: string): Promise<ResponseOrderDTO | null> {
         return this.getOrderService.execute(orderId);
     }
 
-    @Patch(':id')
+    @Patch('update/:id')
     async update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
         await this.orderService.updateOrder(id, updateOrderDto);
         return {

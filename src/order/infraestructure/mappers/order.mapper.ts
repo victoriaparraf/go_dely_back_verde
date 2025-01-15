@@ -38,7 +38,8 @@ export class OrderMapper {
                 combo_name: combo.combo.combo_name.getValue(),
                 combo_description: combo.combo.combo_description.getValue(),
                 combo_currency: combo.combo.combo_currency.getValue(),
-                combo_stock: combo.combo.combo_stock.getValue()
+                combo_stock: combo.combo.combo_stock.getValue(),
+                combo_weight: combo.combo.combo_weight.getValue()
             };
         }),
     };
@@ -64,7 +65,7 @@ export class OrderMapper {
 
   static toDTO(order: Order): ResponseOrderDTO {
     return {
-        order_id: order.getId().value,
+        id: order.getId().value,
         incremental_id: order.getIncrementalId(),
         address: order.getAddress(),
         longitude: order.getLongitude(),
@@ -76,9 +77,9 @@ export class OrderMapper {
         status: order.getStatus(),
         cupon_code: order.getCupon()?.value,
         products: order.getOrderProducts().map(product => ({
-            order_id: product.order_id,
-            product_id: product.product_id,
+            id: product.order_id,
             quantity: product.quantity,
+            product_id: product.product_id,
             product_price: product.product.product_price.getValue(),
             total_price: product.total_price,
             product_name: product.product.product_name.getValue(),
@@ -89,15 +90,16 @@ export class OrderMapper {
             product_stock: product.product.product_stock.getValue()
         })),
         combos: order.getOrderCombos().map(combo => ({
-            order_id: combo.order_id,
-            combo_id: combo.combo_id,
+            id: combo.order_id,
             quantity: combo.quantity,
+            combo_id: combo.combo_id,
             combo_price: combo.combo.combo_price.getValue(),
             total_price: combo.total_price,
             combo_name: combo.combo.combo_name.getValue(),
             combo_description: combo.combo.combo_description.getValue(),
             combo_currency: combo.combo.combo_currency.getValue(),
-            combo_stock: combo.combo.combo_stock.getValue()
+            combo_stock: combo.combo.combo_stock.getValue(),
+            combo_weight: combo.combo.combo_weight.getValue()
         })),
     };
   }
