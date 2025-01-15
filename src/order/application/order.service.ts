@@ -1,21 +1,13 @@
-import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
-import { PaymentMethodRepository } from 'src/payment-method/infrastructure/typeorm/payment-method.repository';
-import { CreateOrderDto } from '../infraestructure/dtos/create-order.dto';
+import { Injectable } from '@nestjs/common';
 import { UpdateOrderDto } from '../infraestructure/dtos/update-order.dto';
 import { OrderRepository } from '../infraestructure/typeorm/order-repository';
-import { Order } from '../domain/order-aggregate';
-import { OrderMapper } from '../infraestructure/mappers/order.mapper';
-import { ResponseOrderDTO } from '../infraestructure/dtos/response-order.dto';
 import { OrderStatus } from '../domain/enums/order-status.enum';
 import { ClientProxy } from '@nestjs/microservices';
 import { OrderProduct } from '../infraestructure/typeorm/order-product';
-import { OrderEntity } from '../infraestructure/typeorm/order-entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ComboRepository } from 'src/combo/infrastructure/repositories/combo-repository';
 import { OrderCombo } from '../infraestructure/typeorm/order-combo';
 import { Address } from 'src/user/infrastructure/typeorm/address-entity';
-import { ProductRepository } from 'src/product/infrastructure/repositories/product-repositoy';
 
 @Injectable()
 export class OrderService {
@@ -25,38 +17,6 @@ export class OrderService {
         @InjectRepository(OrderCombo) private readonly orderComboRepository: Repository<OrderCombo>,
         @InjectRepository(Address) private readonly addressRepository: Repository<Address>
     ) {}
-
-    async findAll(): Promise<ResponseOrderDTO[]> {
-        const orders = await this.orderRepository.findAll();
-
-        const orderDTOs = await Promise.all(orders.map(order => {
-            const orderEntity = new OrderEntity();
-            orderEntity.order_id = order.getId().toString();
-            orderEntity.address = order.getAddress().toString();
-            orderEntity.currency = order.getCurrency().toString();
-            orderEntity.total = order.getTotal();
-            orderEntity.paymentMethod = order.getPaymentMethodName().toString();
-            orderEntity.status = order.getStatus();
-            return OrderMapper.toDTO(order);
-        }));
-        return orderDTOs;
-    }
-
-    async getOrderById(orderId: string): Promise<ResponseOrderDTO | null> {
-        const order = await this.orderRepository.findById(orderId);
-
-        if (!order) {
-            return null;
-        }
-        const orderEntity = new OrderEntity();
-        orderEntity.order_id = order.getId().toString();
-        orderEntity.address = order.getAddress();
-        orderEntity.currency = order.getCurrency().toString();
-        orderEntity.total = order.getTotal();
-        orderEntity.paymentMethod = order.getPaymentMethodName().toString();
-        orderEntity.status = order.getStatus();
-        return OrderMapper.toDTO(order);
-    }
 
     async updateOrder(orderId: string, dto: UpdateOrderDto): Promise<void> {
         const order = await this.orderRepository.findById(orderId);

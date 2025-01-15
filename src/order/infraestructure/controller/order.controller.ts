@@ -3,20 +3,24 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
 import { GetUser } from 'src/auth/infrastructure/get-user.decorator';
 import { UpdateOrderDto } from 'src/order/infraestructure/dtos/update-order.dto';
-import { UpdateOrderStatusDto } from 'src/order/infraestructure/dtos/update-status.dto';
-import { OrderService } from 'src/order/application/order.service';
 import { CreateOrderServiceEntryDto } from 'src/order/application/dto/entry/create-order-entry.dto';
 import { ResponseOrderDTO } from '../dtos/response-order.dto';
 import { CreateOrderService } from 'src/order/application/command/create-order-service';
 import { GetOrderService } from 'src/order/application/query/get-order-service';
+import { UpdateOrderService } from 'src/order/application/command/update-order-service';
+import { RemoveOrderService } from 'src/order/application/command/delete-order-service';
+import { UpdateOrderStatusService } from 'src/order/application/command/update-order-status-service';
+import { OrderStatus } from 'src/order/domain/enums/order-status.enum';
 
 @ApiTags('Order')
 @Controller('order')
 export class OrderController {
     constructor(
-        private readonly orderService: OrderService,
         private readonly createOrderService: CreateOrderService,
         private readonly getOrderService: GetOrderService,
+        private readonly updateOrderService: UpdateOrderService,
+        private readonly removeOrderService: RemoveOrderService,
+        private readonly updateOrderStatusService: UpdateOrderStatusService,
     ) {}
 
     @Post('create')
@@ -33,32 +37,38 @@ export class OrderController {
         return this.getOrderService.findAll();
     }
 
+    @Get('many/past')
+    async getPastOrders(): Promise<ResponseOrderDTO[]> {
+        const statuses = [OrderStatus.CANCELLED, OrderStatus.DELIVERED];
+        return this.getOrderService.findByStatuses(statuses);
+    }
+
+    @Get('many/active')
+    async getActiveOrders(): Promise<ResponseOrderDTO[]> {
+        const statuses = [OrderStatus.BEING_PROCESSED, OrderStatus.CREATED, OrderStatus.SHIPPED];
+        return this.getOrderService.findByStatuses(statuses);
+    }
+
     @Get('one/:id')
     async getOrderById(@Param('id') orderId: string): Promise<ResponseOrderDTO | null> {
         return this.getOrderService.execute(orderId);
     }
 
     @Patch('update/:id')
-    async update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-        await this.orderService.updateOrder(id, updateOrderDto);
-        return {
-            message: `Order successfully updated`
-        };
+    async updateOrder(@Param('id') orderId: string, @Body() updateOrderDto: UpdateOrderDto): Promise<{ message: string }> {
+        await this.updateOrderService.execute(orderId, updateOrderDto);
+        return { message: 'Order updated successfully.'}
     }
 
-    @Patch(':id/status')
-    async updateStatus(@Param('id') id: string, @Body() dto: UpdateOrderStatusDto): Promise<{ message: string }> {
-        await this.orderService.updateOrderStatus(id, dto.status);
-        return {
-            message: `Order status successfully updated`
-        };
+    @Patch('change/state/:id')
+    async updateOrderStatus(@Param('id') orderId: string, @Body('status') newStatus: OrderStatus): Promise<{ message: string }> {
+        await this.updateOrderStatusService.execute(orderId, newStatus);
+        return { message: `Order status updated to: ${newStatus}.` }
     }
 
-    @Delete(':id')
-    async remove(@Param('id') id: string) {
-        await this.orderService.remove(id);
-        return {
-            message: `Order successfully deleted`
-        };
+    @Delete('delete/:id')
+    async removeOrder(@Param('id') orderId: string): Promise<{ message: string }> {
+        await this.removeOrderService.execute(orderId);
+        return { message: 'Order deleted successfully.'}
     }
 }
