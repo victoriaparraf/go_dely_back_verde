@@ -14,6 +14,7 @@ import { OrderMapper } from 'src/order/infraestructure/mappers/order.mapper';
 import { OrderRepository } from 'src/order/infraestructure/typeorm/order-repository';
 import { ComboRepository } from 'src/combo/infrastructure/repositories/combo-repository';
 import { CouponRepository } from 'src/coupon/infrastructure/repositories/coupon-repository';
+import { SendNotificationService } from 'src/notification/application/services/send-notification.service';
 
 @Injectable()
 export class CreateOrderService {
@@ -71,14 +72,6 @@ export class CreateOrderService {
       await this.orderRepository.save(order);
       if (orderProducts.length) await this.orderRepository.saveOrderProducts(orderProducts);
       if (orderCombos.length) await this.orderRepository.saveOrderCombos(orderCombos);
-
-      // Enviar notificación
-      this.client.send('order_notification', {
-        orderAddress: dto.address,
-        orderTotal: total,
-        orderCurrency: dto.currency,
-        message: 'Your order is ready to be served',
-      }).subscribe();
 
       console.log(order);
 

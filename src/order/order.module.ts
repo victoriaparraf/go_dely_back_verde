@@ -4,8 +4,6 @@ import { OrderController } from './infraestructure/controller/order.controller';
 import { OrderEntity } from './infraestructure/typeorm/order-entity';
 import { OrderRepository } from './infraestructure/typeorm/order-repository';
 import { PaymentMethodModule } from 'src/payment-method/payment-method.module';
-import { RabbitmqModule } from './infraestructure/rabbitmq/rabbitmq.module';
-import { MailModule } from './infraestructure/mail/mail.module';
 import { UserModule } from 'src/user/user.module';
 import { ProductModule } from 'src/product/product.module';
 import { OrderProduct } from './infraestructure/typeorm/order-product';
@@ -19,7 +17,7 @@ import { UpdateOrderService } from './application/command/update-order-service';
 import { GetOrderService } from './application/query/get-order-service';
 
 @Module({
-  imports: [ TypeOrmModule.forFeature([OrderEntity, OrderProduct, OrderCombo]), PaymentMethodModule, UserModule, RabbitmqModule, MailModule, ProductModule, CouponModule, ComboModule ],
+  imports: [ TypeOrmModule.forFeature([OrderEntity, OrderProduct, OrderCombo]), PaymentMethodModule, UserModule, ProductModule, CouponModule, ComboModule ],
   controllers: [ OrderController ],
   providers: [
     GetOrderService,
