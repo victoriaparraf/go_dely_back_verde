@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrderController } from './infraestructure/controller/order.controller';
 import { OrderEntity } from './infraestructure/typeorm/order-entity';
@@ -19,7 +19,7 @@ import { UpdateOrderService } from './application/command/update-order-service';
 import { GetOrderService } from './application/query/get-order-service';
 
 @Module({
-  imports: [ TypeOrmModule.forFeature([OrderEntity, OrderProduct, OrderCombo]), PaymentMethodModule, UserModule, RabbitmqModule, MailModule, ProductModule, CouponModule, ComboModule ],
+  imports: [ TypeOrmModule.forFeature([OrderEntity, OrderProduct, OrderCombo]), PaymentMethodModule, UserModule, RabbitmqModule, MailModule, CouponModule, forwardRef(() => ComboModule), forwardRef(() => ProductModule) ],
   controllers: [ OrderController ],
   providers: [
     GetOrderService,
@@ -27,7 +27,7 @@ import { GetOrderService } from './application/query/get-order-service';
     UpdateOrderService,
     RemoveOrderService,
     UpdateOrderStatusService,
-    OrderRepository
+    OrderRepository,
   ],
   exports: [ OrderRepository ]
 

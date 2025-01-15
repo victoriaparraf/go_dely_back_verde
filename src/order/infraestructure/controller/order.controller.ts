@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
 import { GetUser } from 'src/auth/infrastructure/get-user.decorator';
@@ -11,6 +11,7 @@ import { UpdateOrderService } from 'src/order/application/command/update-order-s
 import { RemoveOrderService } from 'src/order/application/command/delete-order-service';
 import { UpdateOrderStatusService } from 'src/order/application/command/update-order-status-service';
 import { OrderStatus } from 'src/order/domain/enums/order-status.enum';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
 
 @ApiTags('Order')
 @Controller('order')
@@ -33,20 +34,20 @@ export class OrderController {
     }
 
     @Get('many')
-    async findAll(): Promise<ResponseOrderDTO[]> {
-        return this.getOrderService.findAll();
+    async findAll(@Query() paginationDto?: PaginationDto): Promise<ResponseOrderDTO[]> {
+        return this.getOrderService.findAll(paginationDto);
     }
 
     @Get('many/past')
-    async getPastOrders(): Promise<ResponseOrderDTO[]> {
+    async getPastOrders(@Query() paginationDto?: PaginationDto): Promise<ResponseOrderDTO[]> {
         const statuses = [OrderStatus.CANCELLED, OrderStatus.DELIVERED];
-        return this.getOrderService.findByStatuses(statuses);
+        return this.getOrderService.findByStatuses(statuses, paginationDto);
     }
 
     @Get('many/active')
-    async getActiveOrders(): Promise<ResponseOrderDTO[]> {
+    async getActiveOrders(@Query() paginationDto?: PaginationDto): Promise<ResponseOrderDTO[]> {
         const statuses = [OrderStatus.BEING_PROCESSED, OrderStatus.CREATED, OrderStatus.SHIPPED];
-        return this.getOrderService.findByStatuses(statuses);
+        return this.getOrderService.findByStatuses(statuses, paginationDto);
     }
 
     @Get('one/:id')
