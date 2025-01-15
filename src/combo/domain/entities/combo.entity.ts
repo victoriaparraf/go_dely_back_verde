@@ -10,10 +10,12 @@ import { ComboWeight } from "../value-objects/combo-weight.vo";
 import { ComboMeasurement } from "../value-objects/combo-measurement.vo";
 import { ComboCaducityDate } from "../value-objects/combo-caducity-date.vo";
 import { ComboImage } from "../value-objects/combo-image.vo";
+import { Discount } from "src/discount/domain/discount-aggregate";
+import { ComboID } from "../value-objects/combo-id.vo";
 
 export class Combo {
 
-    combo_id: string;
+    combo_id: ComboID;
     combo_name: ComboName;
     combo_price: ComboPrice;
     combo_description: ComboDescription;
@@ -25,7 +27,7 @@ export class Combo {
     combo_categories: Category[];
     combo_images: ComboImage[];
     products: Product[];
-    // combo_discount: Discount;
+    combo_discount: Discount;
 
     constructor(
         
@@ -40,10 +42,10 @@ export class Combo {
         caducity_date: Date,
         categories: Category[] = [],
         image: ComboImage[] = [],
-        products: Product[] = []
-        // discount: Discount
+        products: Product[] = [],
+        discount: Discount
     ) {
-        this.combo_id = id;
+        this.combo_id = new ComboID(id);
         this.combo_name = new ComboName(name);
         this.combo_description = new ComboDescription(description);
         this.combo_price = new ComboPrice(price);
@@ -55,7 +57,7 @@ export class Combo {
         this.combo_categories = categories;
         this.combo_images = image;
         this.products = products;
-        // this.combo_discount = discount;
+        this.combo_discount = discount;
     }
 
 }

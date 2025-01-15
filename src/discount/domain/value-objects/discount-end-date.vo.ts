@@ -10,7 +10,7 @@ export class DiscountEndDate extends ValueObject<Date> {
 
     protected validate(value: Date): void {
         if (!this.isValidDate(value)) {
-            throw new unvalidEndDateDiscountException('Invalid discount end date.');
+            throw new unvalidEndDateDiscountException('Invalid discount deadline.');
         }
     }
 

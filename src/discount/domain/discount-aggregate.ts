@@ -5,8 +5,6 @@ import { DiscountDescription } from "./value-objects/discount-description.vo";
 import { DiscountPercentage } from "./value-objects/discount-percentage.vo";
 import { DiscountStartDate } from "./value-objects/discount-start-date.vo";
 import { DiscountEndDate } from './value-objects/discount-end-date.vo';
-import { Product } from "src/product/domain/entities/product.entity";
-import { Combo } from "src/combo/domain/entities/combo.entity";
 import { DiscountImage } from "./value-objects/discount-image.vo";
 import { DiscountCreatedEvent } from "./events/discount-created.event";
 import { unvalidDiscountException } from "./exceptions/unvalid-discount";
@@ -18,8 +16,6 @@ export class Discount extends AggregateRoot<DiscountID>{
     private percentage: DiscountPercentage;
     private start_date: DiscountStartDate;
     private end_date: DiscountEndDate;
-    private products?: Product[];
-    private combos?: Combo[];
     private image?: DiscountImage;
 
     get Name(): DiscountName{
@@ -42,14 +38,6 @@ export class Discount extends AggregateRoot<DiscountID>{
         return this.EndDate;
     }
 
-    get Products(): Product[] {
-        return this.products;
-    }
-
-    get Combos(): Combo[]{
-        return this.combos;
-    }
-
     get Image(): DiscountImage{
         return this.image;
     }
@@ -59,14 +47,13 @@ export class Discount extends AggregateRoot<DiscountID>{
         id: DiscountID,
         name: DiscountName,
         description: DiscountDescription,
+        percentage: DiscountPercentage,
         start_date: DiscountStartDate,
         end_date: DiscountEndDate,
-        products?: Product[],
-        combos?: Combo[],
         image?: DiscountImage
 
     ){
-        const createdDiscount = DiscountCreatedEvent.create(id, name, description, start_date, end_date, products, combos, image)
+        const createdDiscount = DiscountCreatedEvent.create(id, name, description, percentage, start_date, end_date, image)
 
         super(id);
         this.isValidDiscount();

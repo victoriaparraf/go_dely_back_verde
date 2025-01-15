@@ -14,9 +14,9 @@ export class GetDiscountService implements IApplicationService<GetDiscountServic
 
     async execute(entryDto: GetDiscountServiceEntryDto): Promise<GetDiscountServiceResponseDto> {
 
-        const discount = await this.discountRepository.findOne(entryDto.term);
+        const discount = await this.discountRepository.findOne(entryDto.id);
         if (!discount) {
-            throw new NotFoundException(`Discount with term ${entryDto.term} not found`);
+            throw new NotFoundException(`Discount with term ${entryDto.id} not found`);
         }
         return DiscountMapper.mapDiscountToResponse(discount);
 

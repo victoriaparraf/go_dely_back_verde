@@ -11,7 +11,7 @@ export class DeleteComboService{
 
         const combo = await this.comboRepository.findOne(comboID);
         if(!combo){
-            throw new NotFoundException(`Product with ID ${comboID} not found`)
+            throw new NotFoundException(`Combo with ID ${comboID} not found`)
         }
 
         try {

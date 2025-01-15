@@ -1,5 +1,5 @@
 export class GetComboServiceEntryDto {
-    term: string;
+    id: string;
 }
 
 export class GetComboServicePaginationDto {
