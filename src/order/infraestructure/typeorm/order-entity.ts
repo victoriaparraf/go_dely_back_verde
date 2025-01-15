@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, CreateDateColumn } from 'typeorm';
 import { OrderStatus } from 'src/order/domain/enums/order-status.enum';
 import { User } from 'src/user/infrastructure/typeorm/user-entity';
 import { OrderProduct } from './order-product';
@@ -10,6 +10,9 @@ export class OrderEntity {
 
     @PrimaryGeneratedColumn('uuid')
     order_id: string;
+
+    @CreateDateColumn({ type: 'timestamp' })
+    createdDate: Date;
 
     @Column({ type: 'int', generated: 'increment' })
     incremental_id: number;

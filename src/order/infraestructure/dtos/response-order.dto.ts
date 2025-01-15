@@ -5,10 +5,13 @@ import { OrderProduct } from "src/order/infraestructure/typeorm/order-product";
 
 export class ResponseOrderDTO {
     @ApiProperty()
-    order_id: string;
+    id: string;
 
     @ApiProperty()
     incremental_id: number;
+
+    @ApiProperty()
+    createdDate: Date;
 
     @ApiProperty()
     address: string;
@@ -37,9 +40,9 @@ export class ResponseOrderDTO {
     @ApiProperty({ type: () => [OrderProduct]})
     @Type(() => OrderProduct)
     products: {
-        order_id: string;
-        product_id: string;
+        id: string;
         quantity: number;
+        product_id: string;
         product_price?: number;
         total_price?: number;
         product_name?: string;
@@ -53,9 +56,9 @@ export class ResponseOrderDTO {
     @ApiProperty({ type: () => [OrderCombo]})
     @Type(() => OrderCombo)
     combos: {
-        order_id: string,
-        combo_id: string,
+        id: string,
         quantity: number,
+        combo_id: string,
         combo_price: number,
         total_price: number,
         combo_name: string,

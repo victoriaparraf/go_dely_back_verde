@@ -11,7 +11,7 @@ export class ComboWeight extends ValueObject<number> {
         }
 
         protected validate(value: number): void {
-            if (value <= 0) {
+            if (value > 0) {
                 throw new unvalidWeightComboException(`Weight '${value}' must be greater than 0`);
             }
         }
