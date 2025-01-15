@@ -88,7 +88,14 @@ export class Product {
   @ManyToOne(() => CategoryEntity, (category) => category.products)
   product_category: CategoryEntity;
 
-  @ManyToMany(() => Combo, combo => combo.products)
+  @ManyToMany(() => Combo, (combo) => combo.products, {
+    cascade: true,
+  })
+  @JoinTable({
+    name: 'combo_productos',
+    joinColumn: { name: 'product_id', referencedColumnName: 'product_id' },
+    inverseJoinColumn: { name: 'combo_id', referencedColumnName: 'combo_id' },
+  })
   combos: Combo[];
 
   @ManyToOne(
