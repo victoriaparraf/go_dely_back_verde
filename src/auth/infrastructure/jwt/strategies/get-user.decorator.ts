@@ -1,8 +1,9 @@
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { ExecutionContext, createParamDecorator } from "@nestjs/common"
 
 export const GetUser = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest();
-    return request.user;
-  },
-);
+    (_data, context: ExecutionContext) => {
+        const request = context.switchToHttp().getRequest()
+        if (!request.user) throw new Error(' 404 user not found')
+        return request.user
+    }
+)

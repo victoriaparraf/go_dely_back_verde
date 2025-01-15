@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
-import { GetUser } from 'src/auth/infrastructure/get-user.decorator';
+import { GetUser } from 'src/auth/infrastructure/jwt/strategies/get-user.decorator';
 import { UpdateOrderDto } from 'src/order/infraestructure/dtos/update-order.dto';
 import { CreateOrderServiceEntryDto } from 'src/order/application/dto/entry/create-order-entry.dto';
 import { ResponseOrderDTO } from '../dtos/response-order.dto';
