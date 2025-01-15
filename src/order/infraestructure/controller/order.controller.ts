@@ -9,14 +9,20 @@ import { CreateOrderServiceEntryDto } from 'src/order/application/dto/entry/crea
 import { ResponseOrderDTO } from '../dtos/response-order.dto';
 import { CreateOrderService } from 'src/order/application/command/create-order-service';
 import { GetOrderService } from 'src/order/application/query/get-order-service';
+import { UpdateOrderService } from 'src/order/application/command/update-order-service';
+import { RemoveOrderService } from 'src/order/application/command/delete-order-service';
+import { UpdateOrderStatusService } from 'src/order/application/command/update-order-status-service';
+import { OrderStatus } from 'src/order/domain/enums/order-status.enum';
 
 @ApiTags('Order')
 @Controller('order')
 export class OrderController {
     constructor(
-        private readonly orderService: OrderService,
         private readonly createOrderService: CreateOrderService,
         private readonly getOrderService: GetOrderService,
+        private readonly updateOrderService: UpdateOrderService,
+        private readonly removeOrderService: RemoveOrderService,
+        private readonly updateOrderStatusService: UpdateOrderStatusService,
     ) {}
 
     @Post('create')
@@ -39,26 +45,20 @@ export class OrderController {
     }
 
     @Patch('update/:id')
-    async update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-        await this.orderService.updateOrder(id, updateOrderDto);
-        return {
-            message: `Order successfully updated`
-        };
+    async updateOrder(@Param('id') orderId: string, @Body() updateOrderDto: UpdateOrderDto): Promise<{ message: string }> {
+        await this.updateOrderService.execute(orderId, updateOrderDto);
+        return { message: 'Order updated successfully.'}
     }
 
-    @Patch(':id/status')
-    async updateStatus(@Param('id') id: string, @Body() dto: UpdateOrderStatusDto): Promise<{ message: string }> {
-        await this.orderService.updateOrderStatus(id, dto.status);
-        return {
-            message: `Order status successfully updated`
-        };
+    @Patch('change/state/:id')
+    async updateOrderStatus(@Param('id') orderId: string, @Body('status') newStatus: OrderStatus): Promise<{ message: string }> {
+        await this.updateOrderStatusService.execute(orderId, newStatus);
+        return { message: `Order status updated to: ${newStatus}.` }
     }
 
-    @Delete(':id')
-    async remove(@Param('id') id: string) {
-        await this.orderService.remove(id);
-        return {
-            message: `Order successfully deleted`
-        };
+    @Delete('delete/:id')
+    async removeOrder(@Param('id') orderId: string): Promise<{ message: string }> {
+        await this.removeOrderService.execute(orderId);
+        return { message: 'Order deleted successfully.'}
     }
 }
