@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { Between, In, Repository } from 'typeorm';
 import { Order } from 'src/order/domain/order-aggregate';
 import { OrderEntity } from '../typeorm/order-entity';
 import { OrderMapper } from '../mappers/order.mapper';
@@ -51,6 +51,24 @@ export class OrderRepository {
       relations: ['user', 'order_products', 'order_combos'],
     });
     return entity ? OrderMapper.toDomain(entity) : null;
+  }
+
+  async findOrdersByDateRange(startDate: Date, endDate: Date): Promise<OrderEntity[]> {
+    return this.repository.find({
+      where: {
+        createdDate: Between(startDate, endDate),
+      },
+      relations: ['order_products'],
+    });
+  }
+
+  async findComboOrdersByDateRange(startDate: Date, endDate: Date): Promise<OrderEntity[]> {
+    return this.repository.find({
+      where: {
+        createdDate: Between(startDate, endDate),
+      },
+      relations: ['order_combos'],
+    });
   }
 
   async save(order: Order): Promise<void> {

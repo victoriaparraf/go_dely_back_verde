@@ -10,6 +10,7 @@ import { CreateComboDto } from '../dtos/create-combo.dto';
 import { UpdateComboDto } from '../dtos/update-combo.dto';
 import { UpdateComboServiceEntryDto } from '../../application/dto/entry/update-combo-entry.dto';
 import { CreateComboServiceEntryDto } from 'src/combo/application/dto/entry/create-combo-entry.dto';
+import { GetPopularCombosService } from 'src/combo/application/query/get-popular-combos-service';
 
 @ApiTags('Combo')
 @Controller('bundle')
@@ -18,7 +19,8 @@ export class ComboController {
     private readonly createComboService: CreateComboService,
     private readonly getComboService: GetComboService,
     private readonly deleteComboService: DeleteComboService,
-    private readonly updateComboService: UpdateComboService
+    private readonly updateComboService: UpdateComboService,
+    private readonly getPopularCombosService: GetPopularCombosService
   ) {}
 
   @Post('create')
@@ -47,6 +49,16 @@ export class ComboController {
 
     return this.getComboService.findAll(getComboServicePaginationDto);
 
+  }
+
+  @Get('many/popular')
+  async findPopular(@Query() paginationDto: PaginationDto) {
+    const page = paginationDto?.page || 1;
+    const perpage = paginationDto?.perpage || 10;
+
+    const combos = await this.getPopularCombosService.execute(page, perpage);
+
+    return combos;
   }
 
   @Get('one/:term')

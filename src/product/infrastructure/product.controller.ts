@@ -14,6 +14,8 @@ import { UpdateProductDto } from './dtos/update-product.dto';
 import { DeleteProductService } from '../application/command/delete-product-service';
 import { GetProductsCombosSummaryService } from '../application/query/get-products-combos-service';
 import { CreateProductServiceEntryDto } from '../application/dto/entry/create-product-entry.dto';
+import { GetPopularProductsService } from '../application/query/get-popular-products-service';
+import { GetProductServiceResponseDto } from '../application/dto/response/get-product-response.dto';
 
 @ApiTags('Product')
 @Controller('product')
@@ -27,6 +29,7 @@ export class ProductController {
     private readonly deleteProductService: DeleteProductService,
     private readonly getProductsCombosSummaryService: GetProductsCombosSummaryService,
     private readonly updateProductService: UpdateProductService,
+    private readonly getPopularProductsService: GetPopularProductsService
   ) {}
 
   @Post('create')
@@ -66,6 +69,16 @@ export class ProductController {
       perpage: paginationDto?.perpage || 10,
     };
     return this.getProductService.findAll(getProductServicePaginationDto);
+  }
+
+  @Get('many/popular')
+  async findPopular(@Query() paginationDto: PaginationDto) {
+    const page = paginationDto?.page || 1;
+    const perpage = paginationDto?.perpage || 10;
+
+    const products = await this.getPopularProductsService.execute(page, perpage);
+
+    return products;
   }
 
   @Get('one/:term')

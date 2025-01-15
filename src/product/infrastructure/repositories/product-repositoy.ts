@@ -1,11 +1,12 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { Image } from '../typeorm/image-entity';
 import { isUUID } from 'class-validator';
 import { IProductRepository } from 'src/product/domain/repositories/product-repository-interface';
 import { Product } from '../typeorm/product-entity';
 import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
+import { GetProductServicePaginationDto } from 'src/product/application/dto/entry/get-product-entry.dto';
 
 @Injectable()
 export class ProductRepository implements IProductRepository {
@@ -37,6 +38,17 @@ export class ProductRepository implements IProductRepository {
       skip: (page - 1) * perpage,
       relations: ['product_category', 'images', 'discount'],
     });
+  }
+
+  async findProductsByIds(productIds: string[]): Promise<Product[]> {
+    return this.productRepository.find({
+      where: { product_id: In(productIds) },
+      relations: ['product_category', 'images', 'discount'],
+    });
+  }
+
+  async countProductsByIds(productIds: string[]): Promise<number> {
+    return this.productRepository.count({ where: { product_id: In(productIds) } });
   }
 
   async findOne(term: string) {
