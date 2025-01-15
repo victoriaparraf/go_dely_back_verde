@@ -8,6 +8,7 @@ import { User } from 'src/user/infrastructure/typeorm/user-entity';
 import { OrderProduct } from '../typeorm/order-product';
 import { OrderCombo } from '../typeorm/order-combo';
 import { OrderStatus } from 'src/order/domain/enums/order-status.enum';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
 
 @Injectable()
 export class OrderRepository {
@@ -25,16 +26,23 @@ export class OrderRepository {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async findByStatuses(statuses: OrderStatus[]): Promise<Order []> {
-    const entities = await this.repository.find({ where: { status: In(statuses) }, relations: ['user', 'order_products', 'order_combos'] });
-    return entities.map(OrderMapper.toDomain);
+  async findAll(paginationDto?: PaginationDto): Promise<OrderEntity[]> {
+    const { page = 1, perpage = 10 } = paginationDto || {};
+    return this.repository.find({
+      relations: ['user', 'order_products', 'order_combos'],
+      skip: (page - 1) * perpage,
+      take: perpage,
+    });
   }
 
-  async findAll(): Promise<Order[]> {
-    const entities = await this.repository.find({
+  async findByStatuses(statuses: OrderStatus[], paginationDto?: PaginationDto): Promise<OrderEntity[]> {
+    const { page = 1, perpage = 10 } = paginationDto || {};
+    return this.repository.find({
+      where: { status: In(statuses) },
       relations: ['user', 'order_products', 'order_combos'],
+      skip: (page - 1) * perpage,
+      take: perpage,
     });
-    return Promise.all(entities.map(OrderMapper.toDomain));
   }
 
   async findById(orderId: string): Promise<Order | null> {

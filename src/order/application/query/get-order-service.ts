@@ -4,6 +4,7 @@ import { OrderRepository } from '../../infraestructure/typeorm/order-repository'
 import { ResponseOrderDTO } from '../../infraestructure/dtos/response-order.dto';
 import { OrderMapper } from '../../infraestructure/mappers/order.mapper';
 import { OrderStatus } from 'src/order/domain/enums/order-status.enum';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
 
 @Injectable()
 export class GetOrderService implements IApplicationService<string, ResponseOrderDTO> {
@@ -17,13 +18,13 @@ export class GetOrderService implements IApplicationService<string, ResponseOrde
     return OrderMapper.toDTO(order);
   }
 
-  async findAll(): Promise<ResponseOrderDTO[]> {
-    const orders = await this.orderRepository.findAll();
-    return orders.map(order => OrderMapper.toDTO(order));
+  async findAll(paginationDto?: PaginationDto): Promise<ResponseOrderDTO[]> {
+    const orders = await this.orderRepository.findAll(paginationDto);
+    return orders.map(orderEntity => OrderMapper.toDTO(OrderMapper.toDomain(orderEntity)));
   }
 
-  async findByStatuses(statuses: OrderStatus[]): Promise<ResponseOrderDTO[]> {
-    const orders = await this.orderRepository.findByStatuses(statuses);
-    return orders.map(order => OrderMapper.toDTO(order));
+  async findByStatuses(statuses: OrderStatus[], paginationDto?: PaginationDto): Promise<ResponseOrderDTO[]> {
+    const orders = await this.orderRepository.findByStatuses(statuses, paginationDto);
+    return orders.map(orderEntity => OrderMapper.toDTO(OrderMapper.toDomain(orderEntity)));
   }
 }
