@@ -11,6 +11,9 @@ export class ResponseOrderDTO {
     incremental_id: number;
 
     @ApiProperty()
+    createdDate: Date;
+
+    @ApiProperty()
     address: string;
 
     @ApiProperty()

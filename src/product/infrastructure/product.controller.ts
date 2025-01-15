@@ -60,10 +60,10 @@ export class ProductController {
   }
 
   @Get('many')
-  async findAll(@Query() paginationDto: PaginationDto) {
+  async findAll(@Query() paginationDto?: PaginationDto) {
     const getProductServicePaginationDto: GetProductServicePaginationDto = {
-      page: paginationDto.page,
-      perpage: paginationDto.perpage,
+      page: paginationDto?.page || 1,
+      perpage: paginationDto?.perpage || 10,
     };
     return this.getProductService.findAll(getProductServicePaginationDto);
   }

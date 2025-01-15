@@ -9,6 +9,7 @@ export class OrderMapper {
     return {
         order_id: order.getId().value,
         incremental_id: order.getIncrementalId(),
+        createdDate: order.getCreatedDate(),
         address: order.getAddress(),
         currency: order.getCurrency().value,
         longitude: order.getLongitude(),
@@ -67,6 +68,7 @@ export class OrderMapper {
     return {
         id: order.getId().value,
         incremental_id: order.getIncrementalId(),
+        createdDate: order.getCreatedDate(),
         address: order.getAddress(),
         longitude: order.getLongitude(),
         latitude: order.getLatitude(),

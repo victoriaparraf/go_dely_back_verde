@@ -23,6 +23,7 @@ export class Order extends AggregateRoot<OrderID> {
     order_id: string;
     private cupon_code?: CouponCode;
     incremental_id: number;
+    private createdDate: Date;
 
     constructor(
         id: OrderID,
@@ -37,7 +38,8 @@ export class Order extends AggregateRoot<OrderID> {
         status: OrderStatus = OrderStatus.CREATED,
         order_products: OrderProduct[] = [],
         order_combos: OrderCombo[] = [],
-        cupon_code?: CouponCode
+        cupon_code?: CouponCode,
+        createdDate: Date = new Date()
 
     ) {
         super(id);
@@ -53,6 +55,7 @@ export class Order extends AggregateRoot<OrderID> {
         this.order_products = order_products;
         this.order_combos = order_combos;
         this.cupon_code = cupon_code;
+        this.createdDate = createdDate;
     }
 
     static create(
@@ -83,7 +86,8 @@ export class Order extends AggregateRoot<OrderID> {
             status,
             order_products,
             order_combos,
-            cupon_code ? new CouponCode(cupon_code.value) : undefined
+            cupon_code ? new CouponCode(cupon_code.value) : undefined,
+            new Date()
         );
     }
 
@@ -117,8 +121,13 @@ export class Order extends AggregateRoot<OrderID> {
             status,
             order_products,
             order_combos,
-            cupon_code ? new CouponCode(cupon_code.value) : undefined
+            cupon_code ? new CouponCode(cupon_code.value) : undefined,
+            new Date()
         );
+    }
+
+    getCreatedDate(): Date {
+        return this.createdDate;
     }
 
     getIncrementalId(): number {
