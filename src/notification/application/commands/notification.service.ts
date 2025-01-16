@@ -23,19 +23,20 @@ export class NotificationService {
       const existingNotification = await this.notificationTokenRepository.findOne({
         where: {
           user: { user_id: userId },
+          token: token,
         },
       });
 
       if (existingNotification) {
-        existingNotification.token = token;
-        return await this.notificationTokenRepository.save(existingNotification);
-      }
+        return existingNotification;
+      }else{
 
-      const notification = this.notificationTokenRepository.create({
-        user,
-        token,
-      });
-      return await this.notificationTokenRepository.save(notification);
+        const notification = this.notificationTokenRepository.create({
+          user,
+          token,
+        });
+        return await this.notificationTokenRepository.save(notification);
+      }
 
     } catch (error) {
       throw new InternalServerErrorException('Error saving token');
