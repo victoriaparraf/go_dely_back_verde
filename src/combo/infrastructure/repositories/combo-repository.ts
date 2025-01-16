@@ -33,6 +33,17 @@ export class ComboRepository implements IComboRepository {
     return this.comboRepository.save(combo);
   }
 
+  async findCombosByIds(comboIds: string[]): Promise<Combo[]> {
+    return this.comboRepository.find({
+      where: { combo_id: In(comboIds) },
+      relations: ['combo_categories', 'products', 'discount'],
+    });
+  }
+
+  async countCombosByIds(comboIds: string[]): Promise<number> {
+    return this.comboRepository.count({ where: { combo_id: In(comboIds) } });
+  }
+
   async findOne(term: string) {
 
     let combo: Combo;

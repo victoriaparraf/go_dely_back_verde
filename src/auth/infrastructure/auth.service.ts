@@ -22,6 +22,12 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  private getJwtToken(payload: IJwtPayload) {
+    console.log('Generating JWT token for user_id:', payload.user_id);
+    const token = this.jwtService.sign(payload);
+    return token;
+ }
+
   private mapUserLoginToResponse(user:User):any{
     return{
       user: {
@@ -33,6 +39,10 @@ export class AuthService {
       },
       token: this.getJwtToken({ user_id: user.user_id })
     };
+  }
+
+  async validateUserById(userId: string): Promise<User> {
+    return this.userRepository.findOne({ where: { user_id: userId } });
   }
 
   async create(createUserDto: CreateUserDto): Promise<CreateUserResponseDto> {
@@ -67,7 +77,7 @@ export class AuthService {
 
   async login( loginUserDto: LoginUserDto ) {
     
-    const { password, email } = loginUserDto;
+    const { email, password } = loginUserDto;
     
     const user = await this.userRepository
       .createQueryBuilder('user')
@@ -86,6 +96,7 @@ export class AuthService {
       throw new UnauthorizedException('User is inactive');
     }
     
+    console.log('User before generating token:', user);
     return this.mapUserLoginToResponse(user);
 
   }
@@ -107,14 +118,6 @@ export class AuthService {
     }
   }
 
-  private getJwtToken ( payload: IJwtPayload ){
-
-    const token = this.jwtService.sign( payload );
-
-    return token;
-
-  }
-
   private handleDBErrors (error: any){
 
     if (error.code === '23505')
@@ -123,10 +126,6 @@ export class AuthService {
     console.log(error)
 
     throw new InternalServerErrorException('Check internal server logs')
-  }
-
-  async validateUserById(userId: string): Promise<User> {
-    return this.userRepository.findOne({ where: { user_id: userId } });
   }
 
 }

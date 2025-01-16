@@ -15,10 +15,10 @@ export class ComboMapper {
             currency : combo.combo_currency.getValue(),
             stock: combo.combo_stock.getValue(),
             images: combo.combo_images.map(image => image.getValue()),
-            category: combo.combo_categories.map(category => category.category_id),
-            productId: combo.products.map(product => product.product_id),
+            categories: combo.combo_categories.map(category => category.category_id),
+            products: combo.products.map(product => product.product_id),
             caducityDate: combo.combo_caducity_date ? combo.combo_caducity_date.getValue() : null,
-            discountId: combo.discount ? combo.discount.discount_id : null,
+            discount: combo.discount ? combo.discount.discount_id : null,
             discountPercentage: combo.discount ? combo.discount.discount_percentage.getValue() : null
         }
     }

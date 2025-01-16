@@ -11,10 +11,10 @@ export class CreateComboServiceResponseDto {
     description: string;
     stock: number;
     images: string[];
-    productId: string[];
-    category: string[];
+    products: string[];
+    categories: string[];
     caducityDate?: string | Date;
-    discountId?: string;
+    discount?: string;
     discountPercentage?: number;
 
 }

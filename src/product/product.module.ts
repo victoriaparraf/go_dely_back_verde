@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { ProductController } from './infrastructure/product.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './infrastructure/typeorm/product-entity'; 
@@ -16,16 +16,27 @@ import { CommonModule } from 'src/common/common.module';
 import { NotificationModule } from 'src/notification/notification.module';
 import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
 import { Discount } from 'src/discount/infraestructure/typeorm/discount.entity';
+import { GetPopularProductsService } from './application/query/get-popular-products-service';
+import { OrderModule } from 'src/order/order.module';
 
 @Module({
   controllers: [ProductController],
-  providers: [CreateProductService, GetProductService, GetProductsByCategoryService, UpdateProductService, DeleteProductService, GetProductsCombosSummaryService, ProductRepository],
+  providers: [ GetPopularProductsService, CreateProductService, GetProductService, GetProductsByCategoryService, UpdateProductService, DeleteProductService, GetProductsCombosSummaryService, ProductRepository],
   imports:[
     TypeOrmModule.forFeature([ Product, Image, Combo, CategoryEntity, Discount ]),
     CommonModule,
     ComboModule,
-    NotificationModule
+    NotificationModule,
+    forwardRef(() => OrderModule),
   ],
-  exports: [ProductRepository, CreateProductService, GetProductService, GetProductsByCategoryService, DeleteProductService, GetProductsCombosSummaryService, UpdateProductService],
+  exports: [ProductRepository, 
+            CreateProductService, 
+            GetProductService, 
+            GetProductsByCategoryService, 
+            DeleteProductService, 
+            GetProductsCombosSummaryService, 
+            UpdateProductService,
+            GetPopularProductsService,
+          ],
 })
 export class ProductModule {}
