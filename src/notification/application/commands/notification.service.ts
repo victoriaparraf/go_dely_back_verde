@@ -14,7 +14,6 @@ export class NotificationService {
   ) {}
 
   async saveToken(userId: string, token: string): Promise<Notification> {
-    
     try {
       const user = await this.userRepository.findOne({ where: { user_id: userId } });
       if (!user) {
@@ -24,11 +23,12 @@ export class NotificationService {
       const existingNotification = await this.notificationTokenRepository.findOne({
         where: {
           user: { user_id: userId },
-          token: token,
         },
       });
+
       if (existingNotification) {
-        return existingNotification;
+        existingNotification.token = token;
+        return await this.notificationTokenRepository.save(existingNotification);
       }
 
       const notification = this.notificationTokenRepository.create({
