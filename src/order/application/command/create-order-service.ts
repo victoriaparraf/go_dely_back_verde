@@ -15,6 +15,7 @@ import { OrderRepository } from 'src/order/infraestructure/typeorm/order-reposit
 import { ComboRepository } from 'src/combo/infrastructure/repositories/combo-repository';
 import { CouponRepository } from 'src/coupon/infrastructure/repositories/coupon-repository';
 import { SendNotificationService } from 'src/notification/application/services/send-notification.service';
+import { UserRepository } from 'src/user/infrastructure/typeorm/user.repository';
 
 @Injectable()
 export class CreateOrderService {
@@ -22,10 +23,12 @@ export class CreateOrderService {
     private readonly orderRepository: OrderRepository,
     private readonly paymentMethodRepository: PaymentMethodRepository,
     @Inject('RABBITMQ_SERVICE') private readonly client: ClientProxy,
+    private readonly sendNotificationService: SendNotificationService,
     private readonly productRepository: ProductRepository,
     private readonly comboRepository: ComboRepository,
     private readonly couponRepository: CouponRepository,
     @InjectRepository(Address) private readonly addressRepository: Repository<Address>,
+    private readonly userRepository: UserRepository
   ) {}
 
   async createOrder(dto: CreateOrderServiceEntryDto, userId: string): Promise<ResponseOrderDTO> {
@@ -75,6 +78,16 @@ export class CreateOrderService {
 
       console.log(order);
 
+      const user = await this.userRepository.findById(userId); 
+      if (!user) throw new Error('User not found');
+  
+      this.client.emit('notification', {
+              type: 'order',
+              payload: OrderMapper.toDTO(order),
+              email: user.user_email
+      });
+
+      await this.sendNotificationService.notifyUsersAboutOrder(OrderMapper.toDTO(order), user.user_id);
       return OrderMapper.toDTO(order);
 
     } catch (error) {

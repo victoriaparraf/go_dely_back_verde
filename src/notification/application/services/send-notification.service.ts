@@ -17,19 +17,24 @@ export class SendNotificationService {
         body: string,
         data?: Record<string, string>,
         imageUrl?: string,
+        token?: string,
     ): Promise<void> {
-        const notifications = await this.notificationRepository.find({
-            select: ['token'],
-        });
+        if (token) {
+            await this.firebaseNotificationsService.sendNotification(token, title, body, data, imageUrl);
+        } else {
+            const notifications = await this.notificationRepository.find({
+                select: ['token'],
+            });
 
-        const tokens = notifications.map(notification => notification.token);
+            const tokens = notifications.map(notification => notification.token);
 
-        if (tokens.length === 0) {
-            console.log('No hay tokens de notificación registrados.');
-            return;
+            if (tokens.length === 0) {
+                console.log('No hay tokens de notificación registrados.');
+                return;
+            }
+
+            await this.firebaseNotificationsService.sendNotifications(tokens, title, body, data, imageUrl);
         }
-
-        await this.firebaseNotificationsService.sendNotification(tokens, title, body, data, imageUrl);
     }
 
     async notifyUsersAboutNewProduct(product: any): Promise<void> {
@@ -67,4 +72,16 @@ export class SendNotificationService {
 
         await this.notifyUsers(title, body, data, imageUrl);
     }
+
+    async notifyUsersAboutOrder(order: any, token: string): Promise<void> {
+        const title = 'GoDely - Order Confirmation';
+        const body = `Your Order is ready to be served: ${order.status}`;
+        const data = {
+            orderId: order.id,
+            orderAddress: order.address
+        };
+    
+        await this.notifyUsers(title, body, data, token);
+    }
+    
 }

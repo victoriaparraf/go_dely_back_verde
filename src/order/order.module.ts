@@ -15,9 +15,11 @@ import { UpdateOrderStatusService } from './application/command/update-order-sta
 import { RemoveOrderService } from './application/command/delete-order-service';
 import { UpdateOrderService } from './application/command/update-order-service';
 import { GetOrderService } from './application/query/get-order-service';
+import { CommonModule } from 'src/common/common.module';
+import { NotificationModule } from 'src/notification/notification.module';
 
 @Module({
-  imports: [ TypeOrmModule.forFeature([OrderEntity, OrderProduct, OrderCombo]), PaymentMethodModule, UserModule, ProductModule, CouponModule, ComboModule ],
+  imports: [ TypeOrmModule.forFeature([OrderEntity, OrderProduct, OrderCombo]), PaymentMethodModule, UserModule, ProductModule, CouponModule, ComboModule, CommonModule, NotificationModule ],
   controllers: [ OrderController ],
   providers: [
     GetOrderService,
