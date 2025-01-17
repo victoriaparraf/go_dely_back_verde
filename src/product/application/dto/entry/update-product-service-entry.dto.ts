@@ -9,4 +9,5 @@ export class UpdateProductServiceEntryDto {
     product_stock?: number;
     product_category?: string;
     images?: string[];
+    discount?: string;
   }

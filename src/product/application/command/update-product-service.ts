@@ -13,6 +13,7 @@ import { ProductWeight } from 'src/product/domain/value-objects/product-weight.v
 import { ProductRepository } from 'src/product/infrastructure/repositories/product-repositoy';
 import { CloudinaryService } from 'src/common/infraestructure/cloudinary/cloudinary.service';
 import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
+import { Discount } from 'src/discount/infraestructure/typeorm/discount.entity';
 
 @Injectable()
 export class UpdateProductService {
@@ -20,10 +21,11 @@ export class UpdateProductService {
     private readonly productRepository: ProductRepository,
     @InjectRepository(CategoryEntity) private readonly categoryRepository: Repository<CategoryEntity>,
     private readonly cloudinaryService: CloudinaryService,
+    @InjectRepository(Discount) private readonly discountRepository: Repository<Discount>,
   ) {}
 
   async execute(updateProductDto: UpdateProductServiceEntryDto): Promise<void> {
-    const { product_id, product_category, images, ...productDetails } = updateProductDto;
+    const { product_id, product_category, images, discount, ...productDetails } = updateProductDto;
 
     const product = await this.productRepository.findOne(product_id);
     if (!product) {
@@ -37,6 +39,14 @@ export class UpdateProductService {
       }
       product.product_category = category;
     }
+
+    if (discount){
+      const discountEntity = await this.discountRepository.findOne({ where: { discount_id: discount } });
+      if (!discountEntity) {
+          throw new NotFoundException(`Discount with ID ${discount} not found`);
+      }
+      product.discount = discountEntity;
+  }
 
     if (images && images.length) {
       const imageEntities = await Promise.all(
@@ -57,6 +67,8 @@ export class UpdateProductService {
     if (productDetails.product_weight) product.product_weight = new ProductWeight(productDetails.product_weight.toString());
     if (productDetails.product_measurement) product.product_measurement = new ProductMeasurement(productDetails.product_measurement);
     if (productDetails.product_stock) product.product_stock = new ProductStock(productDetails.product_stock);
+
+
 
     try {
       await this.productRepository.saveProduct(product);
