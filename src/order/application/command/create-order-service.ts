@@ -88,9 +88,13 @@ export class CreateOrderService {
               email: user.user_email
       });
 
-      const userNotification = user.notification_token[0];
-      const userToken = userNotification.token;
-      await this.sendNotificationService.notifyUsersAboutOrder(OrderMapper.toDTO(order), userToken);
+      const userNotification = user.notification_token[0].token;
+
+      if (!userNotification) {
+        console.warn(`User ${userId} does not have a notification token. Skipping push notification.`);
+      } else {
+        await this.sendNotificationService.notifyUsersAboutOrder(OrderMapper.toDTO(order), userNotification);
+      }
       return OrderMapper.toDTO(order);
 
     } catch (error) {
