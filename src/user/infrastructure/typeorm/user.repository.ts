@@ -21,7 +21,7 @@ export class UserRepository implements UserRepositoryInterface {
   }
 
   async findById(id: string): Promise<User | null> {
-    return await this.repository.findOne({ where: { user_id: id }, relations: ['addresses'] });
+    return await this.repository.findOne({ where: { user_id: id }, relations: ['addresses', 'notification_token'] });
   }
 
   async save(user: User): Promise<User> {
@@ -29,7 +29,7 @@ export class UserRepository implements UserRepositoryInterface {
   }
 
   async remove(id: string): Promise<void> {
-    const user = await this.repository.findOne({ where: { user_id: id }, relations: ['addresses'] });
+    const user = await this.repository.findOne({ where: { user_id: id }, relations: ['addresses', 'notification_token'] });
     if (user) {
     if (user.addresses && user.addresses.length > 0) {
       await this.addressRepository.remove(user.addresses);
