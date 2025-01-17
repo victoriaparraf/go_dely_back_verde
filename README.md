@@ -89,10 +89,12 @@ GoDely backend is a server-side application built using the NestJS framework. It
 
 ## 🛠 Technologies
 
-[![NestJS](https://static-00.iconduck.com/assets.00/nestjs-icon-2048x2040-3rrvcej8.png?size=7)]
-[![Cloudinary](https://static-00.iconduck.com/assets.00/cloudinary-icon-512x335-z2n5aue3.png?size=7)]
-[![PostgreSQL](https://static-00.iconduck.com/assets.00/postgresql-icon-1987x2048-v2fkmdaw.png?size=7)]
-[![RabbitMQ](https://static-00.iconduck.com/assets.00/rabbitmq-icon-484x512-s9lfaapn.png?size=7)]
+<p align="center">
+    <img src="https://static-00.iconduck.com/assets.00/nestjs-icon-2048x2040-3rrvcej8.png" alt="NestJS" width="50" height="50"/>
+    <img src="https://static-00.iconduck.com/assets.00/cloudinary-icon-512x335-z2n5aue3.png" alt="Cloudinary" width="50" height="50"/>
+    <img src="https://static-00.iconduck.com/assets.00/postgresql-icon-1987x2048-v2fkmdaw.png" alt="PostgreSQL" width="50" height="50"/>
+    <img src="https://static-00.iconduck.com/assets.00/rabbitmq-icon-484x512-s9lfaapn.png" alt="RabbitMQ" width="50" height="50"/>
+</p>
 
 ---
 
@@ -155,7 +157,7 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
 ## :technologist: Authors and Contributions
 
-### :bust_in_silhouette: Sofía Arasme  -- ![Sofía Arasme](https://github.com/sofiaarasme.png?size=50)
+### :bust_in_silhouette: Sofía Arasme    ![Sofía Arasme](https://github.com/sofiaarasme.png?size=50)
 
 - Product Module
 - Category Module
@@ -164,7 +166,7 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 - Auth Module
 - Order Module
 
-### :bust_in_silhouette: Victoria Parra -- ![Victoria Parra](https://github.com/victoriaparraf.png?size=50)
+### :bust_in_silhouette: Victoria Parra   ![Victoria Parra](https://github.com/victoriaparraf.png?size=50)
 
 - Combo Module
 - Discount Module
