@@ -12,7 +12,7 @@ export class MailController {
 
     @EventPattern('notification')
     async handleNotification(
-        @Payload() data: { type: string; payload: any },
+        @Payload() data: { type: string; payload: any; email?: string },
         @Ctx() context: RmqContext,
     ) {
         console.log('Sending email:', data);
@@ -49,6 +49,7 @@ export class MailController {
                 subject,
                 html: htmlContent,
             });
+            console.log('sending just 1');
         } else {
             const userEmails = await this.getUsersEmailService.getAllUserEmails();
             for (const userEmail of userEmails) {
@@ -58,6 +59,7 @@ export class MailController {
                     html: htmlContent,
                 });
             }
+            console.log('sending many');
         }
     }
 
