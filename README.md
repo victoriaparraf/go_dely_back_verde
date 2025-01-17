@@ -63,10 +63,6 @@ GoDely backend is a server-side application built using the NestJS framework. It
 - Apply discounts to orders.
 
 <code>❯ Notification Module</code>
-- Manage product and combo images.
-- Upload images into cloudinary service.
-
-<code>❯ Notification Module</code>
 - Manage notification tokens for users.
 - Send notifications to users.
 
@@ -82,7 +78,7 @@ GoDely backend is a server-side application built using the NestJS framework. It
 - Handle user registration, login, and profile management.
 - Manage user roles and permissions.
 
-<code>❯ Adress Module</code>
+<code>❯ Address Module</code>
 - Handle user addresses, preferred address, and locations.
 
 ---
