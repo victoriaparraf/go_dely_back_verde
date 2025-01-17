@@ -178,7 +178,7 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
 ### :bust_in_silhouette: Nicola Manfredi
 
-- ![Nicola Manfredi](https://github.com/Nico6248.png?size=50) [  Nicola Manfredi](https://github.com/Nico6248)
+- ![Nicola Manfredi](https://github.com/Nico6248.png?size=10) [  Nicola Manfredi](https://github.com/Nico6248)
 
 - Address Module
 - Cupon Module
