@@ -25,10 +25,13 @@ export class ComboRepository implements IComboRepository {
   ) {}
 
   async findByCategory(categoryId: string): Promise<Combo[]> {
-    return this.comboRepository.createQueryBuilder('combo')
+    console.log(`Finding combos by category ID: ${categoryId}`);
+    const combos = await this.comboRepository.createQueryBuilder('combo')
       .leftJoinAndSelect('combo.combo_categories', 'category')
       .where('category.category_id = :categoryId', { categoryId })
       .getMany();
+    console.log(`Combos found: ${JSON.stringify(combos)}`);
+    return combos;
   }
 
   async createCombo(comboData: Combo) {
