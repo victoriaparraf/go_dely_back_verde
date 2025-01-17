@@ -127,5 +127,16 @@ export class OrderRepository {
       .orderBy('order.incremental_id', 'DESC')
       .getOne();
   }
+
+  async findOrderUser(order: Order): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { user_id: order.getUserId().value },
+    });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return user;
+  }
   
 }
