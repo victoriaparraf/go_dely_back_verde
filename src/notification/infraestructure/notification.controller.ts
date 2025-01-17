@@ -17,7 +17,6 @@ export class NotificationController {
   ) {
 
     try {
-      console.log('saving token', saveNotificationDto.token);
       const savedToken = await this.notificationService.saveToken(user.user_id, saveNotificationDto.token);
       return {
         message: 'Token saved successfully',

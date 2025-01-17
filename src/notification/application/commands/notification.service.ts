@@ -19,7 +19,6 @@ export class NotificationService {
       if (!user) {
         throw new InternalServerErrorException('User not found');
       }
-      console.log('searching token');
       const existingNotification = await this.notificationTokenRepository.findOne({
         where: {
           user: { user_id: userId },
@@ -28,7 +27,6 @@ export class NotificationService {
       });
 
       if (existingNotification) {
-        console.log('Already exists');
         return existingNotification;
       }
       
@@ -36,7 +34,6 @@ export class NotificationService {
         user,
         token,
       });
-      console.log('saving token in bd', notification.token);
       return await this.notificationTokenRepository.save(notification);
 
     } catch (error) {

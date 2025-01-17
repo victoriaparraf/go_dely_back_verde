@@ -81,6 +81,7 @@ export class CreateOrderService {
       const user = await this.userRepository.findById(userId); 
       if (!user) throw new Error('User not found');
   
+      console.log('user email', user.user_email)
       this.client.emit('notification', {
               type: 'order',
               payload: OrderMapper.toDTO(order),
