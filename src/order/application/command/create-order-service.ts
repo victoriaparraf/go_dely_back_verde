@@ -88,7 +88,9 @@ export class CreateOrderService {
               email: user.user_email
       });
 
-      await this.sendNotificationService.notifyUsersAboutOrder(OrderMapper.toDTO(order), user.user_id);
+      const userNotification = user.notification_token[0];
+      const userToken = userNotification.token;
+      await this.sendNotificationService.notifyUsersAboutOrder(OrderMapper.toDTO(order), userToken);
       return OrderMapper.toDTO(order);
 
     } catch (error) {
