@@ -70,7 +70,7 @@ export class OrderRepository {
   async findById(orderId: string): Promise<Order | null> {
     const entity = await this.repository.findOne({
       where: { order_id: orderId },
-      relations: ['user', 'order_products', 'order_combos'],
+      relations: ['user', 'order_products', 'order_combos', 'order_products.product.images'],
     });
     return entity ? OrderMapper.toDomain(entity) : null;
   }
