@@ -3,7 +3,7 @@
 </p>
 <p align="center"><h1 align="center">GODELY APP BACKEND</h1></p>
 <p align="center">
-    <em><code style="font-size: 24px; color: #006400;">❯ TEAM VERDE</code></em>
+    <em><p style="font-size: 24px; color: #006400;">❯ TEAM VERDE</p></em>
 </p>
 <p align="center">
     <img src="https://img.shields.io/github/license/victoriaparraf/go_dely_back_verde?style=default&logo=opensourceinitiative&logoColor=white&color=45b908" alt="license">
@@ -134,7 +134,7 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
 ## :technologist: Authors
 
-- ![Sofía Arasme](https://github.com/sofiaarasme.png?size=50) [Sofía Arasme](https://github.com/sofiaarasme)
-- ![Victoria Parra](https://github.com/victoriaparraf.png?size=50) [Victoria Parra](https://github.com/victoriaparraf)
+- ![Sofía Arasme](https://github.com/sofiaarasme.png?size=50) [ Sofía Arasme](https://github.com/sofiaarasme)
+- ![Victoria Parra](https://github.com/victoriaparraf.png?size=50) [ Victoria Parra](https://github.com/victoriaparraf)
 
 ---
