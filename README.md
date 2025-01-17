@@ -89,7 +89,7 @@ GoDely backend is a server-side application built using the NestJS framework. It
 
 ## 🛠 Technologies
 
-<p align="center">
+<p>
     <img src="https://static-00.iconduck.com/assets.00/nestjs-icon-2048x2040-3rrvcej8.png" alt="NestJS" width="50" height="50"/>
     <img src="https://static-00.iconduck.com/assets.00/cloudinary-icon-512x335-z2n5aue3.png" alt="Cloudinary" width="50" height="50"/>
     <img src="https://static-00.iconduck.com/assets.00/postgresql-icon-1987x2048-v2fkmdaw.png" alt="PostgreSQL" width="50" height="50"/>
