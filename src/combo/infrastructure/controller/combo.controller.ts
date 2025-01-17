@@ -75,7 +75,7 @@ export class ComboController {
     return this.getComboService.execute(getComboServiceEntryDto);
   }
 
-  @Patch(':id')
+  @Patch('update/:id')
   async update(@Param('id', ParseUUIDPipe) id: string, @Body() updateComboDto: UpdateComboDto) {
 
     const updateComboServiceEntryDto: UpdateComboServiceEntryDto = { id, ...updateComboDto };
