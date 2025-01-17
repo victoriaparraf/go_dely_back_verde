@@ -1,30 +1,104 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+    <img src="https://i.imgur.com/TGDl5Ud.png" align="center" width="30%">
+</p>
+<p align="center"><h1 align="center">GODELY APP BACKEND</h1></p>
+<p align="center">
+    <p style="font-size: 24px; color: #006400;">❯ TEAM VERDE</p>
+</p>
+<p align="center">
+    <img src="https://img.shields.io/github/license/victoriaparraf/go_dely_back_verde?style=default&logo=opensourceinitiative&logoColor=white&color=45b908" alt="license">
+    <img src="https://img.shields.io/github/last-commit/victoriaparraf/go_dely_back_verde?style=default&logo=git&logoColor=white&color=45b908" alt="last-commit">
+    <img src="https://img.shields.io/github/languages/top/victoriaparraf/go_dely_back_verde?style=default&color=45b908" alt="repo-top-language">
+    <img src="https://img.shields.io/github/languages/count/victoriaparraf/go_dely_back_verde?style=default&color=45b908" alt="repo-language-count">
+</p>
+<p align="center"><!-- default option, no dependency badges. -->
+</p>
+<p align="center">
+	<!-- default option, no dependency badges. -->
+</p>
+<br>
+
+##  Table of Contents
+
+- [ Overview](#-overview)
+- [ Features](#-features)
+- [ Getting Started](#-getting-started)
+- [ License](#-license)
+- [ Acknowledgments](#-acknowledgments)
+
+---
+
+##  Overview
+
+<code>❯
+GoDely backend is a server-side application built using the NestJS framework. It follows the principles of Domain-Driven Design (DDD) and Hexagonal Architecture to ensure a scalable, maintainable, and testable codebase.</code>
+
+---
+
+## :sparkles: Features
+
+<code>❯ Auth Module</code>
+- Secure endpoints with JWT-based authentication.
+- Handle user login and registration.
+
+<code>❯ Product Module</code>
+- Manage products with CRUD operations.
+- Associate products with categories and discounts.
+- Handle product images and inventory.
+
+<code>❯ Category Module</code>
+- Organize products into categories.
+- Manage category hierarchy and relationships.
+
+<code>❯ Combo Module</code>
+- Create and manage product combos.
+- Associate combos with discounts and promotions.
+
+<code>❯ Cupon Module</code>
+- Generate and manage discount cupons.
+- Apply cupons to orders for discounts.
+
+<code>❯ Discount Module</code>
+- Define and manage discounts for products and combos.
+- Apply discounts to orders.
+
+<code>❯ Notification Module</code>
+- Manage product and combo images.
+- Upload images into cloudinary service.
+
+<code>❯ Notification Module</code>
+- Manage notification tokens for users.
+- Send notifications to users.
+
+<code>❯ Order Module</code>
+- Handle order creation, updates, and status changes.
+- Manage order products and combos.
+
+<code>❯ Payment Method Module</code>
+- Manage different payment methods.
+- Integrate with payment gateways.
+
+<code>❯ User Module</code>
+- Handle user registration, login, and profile management.
+- Manage user roles and permissions.
+
+<code>❯ Adress Module</code>
+- Handle user addresses, preferred address, and locations.
+
+---
+
+## 🛠 Technologies
+
+<p>
+    <img src="https://static-00.iconduck.com/assets.00/nestjs-icon-2048x2040-3rrvcej8.png" alt="NestJS" width="50" height="50"/>
+    <img src="https://static-00.iconduck.com/assets.00/cloudinary-icon-512x335-z2n5aue3.png" alt="Cloudinary" width="50" height="50"/>
+    <img src="https://static-00.iconduck.com/assets.00/postgresql-icon-1987x2048-v2fkmdaw.png" alt="PostgreSQL" width="50" height="50"/>
+    <img src="https://static-00.iconduck.com/assets.00/rabbitmq-icon-484x512-s9lfaapn.png" alt="RabbitMQ" width="50" height="50"/>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+---
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## :construction: Getting Started
 
 ## Project setup
 
@@ -73,29 +147,36 @@ $ yarn run test:e2e
 $ yarn run test:cov
 ```
 
+---
 
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
+## :page_facing_up: License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+---
+
+## :technologist: Authors and Contributions
+
+### :bust_in_silhouette: Sofía Arasme    ![Sofía Arasme](https://github.com/sofiaarasme.png?size=50)
+
+- Product Module
+- Category Module
+- Payment Method Module
+- User Module
+- Auth Module
+- Order Module
+
+### :bust_in_silhouette: Victoria Parra   ![Victoria Parra](https://github.com/victoriaparraf.png?size=50)
+
+- Combo Module
+- Discount Module
+- Notification Module
+- Images Module
+- Order Module
+
+### :bust_in_silhouette: Nicola Manfredi
+
+- Address Module
+- Cupon Module
+
+---
