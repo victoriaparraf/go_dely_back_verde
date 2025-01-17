@@ -35,9 +35,44 @@ GoDely backend is a server-side application built using the NestJS framework. It
 
 ---
 
-##  Features
+## :sparkles: Features
 
-<code>❯ REPLACE-ME</code>
+<code>❯ Product Module</code>
+- Manage products with CRUD operations.
+- Associate products with categories and discounts.
+- Handle product images and inventory.
+
+<code>❯ Category Module</code>
+- Organize products into categories.
+- Manage category hierarchy and relationships.
+
+<code>❯ Combo Module</code>
+- Create and manage product combos.
+- Associate combos with discounts and promotions.
+
+<code>❯ Cupon Module</code>
+- Generate and manage discount cupons.
+- Apply cupons to orders for discounts.
+
+<code>❯ Discount Module</code>
+- Define and manage discounts for products and combos.
+- Apply discounts to orders.
+
+<code>❯ Notification Module</code>
+- Manage notification tokens for users.
+- Send notifications to users.
+
+<code>❯ Order Module</code>
+- Handle order creation, updates, and status changes.
+- Manage order products and combos.
+
+<code>❯ Payment Method Module</code>
+- Manage different payment methods.
+- Integrate with payment gateways.
+
+<code>❯ User Module</code>
+- Handle user registration, login, and profile management.
+- Manage user roles and permissions.
 
 ---
 ## :construction: Getting Started
@@ -97,9 +132,9 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
 ---
 
-##  :technologist: Acknowledgments
+## :technologist: Acknowledgments
 
-- Co-Author - [Sofía Arasme](https://github.com/sofiaarasme)
-- Co-Author - [Victoria Parra](https://github.com/victoriaparraf)
+- Co-Author - ![Sofía Arasme](https://github.com/sofiaarasme.png?size=50) [Sofía Arasme](https://github.com/sofiaarasme)
+- Co-Author - ![Victoria Parra](https://github.com/victoriaparraf.png?size=50) [Victoria Parra](https://github.com/victoriaparraf)
 
 ---
