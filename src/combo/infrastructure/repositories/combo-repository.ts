@@ -27,7 +27,7 @@ export class ComboRepository implements IComboRepository {
   async findByCategory(categoryId: string): Promise<Combo[]> {
     return this.comboRepository.find({
       where: { combo_categories: { category_id: categoryId } },
-      relations: ['combo_categories', 'images', 'discount'],
+      relations: ['combo_categories'],
     });
   }
 
