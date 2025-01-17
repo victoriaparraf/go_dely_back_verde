@@ -23,9 +23,10 @@ export class OrderMapper {
               throw new Error(`Product with ID ${product.product_id} not found`);
           }
           return {
-              id: product.product_id,
+              order_id: product.order_id,
+              product_id: product.product_id,
               quantity: product.quantity,
-              price: product.product_price,
+              product_price: product.product_price,
               total_price: product.total_price,
               name: product.product.product_name.getValue(),
               description: product.product.product_description.getValue(),
@@ -39,9 +40,10 @@ export class OrderMapper {
                 throw new Error(`Combo with ID ${combo.combo_id} not found`);
             }
             return {
-                id: combo.combo_id,
+                order_id: combo.order_id,
+                combo_id: combo.combo_id,
                 quantity: combo.quantity,
-                price: combo.combo_price,
+                combo_price: combo.combo_price,
                 total_price: combo.total_price,
                 name: combo.combo.combo_name.getValue(),
                 description: combo.combo.combo_description.getValue(),
@@ -95,7 +97,8 @@ export class OrderMapper {
             currency: product.product.product_currency.getValue(),
             weight: product.product.product_weight.getValue(),
             measurement: product.product.product_measurement.getValue(),
-            stock: product.product.product_stock.getValue()
+            stock: product.product.product_stock.getValue(),
+            images: product.product.images ? product.product.images.map(image => image.image_url) : [],
         })),
         combos: order.getOrderCombos().map(combo => ({
             quantity: combo.quantity,

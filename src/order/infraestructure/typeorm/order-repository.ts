@@ -29,7 +29,7 @@ export class OrderRepository {
   async findAll(paginationDto?: PaginationDto): Promise<OrderEntity[]> {
     const { page = 1, perpage = 10 } = paginationDto || {};
     return this.repository.find({
-      relations: ['user', 'order_products', 'order_combos'],
+      relations: ['user', 'order_products', 'order_combos', 'order_products.product.images'],
       skip: (page - 1) * perpage,
       take: perpage,
     });

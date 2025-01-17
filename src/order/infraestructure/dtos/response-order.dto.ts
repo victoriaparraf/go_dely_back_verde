@@ -50,6 +50,7 @@ export class ResponseOrderDTO {
         weight?: string;
         measurement?: string;
         stock?: number;
+        images: string[];
     }[];
 
     @ApiProperty({ type: () => [OrderCombo]})
