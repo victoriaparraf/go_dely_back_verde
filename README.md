@@ -24,7 +24,8 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+GoDely backend is a server-side application built using the NestJS framework. It follows the principles of Domain-Driven Design (DDD) and Hexagonal Architecture to ensure a scalable, maintainable, and testable codebase.
+
 
 ## Project setup
 
