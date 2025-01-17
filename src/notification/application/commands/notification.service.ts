@@ -29,14 +29,14 @@ export class NotificationService {
 
       if (existingNotification) {
         return existingNotification;
-      }else{
-
-        const notification = this.notificationTokenRepository.create({
-          user,
-          token,
-        });
-        return await this.notificationTokenRepository.save(notification);
       }
+      
+      const notification = this.notificationTokenRepository.create({
+        user,
+        token,
+      });
+  
+      return await this.notificationTokenRepository.save(notification);
 
     } catch (error) {
       throw new InternalServerErrorException('Error saving token');
