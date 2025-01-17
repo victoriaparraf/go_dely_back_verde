@@ -86,7 +86,7 @@ export class SendNotificationService {
 
     async notifyUsersAboutNewStatus(order: any, token: string): Promise<void> {
         const title = 'GoDely - New Order Status';
-        const body = `Your Order Status has changed to ${order}`;
+        const body = `Your Order Status has changed, check it out!`;
         const data = {
             orderStatus: order,
         };
