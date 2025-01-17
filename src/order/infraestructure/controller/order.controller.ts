@@ -39,20 +39,29 @@ export class OrderController {
     }
 
     @Get('many')
-    async findAll(@Query() paginationDto?: PaginationDto): Promise<ResponseOrderDTO[]> {
-        return this.getOrderService.findAll(paginationDto);
+    @UseGuards(AuthGuard('jwt'))
+    async findAll(
+        @GetUser() user: User
+    ): Promise<ResponseOrderDTO[]> {
+        return this.getOrderService.findAll(user.user_id);
     }
 
     @Get('many/past')
-    async getPastOrders(@Query() paginationDto?: PaginationDto): Promise<ResponseOrderDTO[]> {
+    @UseGuards(AuthGuard('jwt'))
+    async getPastOrders(
+        @GetUser() user: User
+    ): Promise<ResponseOrderDTO[]> {
         const statuses = [OrderStatus.CANCELLED, OrderStatus.DELIVERED];
-        return this.getOrderService.findByStatuses(statuses, paginationDto);
+        return this.getOrderService.findByStatuses(user.user_id, statuses);
     }
 
     @Get('many/active')
-    async getActiveOrders(@Query() paginationDto?: PaginationDto): Promise<ResponseOrderDTO[]> {
+    @UseGuards(AuthGuard('jwt'))
+    async getActiveOrders(
+        @GetUser() user: User
+    ): Promise<ResponseOrderDTO[]> {
         const statuses = [OrderStatus.BEING_PROCESSED, OrderStatus.CREATED, OrderStatus.SHIPPED];
-        return this.getOrderService.findByStatuses(statuses, paginationDto);
+        return this.getOrderService.findByStatuses(user.user_id, statuses);
     }
 
     @Get('one/:id')

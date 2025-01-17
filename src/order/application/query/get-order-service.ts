@@ -18,13 +18,13 @@ export class GetOrderService implements IApplicationService<string, ResponseOrde
     return OrderMapper.toDTO(order);
   }
 
-  async findAll(paginationDto?: PaginationDto): Promise<ResponseOrderDTO[]> {
-    const orders = await this.orderRepository.findAll(paginationDto);
-    return orders.map(orderEntity => OrderMapper.toDTO(OrderMapper.toDomain(orderEntity)));
+  async findAll(userId: string, paginationDto?: PaginationDto): Promise<ResponseOrderDTO[]> {
+    const orders = await this.orderRepository.findAllByUser(userId, paginationDto);
+    return orders.map(orderEntity => OrderMapper.toDTO(orderEntity));
   }
 
-  async findByStatuses(statuses: OrderStatus[], paginationDto?: PaginationDto): Promise<ResponseOrderDTO[]> {
-    const orders = await this.orderRepository.findByStatuses(statuses, paginationDto);
-    return orders.map(orderEntity => OrderMapper.toDTO(OrderMapper.toDomain(orderEntity)));
+  async findByStatuses(userId: string, statuses: OrderStatus[], paginationDto?: PaginationDto): Promise<ResponseOrderDTO[]> {
+    const orders = await this.orderRepository.findByStatusesAndUser(userId, statuses, paginationDto);
+    return orders.map(orderEntity => OrderMapper.toDTO(orderEntity));
   }
 }

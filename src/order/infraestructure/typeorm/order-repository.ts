@@ -26,6 +26,28 @@ export class OrderRepository {
     private readonly userRepository: Repository<User>,
   ) {}
 
+  async findAllByUser(userId: string, paginationDto?: PaginationDto): Promise<Order[]> {
+    const { page, perpage } = paginationDto || { page: 1, perpage: 10 };
+    const entities = await this.repository.find({
+      where: { user: { user_id: userId } },
+      take: perpage,
+      skip: (page - 1) * perpage,
+      relations: ['user', 'order_products', 'order_products.product', 'order_products.product.images', 'order_combos', 'order_combos.combo'],
+    });
+    return entities.map(entity => OrderMapper.toDomain(entity));
+  }
+
+  async findByStatusesAndUser(userId: string, statuses: OrderStatus[], paginationDto?: PaginationDto): Promise<Order[]> {
+    const { page, perpage } = paginationDto || { page: 1, perpage: 10 };
+    const entities = await this.repository.find({
+      where: { user: { user_id: userId }, status: In(statuses) },
+      take: perpage,
+      skip: (page - 1) * perpage,
+      relations: ['user', 'order_products', 'order_products.product', 'order_products.product.images', 'order_combos', 'order_combos.combo'],
+    });
+    return entities.map(entity => OrderMapper.toDomain(entity));
+  }
+
   async findAll(paginationDto?: PaginationDto): Promise<OrderEntity[]> {
     const { page = 1, perpage = 10 } = paginationDto || {};
     return this.repository.find({
