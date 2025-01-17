@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
 import { GetUser } from 'src/auth/infrastructure/jwt/strategies/get-user.decorator';
@@ -12,6 +12,7 @@ import { RemoveOrderService } from 'src/order/application/command/delete-order-s
 import { UpdateOrderStatusService } from 'src/order/application/command/update-order-status-service';
 import { OrderStatus } from 'src/order/domain/enums/order-status.enum';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
+import { User } from 'src/user/infrastructure/typeorm/user-entity';
 
 @ApiTags('Order')
 @Controller('order')
@@ -25,12 +26,16 @@ export class OrderController {
     ) {}
 
     @Post('create')
-    @UseGuards( AuthGuard('jwt') )
+    @UseGuards(AuthGuard('jwt'))
     async create(
         @Body() createOrderDto: CreateOrderServiceEntryDto,
-        @GetUser('user_id') user_id: string
-        ): Promise<ResponseOrderDTO> {
-        return this.createOrderService.createOrder(createOrderDto, user_id);
+        @GetUser() user: User
+    ): Promise<ResponseOrderDTO> {
+        console.log('Creating order for user:', user);
+        if (!user) {
+        throw new UnauthorizedException('User not found');
+        }
+        return this.createOrderService.createOrder(createOrderDto, user.user_id);
     }
 
     @Get('many')
