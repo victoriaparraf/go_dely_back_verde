@@ -155,9 +155,7 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
 ## :technologist: Authors and Contributions
 
-### :bust_in_silhouette: Sofía Arasme
-
-![Sofía Arasme](https://github.com/sofiaarasme.png?size=50) [  Sofía Arasme](https://github.com/sofiaarasme)
+### :bust_in_silhouette: Sofía Arasme ![Sofía Arasme](https://github.com/sofiaarasme.png?size=50)
 
 - Product Module
 - Category Module
@@ -166,9 +164,7 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 - Auth Module
 - Order Module
 
-### :bust_in_silhouette: Victoria Parra
-
-![Victoria Parra](https://github.com/victoriaparraf.png?size=50) [  Victoria Parra](https://github.com/victoriaparraf)
+### :bust_in_silhouette: Victoria Parra ![Victoria Parra](https://github.com/victoriaparraf.png?size=50)
 
 - Combo Module
 - Discount Module
