@@ -30,11 +30,19 @@ class ComboDto {
 export class CreateOrderDto{
     @IsString()
     @MinLength(6)
-    address_id: string;
+    address: string;
+
+    @IsNumber()
+    @Min(6)
+    longitude: number;
+
+    @IsNumber()
+    @Min(6)
+    latitude: number;
 
     @IsString()
     @MinLength(6)
-    paymentMethodId: string;
+    paymentMethod: string;
 
     @IsString()
     @MinLength(3)
@@ -48,12 +56,16 @@ export class CreateOrderDto{
     @IsOptional()
     @ValidateNested({ each: true })
     @Type(() => ProductDto)
-    order_products?: ProductDto[];
+    products?: ProductDto[];
 
     @IsArray()
     @IsOptional()
     @ValidateNested({ each: true })
     @Type(() => ComboDto)
-    order_combos?: ComboDto[];
+    combos?: ComboDto[];
+
+    @IsString()
+    @MinLength(6)
+    cupon_code?: string;
 
 }

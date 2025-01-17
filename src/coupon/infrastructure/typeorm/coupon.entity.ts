@@ -1,8 +1,7 @@
 import { CouponAmount } from "src/coupon/domain/value-objects/coupon-amount.vo";
 import { CouponCode } from "src/coupon/domain/value-objects/coupon-code.vo";
-import { CouponCreationDate } from "src/coupon/domain/value-objects/coupon-creation-date.vo";
-import { CouponExpirationDate } from "src/coupon/domain/value-objects/coupon-expiration-date.vo";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { OrderEntity } from "src/order/infraestructure/typeorm/order-entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Coupon {
@@ -35,4 +34,7 @@ export class Coupon {
 
     @Column({ type: 'date' })
     coupon_creation_date: Date;
+
+    @OneToMany(() => OrderEntity, order => order.cupon_code)
+    orders: OrderEntity[];
 }

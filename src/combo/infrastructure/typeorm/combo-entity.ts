@@ -51,7 +51,7 @@ export class Combo {
         type: 'decimal',
         transformer: {
             to: (value: ComboWeight) => value.getValue(),
-            from: (value: number) => value ? new ComboWeight(value) : new ComboWeight(0),
+            from: (value: number) => value ? new ComboWeight(value) : new ComboWeight(1),
         },
     })
     combo_weight: ComboWeight;
@@ -92,25 +92,26 @@ export class Combo {
     })
     combo_stock: ComboStock;
 
-    @Column('text' , { array: true })
-    combo_images: string[];
+    @Column('text', { 
+        array: true,
+        transformer: {
+            to: (value: ComboImage[]) => value.map((img) => img.getValue()),
+            from: (value: string[]) => value ? value.map((img) => new ComboImage(img)) : [],
+        },
+    })
+    combo_images: ComboImage[];
 
     @Column({
         type: 'date',
         nullable: true,
         transformer: {
-            to: (value: ComboCaducityDate | null) => value.getValue().toISOString().split('T')[0],
+            to: (value: ComboCaducityDate | null) => value ? value.getValue() : null,
             from: (value: Date | null) => value ? new ComboCaducityDate(value) : null,
         },
     })
     combo_caducity_date: ComboCaducityDate;
 
-    @ManyToMany(() => Product, product => product.combos)
-    @JoinTable({
-        name: 'combo_products',
-        joinColumn: { name: 'combo_id', referencedColumnName: 'combo_id' },
-        inverseJoinColumn: { name: 'product_id', referencedColumnName: 'product_id' },
-    })
+    @ManyToMany(() => Product, (product) => product.combos)
     products: Product[];
 
     @ManyToOne(() => Discount, (discount) => discount.combos, { nullable: true })

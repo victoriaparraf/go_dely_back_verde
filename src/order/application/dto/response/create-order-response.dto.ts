@@ -1,10 +1,12 @@
 export interface CreateOrderServiceResponseDto{
 
-    order_id: string;
+    id: string;
     address: string;
+    longitude: number;
+    latitude: number;
     currency: string;
     total: number;
-    paymentMethodId: string;
+    paymentMethod: string;
     user_id: string;
     status: string;
 
@@ -33,4 +35,7 @@ export interface CreateOrderServiceResponseDto{
         combo_currency: string,
         combo_stock: number
     }[];
+
+    cupon_code: string;
+
 }

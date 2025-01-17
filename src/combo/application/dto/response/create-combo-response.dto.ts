@@ -13,7 +13,8 @@ export class CreateComboServiceResponseDto {
     images: string[];
     products: string[];
     categories: string[];
-    caducity_date?: string;
-    // discount: number | null;
+    caducityDate?: string | Date;
+    discount?: string;
+    discountPercentage?: number;
 
 }

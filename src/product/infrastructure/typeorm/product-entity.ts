@@ -10,7 +10,6 @@ import { ProductWeight } from "src/product/domain/value-objects/product-weight.v
 import { ProductStock } from "src/product/domain/value-objects/product-stock.vo";
 import { Discount } from "src/discount/infraestructure/typeorm/discount.entity";
 import { OrderProduct } from "src/order/infraestructure/typeorm/order-product";
-import { OrderEntity } from "src/order/infraestructure/typeorm/order-entity";
 import { CategoryEntity } from "src/category/infrastructure/typeorm/category-entity";
 
 @Entity()
@@ -89,7 +88,14 @@ export class Product {
   @ManyToOne(() => CategoryEntity, (category) => category.products)
   product_category: CategoryEntity;
 
-  @ManyToMany(() => Combo, combo => combo.products)
+  @ManyToMany(() => Combo, (combo) => combo.products, {
+    cascade: true,
+  })
+  @JoinTable({
+    name: 'combo_productos',
+    joinColumn: { name: 'product_id', referencedColumnName: 'product_id' },
+    inverseJoinColumn: { name: 'combo_id', referencedColumnName: 'combo_id' },
+  })
   combos: Combo[];
 
   @ManyToOne(

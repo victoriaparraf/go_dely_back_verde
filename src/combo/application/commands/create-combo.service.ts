@@ -20,6 +20,8 @@ import { ComboMeasurement } from 'src/combo/domain/value-objects/combo-measureme
 import { ComboCaducityDate } from '../../domain/value-objects/combo-caducity-date.vo';
 import { ClientProxy } from '@nestjs/microservices';
 import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
+import { Discount } from 'src/discount/infraestructure/typeorm/discount.entity';
+import { SendNotificationService } from 'src/notification/application/services/send-notification.service';
 
 @Injectable()
 export class CreateComboService implements IApplicationService<CreateComboServiceEntryDto, CreateComboServiceResponseDto> {
@@ -28,16 +30,18 @@ export class CreateComboService implements IApplicationService<CreateComboServic
     private readonly comboRepository: ComboRepository, 
     @InjectRepository(Product) private readonly productRepository: Repository<Product>,
     @InjectRepository(CategoryEntity) private readonly categoryRepository: Repository<CategoryEntity>,
+    @InjectRepository(Discount) private readonly discountRepository: Repository<Discount>,
     private readonly cloudinaryService: CloudinaryService,
     @Inject('RABBITMQ_SERVICE') private readonly client: ClientProxy,
+    private readonly sendNotificationService: SendNotificationService
   ) {}
 
   async execute(entryDto: CreateComboServiceEntryDto): Promise<CreateComboServiceResponseDto> {
     try {
-      const { combo_categories, products, combo_images, ...comboDetails } = entryDto;
+      const { category, productId, images, discount, ...comboDetails } = entryDto;
 
       const categoryEntities = await Promise.all(
-        combo_categories.map(async (categoryId) => {
+        category.map(async (categoryId) => {
             const category = await this.categoryRepository.findOne({ where: { category_id: categoryId } });
             if (!category) {
                 throw new NotFoundException(`Category with ID ${categoryId} not found`);
@@ -47,8 +51,10 @@ export class CreateComboService implements IApplicationService<CreateComboServic
       );
             
       const productEntities = await Promise.all(
-        products.map(async (productId) => {
-          const product = await this.productRepository.findOne({ where: { product_id: productId } });
+        productId.map(async (productId) => {
+          const product = await this.productRepository.findOne({
+            where: { product_id: productId },
+          });
           if (!product) {
             throw new NotFoundException(`Product with ID ${productId} not found`);
           }
@@ -57,18 +63,26 @@ export class CreateComboService implements IApplicationService<CreateComboServic
       );
 
       const imageUrls = await Promise.all(
-        combo_images.map((image) => this.cloudinaryService.uploadImage(image, 'combos'))
+        images.map((image) => this.cloudinaryService.uploadImage(image, 'combos'))
       );
       const comboImages = imageUrls.map((url) => new ComboImage(url));
 
-      const comboName = new ComboName(comboDetails.combo_name);
-      const comboDescription = new ComboDescription(comboDetails.combo_description);
-      const comboWeight = new ComboWeight(comboDetails.combo_weight);
-      const comboMeasurement = new ComboMeasurement(comboDetails.combo_measurement)
-      const comboCurrency = new ComboCurrency(comboDetails.combo_currency);
-      const comboPrice = new ComboPrice(comboDetails.combo_price);
-      const comboStock = new ComboStock(comboDetails.combo_stock);
-      const comboCaducityDate = new ComboCaducityDate(comboDetails.combo_caducity_date);
+      let discountEntity = null;
+      if(discount){
+        discountEntity = await this.discountRepository.findOne({ where: { discount_id: discount } });
+        if (!discountEntity) {
+          throw new NotFoundException(`Discount with ID ${discount} not found`);
+        }
+      }
+
+      const comboName = new ComboName(comboDetails.name);
+      const comboDescription = new ComboDescription(comboDetails.description);
+      const comboWeight = new ComboWeight(comboDetails.weight);
+      const comboMeasurement = new ComboMeasurement(comboDetails.measurement)
+      const comboCurrency = new ComboCurrency(comboDetails.currency);
+      const comboPrice = new ComboPrice(comboDetails.price);
+      const comboStock = new ComboStock(comboDetails.stock);
+      const comboCaducityDate = new ComboCaducityDate(comboDetails.caducityDate);
 
       const combo = new Combo();
       combo.combo_name = comboName;
@@ -77,33 +91,44 @@ export class CreateComboService implements IApplicationService<CreateComboServic
       combo.combo_weight = comboWeight;
       combo.combo_measurement = comboMeasurement;
       combo.combo_stock = comboStock;
-      combo.combo_images = comboImages.map((image) => image.getValue());
+      combo.combo_images = comboImages;
       combo.combo_currency = comboCurrency;
       combo.combo_categories = categoryEntities;
       combo.products = productEntities;
       combo.combo_caducity_date = comboCaducityDate;
+      combo.discount = discountEntity;
 
       await this.comboRepository.saveCombo(combo);
 
       await Promise.all(
         productEntities.map(async (product) => {
-          product.combos = [...(product.combos || []), combo];
-          await this.productRepository.save(product);
+
+          const existingProduct = await this.productRepository.findOne({
+            where: { product_id: product.product_id },
+            relations: ['combos'],
+          });
+      
+          if (!existingProduct) {
+            throw new NotFoundException(`Product with ID ${product.product_id} not found`);
+          }
+      
+          const isAlreadyAssociated = existingProduct.combos.some(
+            (existingCombo) => existingCombo.combo_id === combo.combo_id,
+          );
+      
+          if (!isAlreadyAssociated) {
+            existingProduct.combos.push(combo);
+            await this.productRepository.save(existingProduct); // Guardar relaciones acumuladas
+          }
         }),
       );
 
       this.client.emit('notification', {
         type: 'combo',
-        payload: {
-          comboImages: combo.combo_images,
-          comboName: combo.combo_name.getValue(),
-          comboCategories: combo.combo_categories.map((category) => category.category_name),
-          comboWeight: combo.combo_weight.getValue(),
-          comboMeasurement: combo.combo_measurement.getValue(),
-          comboDescription: combo.combo_description.getValue(),
-          comboProducts: combo.products.map((product) => product.product_name.getValue()),
-        },
+        payload: ComboMapper.mapComboToResponse(combo),
       });
+
+      await this.sendNotificationService.notifyUsersAboutNewProduct(ComboMapper.mapComboToResponse(combo));
 
       return ComboMapper.mapComboToResponse(combo);
       

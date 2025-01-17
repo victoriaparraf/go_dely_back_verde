@@ -9,11 +9,9 @@ export class DiscountMapper {
             name : discount.discount_name.getValue(),
             description : discount.discount_description.getValue(),
             percentage: discount.discount_percentage.getValue(),
-            start_date: discount.discount_start_date.getValue(),
-            end_date: discount.discount_end_date.getValue(),
-            image: discount.discount_image ? discount.discount_image : null,
-            products: discount.products ? discount.products.map(product => product.product_name.getValue()) : null,
-            combos: discount.combos ? discount.combos.map(combo => combo.combo_name.getValue()) : null,
+            initDate: discount.discount_start_date.getValue().toISOString().split('T')[0],
+            expireDate: discount.discount_end_date.getValue().toISOString().split('T')[0],
+            image: discount.discount_image ? discount.discount_image.getValue() : null,
         }
     }
     

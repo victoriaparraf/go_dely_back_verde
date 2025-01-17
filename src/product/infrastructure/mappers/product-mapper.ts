@@ -14,7 +14,7 @@ export class ProductMapper {
       stock: product.product_stock.getValue(),
       categories: product.product_category ? [product.product_category.category_name] : [],
       images: product.images.map((img) => img.image_url),
-      discount: product.discount ? Number(product.discount.discount_percentage) : null,
+      discount: product.discount ? product.discount.discount_id : "",
     };
   }
 }

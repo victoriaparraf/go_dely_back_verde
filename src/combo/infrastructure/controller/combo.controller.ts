@@ -10,6 +10,7 @@ import { CreateComboDto } from '../dtos/create-combo.dto';
 import { UpdateComboDto } from '../dtos/update-combo.dto';
 import { UpdateComboServiceEntryDto } from '../../application/dto/entry/update-combo-entry.dto';
 import { CreateComboServiceEntryDto } from 'src/combo/application/dto/entry/create-combo-entry.dto';
+import { GetPopularCombosService } from 'src/combo/application/query/get-popular-combos-service';
 
 @ApiTags('Combo')
 @Controller('bundle')
@@ -18,14 +19,15 @@ export class ComboController {
     private readonly createComboService: CreateComboService,
     private readonly getComboService: GetComboService,
     private readonly deleteComboService: DeleteComboService,
-    private readonly updateComboService: UpdateComboService
+    private readonly updateComboService: UpdateComboService,
+    private readonly getPopularCombosService: GetPopularCombosService
   ) {}
 
   @Post('create')
   async create(@Body() createComboDto: CreateComboDto) {
 
     const createComboServiceEntryDto: CreateComboServiceEntryDto = {
-      combo_stock: createComboDto.combo_stock ?? 0,
+      stock: createComboDto.stock ?? 0,
       ...createComboDto
     };
 
@@ -38,28 +40,38 @@ export class ComboController {
   }
 
   @Get('many')
-  async findAll(@Query() paginationDto: PaginationDto) {
+  async findAll(@Query() paginationDto?: PaginationDto) {
 
     const getComboServicePaginationDto: GetComboServicePaginationDto = {
-      page: paginationDto.page,
-      perpage: paginationDto.perpage,
+      page: paginationDto?.page || 1,
+      perpage: paginationDto?.perpage || 10,
     };
 
     return this.getComboService.findAll(getComboServicePaginationDto);
 
   }
 
-  @Get('one/:term')
-  async findOne(@Param('term') term: string) {
+  @Get('many/popular')
+  async findPopular(@Query() paginationDto: PaginationDto) {
+    const page = paginationDto?.page || 1;
+    const perpage = paginationDto?.perpage || 10;
 
-    const getComboServiceEntryDto: GetComboServiceEntryDto = { term }
+    const combos = await this.getPopularCombosService.execute(page, perpage);
+
+    return combos;
+  }
+
+  @Get('one/:term')
+  async findOne(@Param('term') id: string) {
+
+    const getComboServiceEntryDto: GetComboServiceEntryDto = { id }
     return this.getComboService.execute(getComboServiceEntryDto);
   }
 
   @Patch(':id')
   async update(@Param('id', ParseUUIDPipe) id: string, @Body() updateComboDto: UpdateComboDto) {
 
-    const updateComboServiceEntryDto: UpdateComboServiceEntryDto = { combo_id: id, ...updateComboDto };
+    const updateComboServiceEntryDto: UpdateComboServiceEntryDto = { id, ...updateComboDto };
 
     await this.updateComboService.execute(updateComboServiceEntryDto);
     

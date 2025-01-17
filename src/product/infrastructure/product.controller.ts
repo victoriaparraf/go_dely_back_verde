@@ -14,9 +14,11 @@ import { UpdateProductDto } from './dtos/update-product.dto';
 import { DeleteProductService } from '../application/command/delete-product-service';
 import { GetProductsCombosSummaryService } from '../application/query/get-products-combos-service';
 import { CreateProductServiceEntryDto } from '../application/dto/entry/create-product-entry.dto';
+import { GetPopularProductsService } from '../application/query/get-popular-products-service';
+import { GetProductServiceResponseDto } from '../application/dto/response/get-product-response.dto';
 
 @ApiTags('Product')
-@Controller('products')
+@Controller('product')
 export class ProductController {
 
   constructor(
@@ -27,6 +29,7 @@ export class ProductController {
     private readonly deleteProductService: DeleteProductService,
     private readonly getProductsCombosSummaryService: GetProductsCombosSummaryService,
     private readonly updateProductService: UpdateProductService,
+    private readonly getPopularProductsService: GetPopularProductsService
   ) {}
 
   @Post('create')
@@ -42,6 +45,7 @@ export class ProductController {
       stock: createProductDto.stock,
       images: createProductDto.images,
       categories: createProductDto.categories,
+      discount: createProductDto.discount
     };
 
     const product = await this.createProductService.execute(createProductServiceEntryDto);
@@ -59,12 +63,22 @@ export class ProductController {
   }
 
   @Get('many')
-  async findAll(@Query() paginationDto: PaginationDto) {
+  async findAll(@Query() paginationDto?: PaginationDto) {
     const getProductServicePaginationDto: GetProductServicePaginationDto = {
-      page: paginationDto.page,
-      perpage: paginationDto.perpage,
+      page: paginationDto?.page || 1,
+      perpage: paginationDto?.perpage || 10,
     };
     return this.getProductService.findAll(getProductServicePaginationDto);
+  }
+
+  @Get('many/popular')
+  async findPopular(@Query() paginationDto: PaginationDto) {
+    const page = paginationDto?.page || 1;
+    const perpage = paginationDto?.perpage || 10;
+
+    const products = await this.getPopularProductsService.execute(page, perpage);
+
+    return products;
   }
 
   @Get('one/:term')

@@ -1,22 +1,21 @@
 export interface ProductEntryDto {
+    id: string;
     quantity: number;
-    product_id: string;
-    product_price: number;
-    product_quantity: number;
 }
 
 export interface ComboEntryDto {
+    id: string;
     quantity: number;
-    combo_id: string;
-    combo_price: number;
-    combo_quantity: number;
 }
 
 export interface CreateOrderServiceEntryDto{
-    address_id: string
-    paymentMethodId: string
+    address: string
+    longitude: number;
+    latitude: number;
+    paymentMethod: string
     currency: string
     total: number
-    order_products?: ProductEntryDto[]
-    order_combos?: ComboEntryDto[]
+    products?: ProductEntryDto[]
+    combos?: ComboEntryDto[]
+    cupon_code?: string
 }

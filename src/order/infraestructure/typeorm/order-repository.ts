@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, In, Repository } from 'typeorm';
 import { Order } from 'src/order/domain/order-aggregate';
 import { OrderEntity } from '../typeorm/order-entity';
 import { OrderMapper } from '../mappers/order.mapper';
 import { User } from 'src/user/infrastructure/typeorm/user-entity';
 import { OrderProduct } from '../typeorm/order-product';
 import { OrderCombo } from '../typeorm/order-combo';
+import { OrderStatus } from 'src/order/domain/enums/order-status.enum';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
 
 @Injectable()
 export class OrderRepository {
@@ -24,11 +26,23 @@ export class OrderRepository {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async findAll(): Promise<Order[]> {
-    const entities = await this.repository.find({
+  async findAll(paginationDto?: PaginationDto): Promise<OrderEntity[]> {
+    const { page = 1, perpage = 10 } = paginationDto || {};
+    return this.repository.find({
       relations: ['user', 'order_products', 'order_combos'],
+      skip: (page - 1) * perpage,
+      take: perpage,
     });
-    return Promise.all(entities.map(OrderMapper.toDomain));
+  }
+
+  async findByStatuses(statuses: OrderStatus[], paginationDto?: PaginationDto): Promise<OrderEntity[]> {
+    const { page = 1, perpage = 10 } = paginationDto || {};
+    return this.repository.find({
+      where: { status: In(statuses) },
+      relations: ['user', 'order_products', 'order_combos'],
+      skip: (page - 1) * perpage,
+      take: perpage,
+    });
   }
 
   async findById(orderId: string): Promise<Order | null> {
@@ -37,6 +51,24 @@ export class OrderRepository {
       relations: ['user', 'order_products', 'order_combos'],
     });
     return entity ? OrderMapper.toDomain(entity) : null;
+  }
+
+  async findOrdersByDateRange(startDate: Date, endDate: Date): Promise<OrderEntity[]> {
+    return this.repository.find({
+      where: {
+        createdDate: Between(startDate, endDate),
+      },
+      relations: ['order_products'],
+    });
+  }
+
+  async findComboOrdersByDateRange(startDate: Date, endDate: Date): Promise<OrderEntity[]> {
+    return this.repository.find({
+      where: {
+        createdDate: Between(startDate, endDate),
+      },
+      relations: ['order_combos'],
+    });
   }
 
   async save(order: Order): Promise<void> {
@@ -67,4 +99,11 @@ export class OrderRepository {
   async remove(orderId: string): Promise<void> {
     await this.repository.delete(orderId);
   }
+
+  async findLastOrder(): Promise<OrderEntity | undefined> {
+    return this.repository.createQueryBuilder('order')
+      .orderBy('order.incremental_id', 'DESC')
+      .getOne();
+  }
+  
 }

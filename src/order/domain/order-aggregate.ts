@@ -1,51 +1,68 @@
 import { AggregateRoot } from 'src/common/domain/aggregate.root';
 import { OrderID } from './value-objects/order-id.vo';
-
 import { OrderCurrency } from './value-objects/order-currency.vo';
 import { OrderTotal } from './value-objects/order-total.vo';
-import { PaymentMethodId } from 'src/payment-method/domain/value-objects/payment-method-id.vo';
 import { UserId } from 'src/user/domain/value-object/user-id';
 import { OrderStatus } from './enums/order-status.enum';
 import { OrderProduct } from '../infraestructure/typeorm/order-product';
 import { OrderCombo } from '../infraestructure/typeorm/order-combo';
-import { Address } from 'src/user/infrastructure/typeorm/address-entity';
+import { PaymentMethodName } from 'src/payment-method/domain/value-objects/payment-method-name.vo';
+import { CouponCode } from 'src/coupon/domain/value-objects/coupon-code.vo';
 
 export class Order extends AggregateRoot<OrderID> {
-    private address: Address;
+    private address: string;
+    private longitude: number;
+    private latitude: number;
     private currency: OrderCurrency;
     private total: OrderTotal;
-    private paymentMethodId: PaymentMethodId;
+    private paymentMethod: PaymentMethodName;
     private user_id: UserId;
     private status: OrderStatus;
     private order_products: OrderProduct[];
     private order_combos: OrderCombo[]; 
     order_id: string;
+    private cupon_code?: CouponCode;
+    incremental_id: number;
+    private createdDate: Date;
 
     constructor(
         id: OrderID,
-        address: Address,
+        incremental_id: number,
+        address: string,
+        longitude: number,
+        latitude: number,
         currency: OrderCurrency,
         total: OrderTotal,
-        paymentMethodId: PaymentMethodId,
+        paymentMethod: PaymentMethodName,
         user_id: UserId,
         status: OrderStatus = OrderStatus.CREATED,
         order_products: OrderProduct[] = [],
         order_combos: OrderCombo[] = [],
+        cupon_code?: CouponCode,
+        createdDate: Date = new Date()
 
     ) {
         super(id);
+        this.incremental_id = incremental_id;
         this.address = address;
+        this.longitude = longitude;
+        this.latitude = latitude;
         this.currency = currency;
         this.total = total;
-        this.paymentMethodId = paymentMethodId;
+        this.paymentMethod = paymentMethod;
         this.user_id = user_id;
         this.status = status;
         this.order_products = order_products;
         this.order_combos = order_combos;
+        this.cupon_code = cupon_code;
+        this.createdDate = createdDate;
     }
 
     static create(
-        address: Address,
+        incremental_id: number,
+        address: string,
+        longitude : number,
+        latitude : number,
         currency: string,
         total: number,
         paymentMethod: string,
@@ -53,52 +70,91 @@ export class Order extends AggregateRoot<OrderID> {
         status: OrderStatus = OrderStatus.CREATED,
         order_products: OrderProduct[] = [],
         order_combos: OrderCombo[] = [],
+        cupon_code?: CouponCode
 
     ): Order {
         return new Order(
             OrderID.create(),
+            incremental_id,
             address,
+            longitude,
+            latitude,
             new OrderCurrency(currency),
             new OrderTotal(total),
-            new PaymentMethodId(paymentMethod),
+            new PaymentMethodName(paymentMethod),
             new UserId(user_id),
             status,
             order_products,
-            order_combos
+            order_combos,
+            cupon_code ? new CouponCode(cupon_code.value) : undefined,
+            new Date()
         );
     }
 
     static reconstitute(
+        incremental_id: number,
         id: string,
-        address: Address,
+        address: string,
+        longitude : number,
+        latitude : number,
         currency: string,
         total: number,
         paymentMethod: string,
         user_id: string,
         status: OrderStatus,
         order_products: OrderProduct[] = [],
-        order_combos: OrderCombo[] = []
+        order_combos: OrderCombo[] = [],
+        cupon_code?: CouponCode
         
 
     ): Order {
         return new Order(
             new OrderID(id),
+            incremental_id,
             address,
+            longitude,
+            latitude,
             new OrderCurrency(currency),
             new OrderTotal(total),
-            new PaymentMethodId(paymentMethod),
+            new PaymentMethodName(paymentMethod),
             new UserId(user_id),
             status,
             order_products,
-            order_combos
+            order_combos,
+            cupon_code ? new CouponCode(cupon_code.value) : undefined,
+            new Date()
         );
+    }
+
+    getCreatedDate(): Date {
+        return this.createdDate;
+    }
+
+    getIncrementalId(): number {
+        return this.incremental_id;
+    }
+
+    addCoupon(couponCode: string): void {
+        this.cupon_code = new CouponCode(couponCode);
+    }
+
+    getCupon(): CouponCode | undefined {
+        return this.cupon_code;
+    }
+
+    getLongitude(): number{
+        return this.longitude;
+    }
+
+    getLatitude(): number{
+        return this.latitude;
     }
 
     getId(): OrderID {
         return this.id;
     }
 
-    getAddress(): Address {
+    getAddress(): string {
         return this.address;
     }
 
@@ -110,8 +166,8 @@ export class Order extends AggregateRoot<OrderID> {
         return this.total.value;
     }
 
-    getPaymentMethodId(): PaymentMethodId {
-        return this.paymentMethodId;
+    getPaymentMethodName(): PaymentMethodName {
+        return this.paymentMethod;
     }
 
     updateCurrency(newCurrency: string): void {
@@ -119,10 +175,10 @@ export class Order extends AggregateRoot<OrderID> {
     }
 
     updatePaymentMethodId(newPaymentMethodId: string): void {
-        this.paymentMethodId = new PaymentMethodId(newPaymentMethodId);
+        this.paymentMethod = new PaymentMethodName(newPaymentMethodId);
     }
 
-    updateAddress(newAddress: Address): void {
+    updateAddress(newAddress: string): void {
         this.address = newAddress;
     }
 

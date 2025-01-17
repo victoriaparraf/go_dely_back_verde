@@ -17,8 +17,9 @@ export class CreateProductDto {
     @Length(3, 3)
     currency: string;
 
-    @IsString()
-    weight: string;
+    @IsNumber()
+    @IsPositive()
+    weight: number;
 
     @IsString()
     @Length(2, 2)
@@ -35,5 +36,9 @@ export class CreateProductDto {
 
     @IsArray()
     categories: string[];
+
+    @IsString()
+    @IsOptional()
+    discount: string;
 
 }

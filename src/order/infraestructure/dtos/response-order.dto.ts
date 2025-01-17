@@ -5,10 +5,22 @@ import { OrderProduct } from "src/order/infraestructure/typeorm/order-product";
 
 export class ResponseOrderDTO {
     @ApiProperty()
-    order_id: string;
+    id: string;
+
+    @ApiProperty()
+    incremental_id: number;
+
+    @ApiProperty()
+    createdDate: Date;
 
     @ApiProperty()
     address: string;
+
+    @ApiProperty()
+    longitude: number;
+
+    @ApiProperty()
+    latitude: number;
 
     @ApiProperty()
     currency: string;
@@ -17,7 +29,7 @@ export class ResponseOrderDTO {
     total: number;
 
     @ApiProperty()
-    paymentMethodId: string;
+    paymentMethod: string;
 
     @ApiProperty()
     user_id: string;
@@ -27,10 +39,10 @@ export class ResponseOrderDTO {
 
     @ApiProperty({ type: () => [OrderProduct]})
     @Type(() => OrderProduct)
-    order_products: {
-        order_id: string;
-        product_id: string;
+    products: {
+        id: string;
         quantity: number;
+        product_id: string;
         product_price?: number;
         total_price?: number;
         product_name?: string;
@@ -43,10 +55,10 @@ export class ResponseOrderDTO {
 
     @ApiProperty({ type: () => [OrderCombo]})
     @Type(() => OrderCombo)
-    order_combos: {
-        order_id: string,
-        combo_id: string,
+    combos: {
+        id: string,
         quantity: number,
+        combo_id: string,
         combo_price: number,
         total_price: number,
         combo_name: string,
@@ -54,4 +66,8 @@ export class ResponseOrderDTO {
         combo_currency: string,
         combo_stock: number
     }[];
+
+    @ApiProperty({ required: false })
+    cupon_code?: string;
+
 }

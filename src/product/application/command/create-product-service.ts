@@ -19,12 +19,14 @@ import { ProductMapper } from 'src/product/infrastructure/mappers/product-mapper
 import { ProductRepository } from 'src/product/infrastructure/repositories/product-repositoy';
 import { SendNotificationService } from 'src/notification/application/services/send-notification.service';
 import { CategoryEntity } from 'src/category/infrastructure/typeorm/category-entity';
+import { Discount } from 'src/discount/infraestructure/typeorm/discount.entity';
 
 @Injectable()
 export class CreateProductService implements IApplicationService<CreateProductServiceEntryDto, CreateProductServiceResponseDto> {
   constructor(
     private readonly productRepository: ProductRepository,
     @InjectRepository(CategoryEntity) private readonly categoryRepository: Repository<CategoryEntity>,
+    @InjectRepository(Discount) private readonly discountRepository: Repository<Discount>,
     private readonly cloudinaryService: CloudinaryService,
     @Inject('RABBITMQ_SERVICE') private readonly client: ClientProxy,
     private readonly sendNotificationService: SendNotificationService
@@ -32,11 +34,19 @@ export class CreateProductService implements IApplicationService<CreateProductSe
 
   async execute(createProductDto: CreateProductServiceEntryDto): Promise<CreateProductServiceResponseDto> {
     try {
-      const { categories, images, ...productDetails } = createProductDto;
+      const { categories, images, discount, ...productDetails } = createProductDto;
 
       const categoryEntity = await this.categoryRepository.findOne({ where: { category_id: In(categories) } });
       if (!categoryEntity) {
         throw new NotFoundException(`Category with ID ${categories} not found`);
+      }
+
+      let discountEntity= null;
+      if(discount){
+        discountEntity = await this.discountRepository.findOne({ where: { discount_id: discount } });
+        if (!discountEntity) {
+          throw new NotFoundException(`Discount with ID ${discount} not found`);
+        }
       }
 
       const productName = new ProductName(productDetails.name);
@@ -56,6 +66,7 @@ export class CreateProductService implements IApplicationService<CreateProductSe
       product.product_measurement = productMeasurement;
       product.product_stock = productStock;
       product.product_category = categoryEntity;
+      product.discount = discountEntity;
 
       const imageEntities = await Promise.all(
         images.map(async (imagePath) => {
@@ -73,17 +84,10 @@ export class CreateProductService implements IApplicationService<CreateProductSe
 
       this.client.emit('notification', {
         type: 'product',
-        payload: {
-          productImages: product.images.map((image) => image.image_url),
-          productName: product.product_name.getValue(),
-          productCategory: categoryEntity.category_name,
-          productWeight: product.product_weight.getValue(),
-          productMeasurement: product.product_measurement.getValue(),
-          productDescription: product.product_description.getValue(),
-        },
+        payload: ProductMapper.mapProductToResponse(product),
       });
 
-      await this.sendNotificationService.notifyUsersAboutNewProduct(product);
+      await this.sendNotificationService.notifyUsersAboutNewProduct(ProductMapper.mapProductToResponse(product));
 
       return ProductMapper.mapProductToResponse(product);
     } catch (error) {
