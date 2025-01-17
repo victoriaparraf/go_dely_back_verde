@@ -40,31 +40,30 @@ export class ResponseOrderDTO {
     @ApiProperty({ type: () => [OrderProduct]})
     @Type(() => OrderProduct)
     products: {
-        id: string;
         quantity: number;
-        product_id: string;
-        product_price?: number;
+        id: string;
+        price?: number;
         total_price?: number;
-        product_name?: string;
-        product_description?: string;
-        product_currency?: string;
-        product_weight?: string;
-        product_measurement?: string;
-        product_stock?: number;
+        name?: string;
+        description?: string;
+        currency?: string;
+        weight?: string;
+        measurement?: string;
+        stock?: number;
+        images: string[];
     }[];
 
     @ApiProperty({ type: () => [OrderCombo]})
     @Type(() => OrderCombo)
     combos: {
-        id: string,
         quantity: number,
-        combo_id: string,
-        combo_price: number,
+        id: string,
+        price: number,
         total_price: number,
-        combo_name: string,
-        combo_description: string,
-        combo_currency: string,
-        combo_stock: number
+        name: string,
+        description: string,
+        currency: string,
+        stock: number
     }[];
 
     @ApiProperty({ required: false })
