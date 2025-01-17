@@ -14,9 +14,10 @@ import { Discount } from 'src/discount/infraestructure/typeorm/discount.entity';
 import { NotificationModule } from 'src/notification/notification.module';
 import { OrderModule } from 'src/order/order.module';
 import { GetPopularCombosService } from './application/query/get-popular-combos-service';
+import { GetCombosByCategoryService } from './application/query/get-by-category-combos';
 
 @Module({
-  providers: [ GetPopularCombosService, CreateComboService, ComboRepository, GetComboService, UpdateComboService, DeleteComboService],
+  providers: [ GetPopularCombosService, CreateComboService, ComboRepository, GetComboService, UpdateComboService, DeleteComboService, GetCombosByCategoryService],
   imports: [
     TypeOrmModule.forFeature([Combo, Product, CategoryEntity, Discount]),
     CommonModule,
@@ -24,6 +25,6 @@ import { GetPopularCombosService } from './application/query/get-popular-combos-
     forwardRef(() => OrderModule),
   ],
   controllers: [ComboController],
-  exports: [ GetPopularCombosService, CreateComboService, ComboRepository, GetComboService, UpdateComboService, DeleteComboService],
+  exports: [ GetPopularCombosService, CreateComboService, ComboRepository, GetComboService, UpdateComboService, DeleteComboService, GetCombosByCategoryService],
 })
 export class ComboModule {}
