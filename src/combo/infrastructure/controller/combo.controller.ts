@@ -11,6 +11,7 @@ import { UpdateComboDto } from '../dtos/update-combo.dto';
 import { UpdateComboServiceEntryDto } from '../../application/dto/entry/update-combo-entry.dto';
 import { CreateComboServiceEntryDto } from 'src/combo/application/dto/entry/create-combo-entry.dto';
 import { GetPopularCombosService } from 'src/combo/application/query/get-popular-combos-service';
+import { GetCombosByCategoryService } from '../../application/query/get-by-category-combos';
 
 @ApiTags('Combo')
 @Controller('bundle')
@@ -20,7 +21,8 @@ export class ComboController {
     private readonly getComboService: GetComboService,
     private readonly deleteComboService: DeleteComboService,
     private readonly updateComboService: UpdateComboService,
-    private readonly getPopularCombosService: GetPopularCombosService
+    private readonly getPopularCombosService: GetPopularCombosService,
+    private readonly getCombosByCategoryService: GetCombosByCategoryService
   ) {}
 
   @Post('create')
@@ -49,6 +51,11 @@ export class ComboController {
 
     return this.getComboService.findAll(getComboServicePaginationDto);
 
+  }
+
+  @Get('category/:categoryId')
+  async findByCategory(@Param('categoryId') categoryId: string) {
+    return this.getCombosByCategoryService.execute(categoryId);
   }
 
   @Get('many/popular')

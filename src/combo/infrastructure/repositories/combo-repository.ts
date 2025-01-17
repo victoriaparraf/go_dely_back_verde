@@ -24,6 +24,13 @@ export class ComboRepository implements IComboRepository {
     private readonly discountRepository: Repository<Discount>
   ) {}
 
+  async findByCategory(categoryId: string): Promise<Combo[]> {
+    return this.comboRepository.find({
+      where: { combo_categories: { category_id: categoryId } },
+      relations: ['combo_categories', 'images', 'discount'],
+    });
+  }
+
   async createCombo(comboData: Combo) {
     const comboEntity = this.comboRepository.create(comboData);
     return comboEntity;
