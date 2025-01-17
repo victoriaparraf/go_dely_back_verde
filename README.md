@@ -1,15 +1,15 @@
 <p align="center">
-    <img src="https://ibb.co/DtMjWvB" align="center" width="30%">
+    <img src="https://i.imgur.com/TGDl5Ud.png" align="center" width="30%">
 </p>
 <p align="center"><h1 align="center">GODELY BACKEND</h1></p>
 <p align="center">
-	<em><code>❯ TEAM VERDE</code></em>
+    <em><code style="font-size: 24px; color: #006400;">❯ TEAM VERDE</code></em>
 </p>
 <p align="center">
-	<img src="https://img.shields.io/github/license/eli64s/readme-ai?style=default&logo=opensourceinitiative&logoColor=white&color=45b908" alt="license">
-	<img src="https://img.shields.io/github/last-commit/eli64s/readme-ai?style=default&logo=git&logoColor=white&color=45b908" alt="last-commit">
-	<img src="https://img.shields.io/github/languages/top/eli64s/readme-ai?style=default&color=45b908" alt="repo-top-language">
-	<img src="https://img.shields.io/github/languages/count/eli64s/readme-ai?style=default&color=45b908" alt="repo-language-count">
+    <img src="https://img.shields.io/github/license/victoriaparraf/go_dely_back_verde?style=default&logo=opensourceinitiative&logoColor=white&color=45b908" alt="license">
+    <img src="https://img.shields.io/github/last-commit/victoriaparraf/go_dely_back_verde?style=default&logo=git&logoColor=white&color=45b908" alt="last-commit">
+    <img src="https://img.shields.io/github/languages/top/victoriaparraf/go_dely_back_verde?style=default&color=45b908" alt="repo-top-language">
+    <img src="https://img.shields.io/github/languages/count/victoriaparraf/go_dely_back_verde?style=default&color=45b908" alt="repo-language-count">
 </p>
 <p align="center"><!-- default option, no dependency badges. -->
 </p>
@@ -624,9 +624,7 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
 ##  Acknowledgments
 
-- CoAuthor - [Sofía Arasme](https://github.com/sofiaarasme)
-- CoAuthor - [Victoria Parra](https://github.com/victoriaparraf)
+- Co-Author - [Sofía Arasme](https://github.com/sofiaarasme)
+- Co-Author - [Victoria Parra](https://github.com/victoriaparraf)
 
 ---
-
-////////////////////////////////////
