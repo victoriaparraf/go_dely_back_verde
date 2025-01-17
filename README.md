@@ -37,6 +37,10 @@ GoDely backend is a server-side application built using the NestJS framework. It
 
 ## :sparkles: Features
 
+<code>❯ Auth Module</code>
+- Secure endpoints with JWT-based authentication.
+- Handle user login and registration.
+
 <code>❯ Product Module</code>
 - Manage products with CRUD operations.
 - Associate products with categories and discounts.
@@ -59,6 +63,10 @@ GoDely backend is a server-side application built using the NestJS framework. It
 - Apply discounts to orders.
 
 <code>❯ Notification Module</code>
+- Manage product and combo images.
+- Upload images into cloudinary service.
+
+<code>❯ Notification Module</code>
 - Manage notification tokens for users.
 - Send notifications to users.
 
@@ -74,7 +82,20 @@ GoDely backend is a server-side application built using the NestJS framework. It
 - Handle user registration, login, and profile management.
 - Manage user roles and permissions.
 
+<code>❯ Adress Module</code>
+- Handle user addresses, preferred address, and locations.
+
 ---
+
+## 🛠 Technologies
+
+[![NestJS](https://static-00.iconduck.com/assets.00/nestjs-icon-2048x2040-3rrvcej8.png)]
+[![Cloudinary](https://static-00.iconduck.com/assets.00/cloudinary-icon-512x335-z2n5aue3.png)]
+[![PostgreSQL](https://static-00.iconduck.com/assets.00/postgresql-icon-1987x2048-v2fkmdaw.png)]
+[![RabbitMQ](https://static-00.iconduck.com/assets.00/rabbitmq-icon-484x512-s9lfaapn.png)]
+
+---
+
 ## :construction: Getting Started
 
 ## Project setup
@@ -132,9 +153,34 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
 ---
 
-## :technologist: Authors
+## :technologist: Authors and Contributions
 
-- ![Sofía Arasme](https://github.com/sofiaarasme.png?size=50) [   Sofía Arasme](https://github.com/sofiaarasme)
-- ![Victoria Parra](https://github.com/victoriaparraf.png?size=50) [   Victoria Parra](https://github.com/victoriaparraf)
+### :bust_in_silhouette: Sofía Arasme
+
+![Sofía Arasme](https://github.com/sofiaarasme.png?size=50) [  Sofía Arasme](https://github.com/sofiaarasme)
+
+- Product Module
+- Category Module
+- Payment Method Module
+- User Module
+- Auth Module
+- Order Module
+
+### :bust_in_silhouette: Victoria Parra
+
+![Victoria Parra](https://github.com/victoriaparraf.png?size=50) [  Victoria Parra](https://github.com/victoriaparraf)
+
+- Combo Module
+- Discount Module
+- Notification Module
+- Images Module
+- Order Module
+
+### :bust_in_silhouette: Nicola Manfredi
+
+- ![Nicola Manfredi](https://github.com/Nico6248.png?size=50) [  Nicola Manfredi](https://github.com/Nico6248)
+
+- Address Module
+- Cupon Module
 
 ---
