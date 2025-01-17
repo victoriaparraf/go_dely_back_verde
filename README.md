@@ -132,9 +132,9 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
 ---
 
-## :technologist: Acknowledgments
+## :technologist: Authors
 
-- Co-Author - ![Sofía Arasme](https://github.com/sofiaarasme.png?size=50) [Sofía Arasme](https://github.com/sofiaarasme)
-- Co-Author - ![Victoria Parra](https://github.com/victoriaparraf.png?size=50) [Victoria Parra](https://github.com/victoriaparraf)
+- ![Sofía Arasme](https://github.com/sofiaarasme.png?size=50) [Sofía Arasme](https://github.com/sofiaarasme)
+- ![Victoria Parra](https://github.com/victoriaparraf.png?size=50) [Victoria Parra](https://github.com/victoriaparraf)
 
 ---
