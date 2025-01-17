@@ -80,8 +80,8 @@ export class SendNotificationService {
             orderId: order.id,
             orderAddress: order.address
         };
-    
-        await this.notifyUsers(title, body, data, token);
+        console.log('order notification');
+        await this.notifyUsers(title, body, data, undefined, token);
     }
     
 }
