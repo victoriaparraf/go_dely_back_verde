@@ -24,7 +24,8 @@ export class UpdateOrderStatusService {
     if (!userNotification) {
       console.warn(`User ${user.user_id} does not have a notification token. Skipping push notification.`);
     } else {
-      await this.sendNotificationService.notifyUsersAboutNewStatus(order.getStatus.name, userNotification);
+      await this.sendNotificationService.notifyUsersAboutNewStatus(newStatus, userNotification);
+    toString()
     }
 
     await this.orderRepository.save(order);
