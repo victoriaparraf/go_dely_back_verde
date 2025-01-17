@@ -1,31 +1,571 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+    <img src="https://ibb.co/DtMjWvB" align="center" width="30%">
 </p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
+<p align="center"><h1 align="center">GODELY BACKEND</h1></p>
+<p align="center">
+	<em><code>❯ TEAM VERDE</code></em>
 </p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+<p align="center">
+	<img src="https://img.shields.io/github/license/eli64s/readme-ai?style=default&logo=opensourceinitiative&logoColor=white&color=45b908" alt="license">
+	<img src="https://img.shields.io/github/last-commit/eli64s/readme-ai?style=default&logo=git&logoColor=white&color=45b908" alt="last-commit">
+	<img src="https://img.shields.io/github/languages/top/eli64s/readme-ai?style=default&color=45b908" alt="repo-top-language">
+	<img src="https://img.shields.io/github/languages/count/eli64s/readme-ai?style=default&color=45b908" alt="repo-language-count">
+</p>
+<p align="center"><!-- default option, no dependency badges. -->
+</p>
+<p align="center">
+	<!-- default option, no dependency badges. -->
+</p>
+<br>
 
-## Description
+##  Table of Contents
 
-GoDely backend is a server-side application built using the NestJS framework. It follows the principles of Domain-Driven Design (DDD) and Hexagonal Architecture to ensure a scalable, maintainable, and testable codebase.
+- [ Overview](#-overview)
+- [ Features](#-features)
+- [ Project Structure](#-project-structure)
+  - [ Project Index](#-project-index)
+- [ Getting Started](#-getting-started)
+  - [ Prerequisites](#-prerequisites)
+  - [ Installation](#-installation)
+  - [ Usage](#-usage)
+  - [ Testing](#-testing)
+- [ Project Roadmap](#-project-roadmap)
+- [ Contributing](#-contributing)
+- [ License](#-license)
+- [ Acknowledgments](#-acknowledgments)
 
+---
+
+##  Overview
+
+<code>❯
+GoDely backend is a server-side application built using the NestJS framework. It follows the principles of Domain-Driven Design (DDD) and Hexagonal Architecture to ensure a scalable, maintainable, and testable codebase.</code>
+
+---
+
+##  Features
+
+<code>❯ REPLACE-ME</code>
+
+---
+
+
+###  Project Index
+<details open>
+	<summary><b><code>README-AI/</code></b></summary>
+	<details> <!-- __root__ Submodule -->
+		<summary><b>__root__</b></summary>
+		<blockquote>
+			<table>
+			<tr>
+				<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/pyproject.toml'>pyproject.toml</a></b></td>
+				<td><code>❯ REPLACE-ME</code></td>
+			</tr>
+			<tr>
+				<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/Makefile'>Makefile</a></b></td>
+				<td><code>❯ REPLACE-ME</code></td>
+			</tr>
+			<tr>
+				<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/Dockerfile'>Dockerfile</a></b></td>
+				<td><code>❯ REPLACE-ME</code></td>
+			</tr>
+			<tr>
+				<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/noxfile.py'>noxfile.py</a></b></td>
+				<td><code>❯ REPLACE-ME</code></td>
+			</tr>
+			</table>
+		</blockquote>
+	</details>
+	<details> <!-- .github Submodule -->
+		<summary><b>.github</b></summary>
+		<blockquote>
+			<table>
+			<tr>
+				<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/.github/release-drafter.yml'>release-drafter.yml</a></b></td>
+				<td><code>❯ REPLACE-ME</code></td>
+			</tr>
+			</table>
+			<details>
+				<summary><b>workflows</b></summary>
+				<blockquote>
+					<table>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/.github/workflows/release-pipeline.yml'>release-pipeline.yml</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/.github/workflows/mkdocs.yml'>mkdocs.yml</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/.github/workflows/release-drafter.yml'>release-drafter.yml</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/.github/workflows/coverage.yml'>coverage.yml</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					</table>
+				</blockquote>
+			</details>
+		</blockquote>
+	</details>
+	<details> <!-- readmeai Submodule -->
+		<summary><b>readmeai</b></summary>
+		<blockquote>
+			<details>
+				<summary><b>core</b></summary>
+				<blockquote>
+					<table>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/core/errors.py'>errors.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/core/logger.py'>logger.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/core/pipeline.py'>pipeline.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					</table>
+				</blockquote>
+			</details>
+			<details>
+				<summary><b>generators</b></summary>
+				<blockquote>
+					<table>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/generators/enums.py'>enums.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/generators/tables.py'>tables.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/generators/tree.py'>tree.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/generators/badges.py'>badges.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/generators/quickstart.py'>quickstart.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/generators/builder.py'>builder.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/generators/headers.py'>headers.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/generators/emojis.py'>emojis.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/generators/navigation.py'>navigation.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					</table>
+					<details>
+						<summary><b>colors</b></summary>
+						<blockquote>
+							<table>
+							<tr>
+								<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/generators/colors/converters.py'>converters.py</a></b></td>
+								<td><code>❯ REPLACE-ME</code></td>
+							</tr>
+							<tr>
+								<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/generators/colors/gradients.py'>gradients.py</a></b></td>
+								<td><code>❯ REPLACE-ME</code></td>
+							</tr>
+							</table>
+						</blockquote>
+					</details>
+					<details>
+						<summary><b>banners</b></summary>
+						<blockquote>
+							<table>
+							<tr>
+								<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/generators/banners/svg.py'>svg.py</a></b></td>
+								<td><code>❯ REPLACE-ME</code></td>
+							</tr>
+							<tr>
+								<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/generators/banners/ascii.py'>ascii.py</a></b></td>
+								<td><code>❯ REPLACE-ME</code></td>
+							</tr>
+							</table>
+						</blockquote>
+					</details>
+				</blockquote>
+			</details>
+			<details>
+				<summary><b>config</b></summary>
+				<blockquote>
+					<table>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/config/settings.py'>settings.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					</table>
+					<details>
+						<summary><b>settings</b></summary>
+						<blockquote>
+							<table>
+							<tr>
+								<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/config/settings/language-map.toml'>language-map.toml</a></b></td>
+								<td><code>❯ REPLACE-ME</code></td>
+							</tr>
+							<tr>
+								<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/config/settings/dev-tools.toml'>dev-tools.toml</a></b></td>
+								<td><code>❯ REPLACE-ME</code></td>
+							</tr>
+							<tr>
+								<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/config/settings/commands.toml'>commands.toml</a></b></td>
+								<td><code>❯ REPLACE-ME</code></td>
+							</tr>
+							<tr>
+								<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/config/settings/templates.toml'>templates.toml</a></b></td>
+								<td><code>❯ REPLACE-ME</code></td>
+							</tr>
+							<tr>
+								<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/config/settings/project-manifest.toml'>project-manifest.toml</a></b></td>
+								<td><code>❯ REPLACE-ME</code></td>
+							</tr>
+							<tr>
+								<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/config/settings/ignore-list.toml'>ignore-list.toml</a></b></td>
+								<td><code>❯ REPLACE-ME</code></td>
+							</tr>
+							<tr>
+								<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/config/settings/dev-setup.toml'>dev-setup.toml</a></b></td>
+								<td><code>❯ REPLACE-ME</code></td>
+							</tr>
+							<tr>
+								<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/config/settings/badge-list.toml'>badge-list.toml</a></b></td>
+								<td><code>❯ REPLACE-ME</code></td>
+							</tr>
+							<tr>
+								<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/config/settings/prompts.toml'>prompts.toml</a></b></td>
+								<td><code>❯ REPLACE-ME</code></td>
+							</tr>
+							<tr>
+								<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/config/settings/config.toml'>config.toml</a></b></td>
+								<td><code>❯ REPLACE-ME</code></td>
+							</tr>
+							</table>
+							<details>
+								<summary><b>themes</b></summary>
+								<blockquote>
+									<table>
+									<tr>
+										<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/config/settings/themes/emojis.yaml'>emojis.yaml</a></b></td>
+										<td><code>❯ REPLACE-ME</code></td>
+									</tr>
+									</table>
+								</blockquote>
+							</details>
+							<details>
+								<summary><b>templates</b></summary>
+								<blockquote>
+									<table>
+									<tr>
+										<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/config/settings/templates/headers.toml'>headers.toml</a></b></td>
+										<td><code>❯ REPLACE-ME</code></td>
+									</tr>
+									<tr>
+										<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/config/settings/templates/banners.toml'>banners.toml</a></b></td>
+										<td><code>❯ REPLACE-ME</code></td>
+									</tr>
+									<tr>
+										<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/config/settings/templates/quickstart.toml'>quickstart.toml</a></b></td>
+										<td><code>❯ REPLACE-ME</code></td>
+									</tr>
+									</table>
+								</blockquote>
+							</details>
+						</blockquote>
+					</details>
+				</blockquote>
+			</details>
+			<details>
+				<summary><b>cli</b></summary>
+				<blockquote>
+					<table>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/cli/main.py'>main.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/cli/options.py'>options.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					</table>
+				</blockquote>
+			</details>
+			<details>
+				<summary><b>preprocessor</b></summary>
+				<blockquote>
+					<table>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/preprocessor/directory_cleaner.py'>directory_cleaner.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/preprocessor/file_filter.py'>file_filter.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/preprocessor/document_cleaner.py'>document_cleaner.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					</table>
+				</blockquote>
+			</details>
+			<details>
+				<summary><b>postprocessor</b></summary>
+				<blockquote>
+					<table>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/postprocessor/markdown_to_html.py'>markdown_to_html.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/postprocessor/response_cleaner.py'>response_cleaner.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					</table>
+				</blockquote>
+			</details>
+			<details>
+				<summary><b>utilities</b></summary>
+				<blockquote>
+					<table>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/utilities/resource_manager.py'>resource_manager.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/utilities/importer.py'>importer.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/utilities/file_handler.py'>file_handler.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/utilities/fetch_badges.py'>fetch_badges.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					</table>
+				</blockquote>
+			</details>
+			<details>
+				<summary><b>models</b></summary>
+				<blockquote>
+					<table>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/models/gemini.py'>gemini.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/models/base.py'>base.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/models/factory.py'>factory.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/models/openai.py'>openai.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/models/enums.py'>enums.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/models/anthropic.py'>anthropic.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/models/dalle.py'>dalle.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/models/prompts.py'>prompts.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/models/offline.py'>offline.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/models/tokens.py'>tokens.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					</table>
+				</blockquote>
+			</details>
+			<details>
+				<summary><b>parsers</b></summary>
+				<blockquote>
+					<table>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/parsers/base.py'>base.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/parsers/gradle.py'>gradle.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/parsers/factory.py'>factory.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/parsers/docker.py'>docker.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/parsers/rust.py'>rust.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/parsers/npm.py'>npm.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/parsers/go.py'>go.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/parsers/swift.py'>swift.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/parsers/cpp.py'>cpp.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/parsers/python.py'>python.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/parsers/maven.py'>maven.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/parsers/properties.py'>properties.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					</table>
+				</blockquote>
+			</details>
+			<details>
+				<summary><b>extractors</b></summary>
+				<blockquote>
+					<table>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/extractors/metadata.py'>metadata.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/extractors/dependencies.py'>dependencies.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/extractors/tools.py'>tools.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/extractors/analyzer.py'>analyzer.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					<tr>
+						<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/extractors/models.py'>models.py</a></b></td>
+						<td><code>❯ REPLACE-ME</code></td>
+					</tr>
+					</table>
+				</blockquote>
+			</details>
+			<details>
+				<summary><b>retrievers</b></summary>
+				<blockquote>
+					<details>
+						<summary><b>git</b></summary>
+						<blockquote>
+							<table>
+							<tr>
+								<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/retrievers/git/metadata.py'>metadata.py</a></b></td>
+								<td><code>❯ REPLACE-ME</code></td>
+							</tr>
+							<tr>
+								<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/retrievers/git/repository.py'>repository.py</a></b></td>
+								<td><code>❯ REPLACE-ME</code></td>
+							</tr>
+							<tr>
+								<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/readmeai/retrievers/git/providers.py'>providers.py</a></b></td>
+								<td><code>❯ REPLACE-ME</code></td>
+							</tr>
+							</table>
+						</blockquote>
+					</details>
+				</blockquote>
+			</details>
+		</blockquote>
+	</details>
+	<details> <!-- scripts Submodule -->
+		<summary><b>scripts</b></summary>
+		<blockquote>
+			<table>
+			<tr>
+				<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/scripts/pypi.sh'>pypi.sh</a></b></td>
+				<td><code>❯ REPLACE-ME</code></td>
+			</tr>
+			<tr>
+				<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/scripts/docker.sh'>docker.sh</a></b></td>
+				<td><code>❯ REPLACE-ME</code></td>
+			</tr>
+			<tr>
+				<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/scripts/run_batch.sh'>run_batch.sh</a></b></td>
+				<td><code>❯ REPLACE-ME</code></td>
+			</tr>
+			<tr>
+				<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/scripts/clean.sh'>clean.sh</a></b></td>
+				<td><code>❯ REPLACE-ME</code></td>
+			</tr>
+			</table>
+		</blockquote>
+	</details>
+	<details> <!-- setup Submodule -->
+		<summary><b>setup</b></summary>
+		<blockquote>
+			<table>
+			<tr>
+				<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/setup/setup.sh'>setup.sh</a></b></td>
+				<td><code>❯ REPLACE-ME</code></td>
+			</tr>
+			<tr>
+				<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/setup/requirements.txt'>requirements.txt</a></b></td>
+				<td><code>❯ REPLACE-ME</code></td>
+			</tr>
+			<tr>
+				<td><b><a href='https://github.com/eli64s/readme-ai/blob/master/setup/environment.yaml'>environment.yaml</a></b></td>
+				<td><code>❯ REPLACE-ME</code></td>
+			</tr>
+			</table>
+		</blockquote>
+	</details>
+</details>
+
+---
+##  Getting Started
 
 ## Project setup
 
@@ -74,29 +614,19 @@ $ yarn run test:e2e
 $ yarn run test:cov
 ```
 
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+---
+
+##  Acknowledgments
+
+- CoAuthor - [Sofía Arasme](https://github.com/sofiaarasme)
+- CoAuthor - [Victoria Parra](https://github.com/victoriaparraf)
+
+---
+
+////////////////////////////////////
