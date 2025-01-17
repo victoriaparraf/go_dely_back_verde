@@ -61,7 +61,7 @@ export class OrderRepository {
     const { page = 1, perpage = 10 } = paginationDto || {};
     return this.repository.find({
       where: { status: In(statuses) },
-      relations: ['user', 'order_products', 'order_combos'],
+      relations: ['user', 'order_products', 'order_combos', 'order_products.product.images'],
       skip: (page - 1) * perpage,
       take: perpage,
     });
@@ -70,7 +70,7 @@ export class OrderRepository {
   async findById(orderId: string): Promise<Order | null> {
     const entity = await this.repository.findOne({
       where: { order_id: orderId },
-      relations: ['user', 'order_products', 'order_combos'],
+      relations: ['user', 'order_products', 'order_combos', 'order_products.product.images'],
     });
     return entity ? OrderMapper.toDomain(entity) : null;
   }
@@ -80,7 +80,7 @@ export class OrderRepository {
       where: {
         createdDate: Between(startDate, endDate),
       },
-      relations: ['order_products'],
+      relations: ['order_products', 'order_products.product.images'],
     });
   }
 
@@ -89,7 +89,7 @@ export class OrderRepository {
       where: {
         createdDate: Between(startDate, endDate),
       },
-      relations: ['order_combos'],
+      relations: ['order_combos', 'order_products.product.images'],
     });
   }
 
