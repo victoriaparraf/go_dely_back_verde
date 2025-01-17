@@ -18,7 +18,7 @@ export class MailController {
         console.log('Sending email:', data);
 
         // Diccionario de estrategias
-        const notificationHandlers: Record<string, (payload: any) => Promise<void>> = {
+        const notificationHandlers: Record<string, (payload: any, email?: string) => Promise<void>> = {
         product: this.sendNotification.bind(this, '¡New Product Available!', this.generateProductEmail),
         discount: this.sendNotification.bind(this, '¡New Discount Alert!', this.generateDiscountEmail),
         combo: this.sendNotification.bind(this, '¡New Combo Offer!', this.generateComboEmail),
@@ -28,7 +28,7 @@ export class MailController {
         const handler = notificationHandlers[data.type];
 
         if (handler) {
-        await handler(data.payload);
+            await handler(data.payload, data.email);
         } else {
         console.warn(`Unknown notification type: ${data.type}`);
         }
