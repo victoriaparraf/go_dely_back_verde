@@ -37,7 +37,7 @@ export class User {
     @OneToMany(() => Address, address => address.user, { cascade: true }) 
     addresses: Address[];
 
-    @OneToMany(() => Notification, (notification) => notification.user, { cascade: true })
+    @OneToMany(() => Notification, (notification) => notification.user, { cascade: true,  eager: true  })
     notification_token: Notification[];
 
     @OneToMany(() => OrderEntity, (order) => order.user)
